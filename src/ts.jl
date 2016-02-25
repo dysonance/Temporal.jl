@@ -16,16 +16,16 @@ Motivated by the `xts` package in R and the `pandas` package in Python.
 type TS{V<:Number, T<:TimeType, F<:Any} <: ATS
     values::Array{V}
     index::Vector{T}
-    flds::Vector{F}
-    function TS(values, index, flds)
+    fields::Vector{F}
+    function TS(values, index, fields)
         if size(values,1) != length(index)
             error("Length of index not equal to number of value rows.")
         end
         if size(values,2) == 1
             values = hcat(values)  # ensure 2-dimensional array
         end
-        if length(flds) != size(values,2)
-            error("Length of flds not equal to number of columns in values")
+        if length(fields) != size(values,2)
+            error("Length of fields not equal to number of columns in values")
         end
         order = sortperm(index)
         index = index[order]
@@ -36,7 +36,7 @@ type TS{V<:Number, T<:TimeType, F<:Any} <: ATS
         else
             values = values[order]
         end
-        new(values, index, flds)
+        new(values, index, fields)
     end
 end
 TS{V,T,F}(v::Array{V}, t::Vector{T}, f::Vector{F}) = TS{V,T,F}(v,t,f)
@@ -45,7 +45,7 @@ TS{V}(v::Array{V}) = TS{V,Date,ByteString}(v, [today()-Day(i) for i=size(v,1):-1
 
 
 # Conversions ------------------------------------------------------------------
-convert(::Type{TS{Float64}}, x::TS{Bool}) = TS{Float64}(map(Float64, x.values), x.index, x.flds)
+convert(::Type{TS{Float64}}, x::TS{Bool}) = TS{Float64}(map(Float64, x.values), x.index, x.fields)
 convert{V<:Number, T<:TimeType, F<:Any}(::Type{TS{V,T,F}}, v::Array{V}, t::Vector{T}, f::Vector{F}) = TS(v,t,f)
 convert(x::TS{Bool}) = convert(TS{Float64}, x::TS{Bool})
 
@@ -103,29 +103,29 @@ end
 # Single row
 function getindex(x::TS, i::Int)
     if size(x,2) > 1
-        return TS(x.values[i,:], x.index[[i]], x.flds)
+        return TS(x.values[i,:], x.index[[i]], x.fields)
     else
-        return TS(x.values[[i]], x.index[[i]], x.flds)
+        return TS(x.values[[i]], x.index[[i]], x.fields)
     end
 end
 # Range of rows
 function getindex(x::TS, r::AbstractArray)
-    return TS(x.values[r,:], x.index[r], x.flds)
+    return TS(x.values[r,:], x.index[r], x.fields)
 end
 # Range of rows + range of columns
 function getindex(x::TS, r::AbstractArray, c::AbstractArray)
     checksize(x, r, c)
-    return TS(x.values[r, c], x.index[r], x.flds[c])
+    return TS(x.values[r, c], x.index[r], x.fields[c])
 end
 # Range of rows + single column
 function getindex(x::TS, r::AbstractArray, c::Int)
     checksize(x, r, c)
-    return TS(x.values[r,c], x.index[r], [x.flds[c]])
+    return TS(x.values[r,c], x.index[r], [x.fields[c]])
 end
 # Single row + range of columns
 function getindex(x::TS, r::Int, c::AbstractArray)
     checksize(x, r, c)
-    return TS(x.values[r,c], [x.index[r]], x.flds[c])
+    return TS(x.values[r,c], [x.index[r]], x.fields[c])
 end
 # Empty vector indexing
 function getindex(x::TS)
@@ -137,24 +137,24 @@ end
 # Colon indexing
 function getindex(x::TS, r::Int, ::Colon)
     checksize(x, r)
-    return TS(x.values[r,:], [x.index[r]], x.flds)
+    return TS(x.values[r,:], [x.index[r]], x.fields)
 end
 function getindex(x::TS, r::AbstractArray, ::Colon)
     checksize(x, r)
-    return TS(x.values[r,:], x.index[r], x.flds)
+    return TS(x.values[r,:], x.index[r], x.fields)
 end
 function getindex(x::TS, ::Colon, c::Int)
     checksize(x, Void, c)
-    return TS(x.values[:,c], x.index, [x.flds[c]])
+    return TS(x.values[:,c], x.index, [x.fields[c]])
 end
 function getindex(x::TS, ::Colon, c::AbstractArray)
     checksize(x, Void, c)
-    return TS(x.values[:,c], x.index, x.flds[c])
+    return TS(x.values[:,c], x.index, x.fields[c])
 end
 # Single element indexing
 function getindex(x::TS, r::Int, c::Int)
     checksize(x, r, c)
-    return TS([x.values[r,c]], [x.index[r]], [x.flds[c]])
+    return TS([x.values[r,c]], [x.index[r]], [x.fields[c]])
 end
 
 #TODO:
@@ -189,10 +189,10 @@ function show{V,T,F}(io::IO, x::TS{V,T,F})
     if isempty(x.index)
         x.index = [Date(0) for i=1:nrow]
     end
-    if eltype(x.flds) <: Number
-        flds = [string(x.flds[j]) for j=1:ncol]
+    if eltype(x.fields) <: Number
+        fields = [string(x.fields[j]) for j=1:ncol]
     else
-        flds = x.flds
+        fields = x.fields
     end
     for j = 1:ncol
         rowcheck = trunc(x.values[:,j]) - x.values[:,j] .== 0.0
@@ -201,13 +201,13 @@ function show{V,T,F}(io::IO, x::TS{V,T,F})
         end
     end
     spacetime = nrow > 0 ? strwidth(string(x.index[1])) + 3 : 3
-    firstcolwidth = strwidth(flds[1])
+    firstcolwidth = strwidth(fields[1])
     colwidth = Int[]
     for j = 1:ncol
         if T == Bool || nrow == 0
-            push!(colwidth, max(strwidth(flds[j]), 5))
+            push!(colwidth, max(strwidth(fields[j]), 5))
         else
-            push!(colwidth, max(strwidth(flds[j]), strwidth(@sprintf("%.2f", maximum(x.values[:,j]))) + DECIMALS - 2))
+            push!(colwidth, max(strwidth(fields[j]), strwidth(@sprintf("%.2f", maximum(x.values[:,j]))) + DECIMALS - 2))
         end
     end
 
@@ -218,9 +218,9 @@ function show{V,T,F}(io::IO, x::TS{V,T,F})
     println(io, "")
 
     # Field names line
-    print(io, "Index ", ^(" ", spacetime-6), flds[1], ^(" ", colwidth[1] + 2 - firstcolwidth))
+    print(io, "Index ", ^(" ", spacetime-6), fields[1], ^(" ", colwidth[1] + 2 - firstcolwidth))
     for j = 2:length(colwidth)
-        print(io, flds[j], ^(" ", colwidth[j] - strwidth(flds[j]) + 2))
+        print(io, fields[j], ^(" ", colwidth[j] - strwidth(fields[j]) + 2))
     end
     println(io, "")
 
