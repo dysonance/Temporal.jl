@@ -1,5 +1,8 @@
+VERSION >= v"0.4.0" && __precompile__(true)
+
+using Base.Dates
 module Temporal
 
-# package code goes here
+export TS, ts, size
 
-end # module
+end
