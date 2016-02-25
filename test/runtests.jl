@@ -14,3 +14,4 @@ B = ts(matrix, stamps, fields)
 @test A.fields == ["V1", "V2", "V3"]
 @test B.fields == ["A",  "B",  "C"]
 @test size(A) == size(B) == (100, 3)
+
