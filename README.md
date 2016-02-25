@@ -95,3 +95,4 @@ Many thanks also to the developers/contributors to the current Julia [TimeSeries
 
 
 [![Build Status](https://travis-ci.org/dysonance/Temporal.jl.svg?branch=master)](https://travis-ci.org/dysonance/Temporal.jl)
+[![Coverage Status](https://coveralls.io/repos/github/dysonance/Temporal.jl/badge.svg?branch=master)](https://coveralls.io/github/dysonance/Temporal.jl?branch=master)
