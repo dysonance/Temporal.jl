@@ -13,11 +13,11 @@ abstract ATS
 Time series type aimed at efficiency and simplicity.
 Motivated by the `xts` package in R and the `pandas` package in Python.
 """ ->
-type Ts{V<:Number, T<:TimeType, F<:Any} <: ATS
+type TS{V<:Number, T<:TimeType, F<:Any} <: ATS
     values::Array{V}
     index::Vector{T}
     flds::Vector{F}
-    function Ts(values, index, flds)
+    function TS(values, index, flds)
         if size(values,1) != length(index)
             error("Length of index not equal to number of value rows.")
         end
@@ -39,17 +39,17 @@ type Ts{V<:Number, T<:TimeType, F<:Any} <: ATS
         new(values, index, flds)
     end
 end
-Ts{V,T,F}(v::Array{V}, t::Vector{T}, f::Vector{F}) = Ts{V,T,F}(v,t,f)
-Ts{V,T}(v::Array{V}, t::Vector{T}) = Ts{V,T,ByteString}(v, t, [string("V",i) for i=1:size(v,2)])
-Ts{V}(v::Array{V}) = Ts{V,Date,ByteString}(v, [today()-Day(i) for i=size(v,1):-1:1], [string("V",i) for i=1:size(v,2)])
+TS{V,T,F}(v::Array{V}, t::Vector{T}, f::Vector{F}) = TS{V,T,F}(v,t,f)
+TS{V,T}(v::Array{V}, t::Vector{T}) = TS{V,T,ByteString}(v, t, [string("V",i) for i=1:size(v,2)])
+TS{V}(v::Array{V}) = TS{V,Date,ByteString}(v, [today()-Day(i) for i=size(v,1):-1:1], [string("V",i) for i=1:size(v,2)])
 
 
 # Conversions ------------------------------------------------------------------
-convert(::Type{Ts{Float64}}, x::Ts{Bool}) = Ts{Float64}(map(Float64, x.values), x.index, x.flds)
-convert{V<:Number, T<:TimeType, F<:Any}(::Type{Ts{V,T,F}}, v::Array{V}, t::Vector{T}, f::Vector{F}) = Ts(v,t,f)
-convert(x::Ts{Bool}) = convert(Ts{Float64}, x::Ts{Bool})
+convert(::Type{TS{Float64}}, x::TS{Bool}) = TS{Float64}(map(Float64, x.values), x.index, x.flds)
+convert{V<:Number, T<:TimeType, F<:Any}(::Type{TS{V,T,F}}, v::Array{V}, t::Vector{T}, f::Vector{F}) = TS(v,t,f)
+convert(x::TS{Bool}) = convert(TS{Float64}, x::TS{Bool})
 
-typealias ts Ts
+typealias ts TS
 
 ################################################################################
 # SIZE METHODS #################################################################
@@ -70,10 +70,10 @@ end
 ################################################################################
 # ITERATOR PROTOCOL ############################################################
 ################################################################################
-start(x::Ts) = 1
-next(x::Ts, i::Int) = ((x.index[i], x.values[i,:]), i+1)
-done(x::Ts, i::Int) = (i > size(x,1))
-isempty(x::Ts) = (isempty(x.index) && isempty(x.values))
+start(x::TS) = 1
+next(x::TS, i::Int) = ((x.index[i], x.values[i,:]), i+1)
+done(x::TS, i::Int) = (i > size(x,1))
+isempty(x::TS) = (isempty(x.index) && isempty(x.values))
 
 ################################################################################
 # INDEXING #####################################################################
@@ -87,7 +87,7 @@ end
 function extent(r::Int)
     return r
 end
-function checksize(x::Ts, r=Void, c=Void)
+function checksize(x::TS, r=Void, c=Void)
     if r != Void && size(x,1) < extent(r)
         error("Dimension mismatch: row index")
     end
@@ -101,60 +101,60 @@ function endof(x::ATS)
     return endof(x.values)
 end
 # Single row
-function getindex(x::Ts, i::Int)
+function getindex(x::TS, i::Int)
     if size(x,2) > 1
-        return Ts(x.values[i,:], x.index[[i]], x.flds)
+        return TS(x.values[i,:], x.index[[i]], x.flds)
     else
-        return Ts(x.values[[i]], x.index[[i]], x.flds)
+        return TS(x.values[[i]], x.index[[i]], x.flds)
     end
 end
 # Range of rows
-function getindex(x::Ts, r::AbstractArray)
-    return Ts(x.values[r,:], x.index[r], x.flds)
+function getindex(x::TS, r::AbstractArray)
+    return TS(x.values[r,:], x.index[r], x.flds)
 end
 # Range of rows + range of columns
-function getindex(x::Ts, r::AbstractArray, c::AbstractArray)
+function getindex(x::TS, r::AbstractArray, c::AbstractArray)
     checksize(x, r, c)
-    return Ts(x.values[r, c], x.index[r], x.flds[c])
+    return TS(x.values[r, c], x.index[r], x.flds[c])
 end
 # Range of rows + single column
-function getindex(x::Ts, r::AbstractArray, c::Int)
+function getindex(x::TS, r::AbstractArray, c::Int)
     checksize(x, r, c)
-    return Ts(x.values[r,c], x.index[r], [x.flds[c]])
+    return TS(x.values[r,c], x.index[r], [x.flds[c]])
 end
 # Single row + range of columns
-function getindex(x::Ts, r::Int, c::AbstractArray)
+function getindex(x::TS, r::Int, c::AbstractArray)
     checksize(x, r, c)
-    return Ts(x.values[r,c], [x.index[r]], x.flds[c])
+    return TS(x.values[r,c], [x.index[r]], x.flds[c])
 end
 # Empty vector indexing
-function getindex(x::Ts)
+function getindex(x::TS)
     return x
 end
-function getindex(x::Ts, ::Colon)
+function getindex(x::TS, ::Colon)
     return x
 end
 # Colon indexing
-function getindex(x::Ts, r::Int, ::Colon)
+function getindex(x::TS, r::Int, ::Colon)
     checksize(x, r)
-    return Ts(x.values[r,:], [x.index[r]], x.flds)
+    return TS(x.values[r,:], [x.index[r]], x.flds)
 end
-function getindex(x::Ts, r::AbstractArray, ::Colon)
+function getindex(x::TS, r::AbstractArray, ::Colon)
     checksize(x, r)
-    return Ts(x.values[r,:], x.index[r], x.flds)
+    return TS(x.values[r,:], x.index[r], x.flds)
 end
-function getindex(x::Ts, ::Colon, c::Int)
+function getindex(x::TS, ::Colon, c::Int)
     checksize(x, Void, c)
-    return Ts(x.values[:,c], x.index, [x.flds[c]])
+    return TS(x.values[:,c], x.index, [x.flds[c]])
 end
-function getindex(x::Ts, ::Colon, c::AbstractArray)
+function getindex(x::TS, ::Colon, c::AbstractArray)
     checksize(x, Void, c)
-    return Ts(x.values[:,c], x.index, x.flds[c])
+    return TS(x.values[:,c], x.index, x.flds[c])
 end
 # Single element indexing
-function getindex(x::Ts, r::Int, c::Int)
+function getindex(x::TS, r::Int, c::Int)
     checksize(x, r, c)
-    return Ts([x.values[r,c]], [x.index[r]], [x.flds[c]])
+    return TS([x.values[r,c]], [x.index[r]], [x.flds[c]])
 end
 
 #TODO:
@@ -175,7 +175,7 @@ end
 ################################################################################
 DECIMALS = 4
 SHOWINT = true
-function show{V,T,F}(io::IO, x::Ts{V,T,F})
+function show{V,T,F}(io::IO, x::TS{V,T,F})
     nrow = size(x,1)
     ncol = size(x,2)
     intcatcher = falses(ncol)

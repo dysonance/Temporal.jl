@@ -5,4 +5,6 @@ module Temporal
 
 export TS, ts, size
 
+include("ts.jl")
+
 end
