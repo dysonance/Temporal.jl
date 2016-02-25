@@ -1,4 +1,3 @@
-# TODO: finish column subsetting
 # TODO: figure out end keyword
 # TODO: index columns by field name
 # TODO: index rows by date (i.e. xts '2010-01::' syntax)
@@ -80,7 +79,6 @@ isempty(x::TS) = (isempty(x.index) && isempty(x.values))
 ################################################################################
 
 # NUMERICAL INDEXING -----------------------------------------------------------
-#TODO: allow use of `end` keyword
 function extent(r::AbstractArray)
     return length(r)
 end
