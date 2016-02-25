@@ -6,8 +6,8 @@ vector = 50.0 + cumsum(randn(100))
 stamps = collect(today():today()+Day(99))
 matrix = [vector vector+rand(100) vector-rand(100)]
 fields = ["A", "B", "C"]
-A = ts(matrix, stamps)
-B = ts(matrix, stamps, fields)
+A = ts(matrix, stamps)  # no fields specified
+B = ts(matrix, stamps, fields)  # field names A, B, and C
 
 @test isa(A, TS)
 @test isa(B, TS)
