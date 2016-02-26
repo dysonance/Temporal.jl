@@ -12,7 +12,7 @@ abstract ATS
 Time series type aimed at efficiency and simplicity.
 Motivated by the `xts` package in R and the `pandas` package in Python.
 """ ->
-type TS{V<:Any, T<:TimeType, F<:Any} <: ATS
+type TS{V<:Number, T<:TimeType, F<:Any} <: ATS
     values::Array{V}
     index::Vector{T}
     fields::Vector{F}
