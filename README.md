@@ -78,14 +78,14 @@ Index        B
 # TODO
 - Add indexing functionality
 	- ~~Index by row and column numbers/ranges~~
+    - ~~Index rows by Date and DateTime types~~
 	- Index columns by field names
-	- Index rows by date
+    - Index rows by date strings (similar to R's `xts` class)
 		- `X["2012"]` should give all values in the year 2012
 		- `X["2012-06"]` should give all values in June 2012
 		- `X["2012::"]` should give all values from 2012 onwards
-		- `X[Date("2012-06-15"):Date("2012-06-30")]` should give all values matching the corresponding date range
 - Add methods for managing & cleaning data (i.e. `merge` methods)
-- Add mathematical operators
+- Add operators
 - Allow non-numeric values in the array
 
 # Acknowledgements
