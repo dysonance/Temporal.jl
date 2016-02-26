@@ -12,7 +12,7 @@ abstract ATS
 Time series type aimed at efficiency and simplicity.
 Motivated by the `xts` package in R and the `pandas` package in Python.
 """ ->
-type TS{V<:Number, T<:TimeType, F<:Any} <: ATS
+type TS{V<:Any, T<:TimeType, F<:Any} <: ATS
     values::Array{V}
     index::Vector{T}
     fields::Vector{F}
@@ -155,7 +155,6 @@ function getindex(x::TS, r::Int, c::Int)
     return TS([x.values[r,c]], [x.index[r]], [x.fields[c]])
 end
 
-#TODO:
 # DATE INDEXING ----------------------------------------------------------------
 # One date
 function getindex(x::TS, t::TimeType)
