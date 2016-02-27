@@ -1,18 +1,17 @@
-# TODO: figure out end keyword
-# TODO: index columns by field name
-# TODO: index rows by date (i.e. xts '2010-01::' syntax)
-import Base: size, length, show, getindex, isempty, convert
+import Base: size, length, show, getindex, start, next, done, endof, isempty
 using Base.Dates
 
 ################################################################################
 # TYPE DEFINITION ##############################################################
 ################################################################################
+Str = Union{AbstractString, ASCIIString, ByteString, DirectIndexString,
+            UTF8String, UTF16String, UTF32String, RepString, RopeString}
 abstract ATS
 @doc """
 Time series type aimed at efficiency and simplicity.
 Motivated by the `xts` package in R and the `pandas` package in Python.
 """ ->
-type TS{V<:Number, T<:TimeType, F<:Any} <: ATS
+type TS{V<:Number, T<:TimeType, F<:Str} <: ATS
     values::Array{V}
     index::Vector{T}
     fields::Vector{F}
@@ -51,151 +50,68 @@ convert(x::TS{Bool}) = convert(TS{Float64}, x::TS{Bool})
 typealias ts TS
 
 ################################################################################
-# SIZE METHODS #################################################################
-################################################################################
-function size(x::ATS)
-    return size(x.values)
-end
-
-function size(x::ATS, dim::Int)
-    return size(x.values, dim)
-end
-
-function length(x::ATS)
-    return size(x,1)
-end
-
-
-################################################################################
 # ITERATOR PROTOCOL ############################################################
 ################################################################################
+size(x::ATS) = size(x.values)
+size(x::ATS, dim::Int) = size(x.values, dim)
 start(x::TS) = 1
 next(x::TS, i::Int) = ((x.index[i], x.values[i,:]), i+1)
 done(x::TS, i::Int) = (i > size(x,1))
 isempty(x::TS) = (isempty(x.index) && isempty(x.values))
+endof(x::TS) = size(x,1)
+length(x::TS) = prod(size(x))::Int
+first(x::TS) = x[1]
+last(x::TS) = x[end]
 
 ################################################################################
 # INDEXING #####################################################################
 ################################################################################
-
 # NUMERICAL INDEXING -----------------------------------------------------------
-function extent(r::AbstractArray)
-    return length(r)
-end
-function extent(r::Int)
-    return r
-end
-function checksize(x::TS, r=Void, c=Void)
-    if r != Void && size(x,1) < extent(r)
-        error("Dimension mismatch: row index")
-    end
-    if c != Void && size(x,2) < extent(c)
-        error("Dimension mismatch: column index")
-    end
-    return true
-end
-# end keyword function
-function endof(x::ATS)
-    return endof(x.values)
-end
-# Single row
-function getindex(x::TS, i::Int)
-    if size(x,2) > 1
-        return TS(x.values[i,:], x.index[[i]], x.fields)
-    else
-        return TS(x.values[[i]], x.index[[i]], x.fields)
-    end
-end
-# Range of rows
-function getindex(x::TS, r::AbstractArray{Int,1})
-    return TS(x.values[r,:], x.index[r], x.fields)
-end
-# Range of rows + range of columns
-function getindex(x::TS, r::AbstractArray{Int,1}, c::AbstractArray{Int,1})
-    checksize(x, r, c)
-    return TS(x.values[r, c], x.index[r], x.fields[c])
-end
-# Range of rows + single column
-function getindex(x::TS, r::AbstractArray{Int,1}, c::Int)
-    checksize(x, r, c)
-    return TS(x.values[r,c], x.index[r], [x.fields[c]])
-end
-# Single row + range of columns
-function getindex(x::TS, r::Int, c::AbstractArray{Int,1})
-    checksize(x, r, c)
-    return TS(x.values[r,c], [x.index[r]], x.fields[c])
-end
-# Empty vector indexing
-function getindex(x::TS)
-    return x
-end
-function getindex(x::TS, ::Colon)
-    return x
-end
-# Colon indexing
-function getindex(x::TS, r::Int, ::Colon)
-    checksize(x, r)
-    return TS(x.values[r,:], [x.index[r]], x.fields)
-end
-function getindex(x::TS, r::AbstractArray{Int,1}, ::Colon)
-    checksize(x, r)
-    return TS(x.values[r,:], x.index[r], x.fields)
-end
-function getindex(x::TS, ::Colon, c::Int)
-    checksize(x, Void, c)
-    return TS(x.values[:,c], x.index, [x.fields[c]])
-end
-function getindex(x::TS, ::Colon, c::AbstractArray{Int,1})
-    checksize(x, Void, c)
-    return TS(x.values[:,c], x.index, x.fields[c])
-end
-# Single element indexing
-function getindex(x::TS, r::Int, c::Int)
-    checksize(x, r, c)
-    return TS([x.values[r,c]], [x.index[r]], [x.fields[c]])
-end
+getindex(x::TS) = x
+getindex(x::TS, r::Int) = size(x,2) > 1 ? TS(x.values[r,:], x.index[[r]], x.fields) : TS(x.values[[r]], x.index[[r]], x.fields)
+getindex(x::TS, r::Int, c::Int) = TS([x.values[r,c]], [x.index[r]], [x.fields[c]])
+getindex(x::TS, r::Int, c::Vector{Int}) = TS(x.values[r,c], [x.index[r]], x.fields[c])
+getindex(x::TS, r::Int, c::UnitRange{Int}) = TS(x.values[r,c], [x.index[r]], x.fields[c])
+getindex(x::TS, r::Int, c::Colon) = TS(x.values[r,:], [x.index[r]], x.fields)
+getindex(x::TS, r::Vector{Int}) = TS(x.values[r,:], x.index[r], x.fields)
+getindex(x::TS, r::Vector{Int}, c::Int) = TS(x.values[r,c], x.index[r], [x.fields[c]])
+getindex(x::TS, r::Vector{Int}, c::Vector{Int}) = TS(x.values[r, c], x.index[r], x.fields[c])
+getindex(x::TS, r::Vector{Int}, c::UnitRange{Int}) = TS(x.values[r, c], x.index[r], x.fields[c])
+getindex(x::TS, r::Vector{Int}, c::Colon) = TS(x.values[r,:], x.index[r], x.fields)
+getindex(x::TS, r::UnitRange{Int}) = TS(x.values[r,:], x.index[r], x.fields)
+getindex(x::TS, r::UnitRange{Int}, c::Int) = TS(x.values[r,c], x.index[r], [x.fields[c]])
+getindex(x::TS, r::UnitRange{Int}, c::Vector{Int}) = TS(x.values[r, c], x.index[r], x.fields[c])
+getindex(x::TS, r::UnitRange{Int}, c::UnitRange{Int}) = TS(x.values[r, c], x.index[r], x.fields[c])
+getindex(x::TS, r::UnitRange{Int}, c::Colon) = TS(x.values[r,:], x.index[r], x.fields)
+getindex(x::TS, r::Colon) = x
+getindex(x::TS, r::Colon, c::Int) = TS(x.values[:,c], x.index, [x.fields[c]])
+getindex(x::TS, r::Colon, c::Vector{Int}) = TS(x.values[:,c], x.index, x.fields[c])
+getindex(x::TS, r::Colon, c::UnitRange{Int}) = TS(x.values[:,c], x.index, x.fields[c])
+getindex(x::TS, r::Colon, c::Colon) = x
 
 # DATE INDEXING ----------------------------------------------------------------
-# One date
-function getindex(x::TS, t::TimeType)
-    r = find(map((r) -> r == t, x.index))
-    return x[r]
-end
-# One date + columns
-function getindex(x::TS, t::TimeType, c)
-    r = find(map((r) -> r == t, x.index))
-    return x[r, c]
-end
-# Range of dates
-function getindex(x::TS, t::AbstractArray{Date,1})
+whichdate(t::TimeType, idx::Vector{Date}) = find(map(r -> r == t, idx))[1]
+whichdate(t::TimeType, idx::Vector{DateTime}) = find(map(r -> r == t, idx))[1]
+function whichdate(t::Vector{Date}, idx::Vector{Date})
     r = Int[]
     for i in 1:size(t,1)
-        append!(r, find(map((r) -> r == t[i], x.index)))
+        append!(r, find(map((r) -> r == t[i], idx)))
     end
-    return x[r]
+    return r
 end
-function getindex(x::TS, t::AbstractArray{DateTime,1})
+function whichdate(t::Vector{DateTime}, idx::Vector{DateTime})
     r = Int[]
     for i in 1:size(t,1)
-        append!(r, find(map((r) -> r == t[i], x.index)))
+        append!(r, find(map((r) -> r == t[i], idx)))
     end
-    return x[r]
+    return r
 end
-# Range of dates + columns
-function getindex(x::TS, t::AbstractArray{Date,1}, c)
-    r = Int[]
-    for i in 1:size(t,1)
-        append!(r, find(map((r) -> r == t[i], x.index)))
-    end
-    return x[r, c]
-end
-function getindex(x::TS, t::AbstractArray{DateTime,1}, c)
-    r = Int[]
-    for i in 1:size(t,1)
-        append!(r, find(map((r) -> r == t[i], x.index)))
-    end
-    return x[r, c]
-end
+getindex(x::TS, t::TimeType) = x[whichdate(t, x.index)]
+getindex(x::TS, t::TimeType, c) = x[whichdate(t, x.index), c]
+getindex(x::TS, t::Vector{Date}) = x[whichdate(t, x.index)]
+getindex(x::TS, t::Vector{Date}, c) = x[whichdate(t, x.index), c]
+getindex(x::TS, t::Vector{DateTime}) = x[whichdate(t, x.index)]
+getindex(x::TS, t::Vector{DateTime}, c) = x[whichdate(t, x.index), c]
 
 #TODO:
 # STRING INDEXING --------------------------------------------------------------
@@ -220,35 +136,56 @@ Check if string a valid date format
         YYYY-mm-ddTHH:MM:SS::YYYY-mm-ddTHH:MM (37)
         YYYY-mm-ddTHH:MM:SS::YYYY-mm-ddTHH:MM:SS (40)
 =#
+# Set up date string parser helper functions
 const DTCHARS = Char['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', ':', 'T']
-const NUMCHARS = Char['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
 const DTLENGTHS = Int[4, 6, 7, 9, 10, 12, 16, 19, 22, 25, 28, 31, 34, 37, 40]
-function isnum(c::Char)
-    return in(c, NUMCHARS)
+isdt(c::Char) = in(c, DTCHARS)
+isdt(s::Str) = all(map(isdt, collect(s)))
+isvalidlength(s::Str) = in(length(s), DTLENGTHS)
+isrowidx(s::Str) = isdt(s) && isvalidlength(s)
+function whichfield(x::TS, s::Str)
+    for j = 1:size(x,2)
+        if s == x.fields[j]
+            return j
+        end
+    end
+    error("Invalid field name given.")
 end
-function isnum(s::AbstractString)
-    return all(map(isnum, collect(s)))
+function whichfield(x::TS, s::Vector{Str})
+    k = length(s)
+    c = Array{Int,1}(zeros(k))
+    for j = 1:k
+        c[j] = whichfield(x, s)
+    end
+    c = c[find(c)]
+    if isempty(c)
+        error("Unable to identify any valid field names.")
+    elseif length(c) != k
+        warn("Unable to identify $(k-length(c)) field names.")
+    end
+    return c
 end
-function isdt(c::Char)
-    return in(c, DTCHARS)
-end
-function isdt(s::AbstractString)
-    return all(map(isdt, collect(s)))
-end
-function isvalidlength(s::AbstractString)
-    return in(length(s), DTLENGTHS)
-end
-function isrowidx(s::AbstractString)
-    return isdt(s) && isvalidlength(s)
-end
-
-
-
-################################################################################
-# OPERATIONS ###################################################################
-################################################################################
-
-
+# TODO: fix string subtype bugs
+getindex(x::TS, r::Int, s::Str) = x[r, whichfield(x, s)]
+getindex(x::TS, r::Date, s::Str) = x[r, whichfield(x, s)]
+getindex(x::TS, r::DateTime, s::Str) = x[r, whichfield(x, s)]
+getindex(x::TS, r::Vector{Int}, s::Str) = x[r, whichfield(x, s)]
+getindex(x::TS, r::Vector{Date}, s::Str) = x[r, whichfield(x, s)]
+getindex(x::TS, r::Vector{DateTime}, s::Str) = x[r, whichfield(x, s)]
+getindex(x::TS, r::UnitRange{Int}, s::Str) = x[r, whichfield(x, s)]
+getindex(x::TS, r::StepRange{Date}, s::Str) = x[r, whichfield(x, s)]
+getindex(x::TS, r::StepRange{DateTime}, s::Str) = x[r, whichfield(x, s)]
+getindex(x::TS, r::Colon, s::Str) = x[r, whichfield(x, s)]
+getindex(x::TS, r::Int, s::Vector{Str}) = x[r, whichfield(x, s)]
+getindex(x::TS, r::Date, s::Vector{Str}) = x[r, whichfield(x, s)]
+getindex(x::TS, r::DateTime, s::Vector{Str}) = x[r, whichfield(x, s)]
+getindex(x::TS, r::Vector{Int}, s::Vector{Str}) = x[r, whichfield(x, s)]
+getindex(x::TS, r::Vector{Date}, s::Vector{Str}) = x[r, whichfield(x, s)]
+getindex(x::TS, r::Vector{DateTime}, s::Vector{Str}) = x[r, whichfield(x, s)]
+getindex(x::TS, r::UnitRange{Int}, s::Vector{Str}) = x[r, whichfield(x, s)]
+getindex(x::TS, r::StepRange{Date}, s::Vector{Str}) = x[r, whichfield(x, s)]
+getindex(x::TS, r::StepRange{DateTime}, s::Vector{Str}) = x[r, whichfield(x, s)]
+getindex(x::TS, r::Colon, s::Vector{Str}) = x[r, whichfield(x, s)]
 
 ################################################################################
 # SHOW / PRINT METHOD ##########################################################
