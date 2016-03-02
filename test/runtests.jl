@@ -7,7 +7,7 @@ k = 4                                           # number of variables
 data = cumsum(randn(n,k), 1)                    # toy random data
 dates = collect(today():today()+Day(n-1))       # range of Date
 times = collect(now():Hour(1):now()+Hour(n-1))  # range of DateTime
-fields = ["Field $j" for j=1:k]                 # array of String field names
+fields = [Symbol("Field $j") for j=1:k]                 # array of String field names
 X = ts(data, dates)                             # auto-generate field names
 Y = ts(data, times, fields)                     # specify field names 
 
