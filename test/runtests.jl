@@ -2,14 +2,14 @@ using Temporal
 using Base.Test
 using Base.Dates
 
-n = 100                                         # number of observations
-k = 4                                           # number of variables
-data = cumsum(randn(n,k), 1)                    # toy random data
-dates = collect(today():today()+Day(n-1))       # range of Date
-times = collect(now():Hour(1):now()+Hour(n-1))  # range of DateTime
-fields = ["Field $i" for i=1:k]                 # array of String field names
-X = ts(data, dates)                             # auto-generate field names
-Y = ts(data, times, fields)                     # specify field names 
+n = 100                                                 # number of observations
+k = 4                                                   # number of variables
+data = cumsum(randn(n,k), 1)                            # toy random data
+dates = collect(today()-Week(n-1):Week(1):today())      # range of Date
+times = collect(now():Hour(1):now()+Hour(n-1))          # range of DateTime
+fields = ["Field $i" for i=1:k]                         # array of String field names
+X = ts(data, dates)                                     # auto-generate field names
+Y = ts(data, times, fields)                             # specify field names 
 
 # Basic functionality
 @test isa(X, TS)
@@ -21,6 +21,8 @@ Y = ts(data, times, fields)                     # specify field names
 i = 1
 r = 1:2
 a = collect(r)
+dsr = dates[1]:Week(1):dates[2]
+tsr = times[1]:Hour(1):times[2]
 # Single row
 @test X[i].values == data[i,:]
 @test Y[i].values == data[i,:]
@@ -75,4 +77,10 @@ a = collect(r)
 @test Y[collect(times[r]),r].values == data[r,r]
 @test X[collect(dates[r]),a].values == data[r,r]
 @test Y[collect(times[r]),a].values == data[r,r]
-
+# Step ranges
+@test X[dsr].values == data[r,:]
+@test Y[tsr].values == data[r,:]
+@test X[dsr,i].values == data[r,i]
+@test Y[tsr,i].values == data[r,i]
+@test X[dsr,r].values == data[r,r]
+@test Y[tsr,r].values == data[r,r]

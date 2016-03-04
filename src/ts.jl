@@ -65,7 +65,7 @@ convert(::Type{TS{Float64}}, x::TS{Bool}) = TS{Float64}(map(Float64, x.values), 
 typealias ts TS
 
 ################################################################################
-# ITERATOR PROTOCOL ############################################################
+# BASIC UTILITIES ##############################################################
 ################################################################################
 size(x::TS) = size(x.values)
 size(x::TS, dim::Int) = size(x.values, dim)
@@ -77,39 +77,6 @@ endof(x::TS) = size(x,1)
 length(x::TS) = prod(size(x))::Int
 first(x::TS) = x[1]
 last(x::TS) = x[end]
-
-################################################################################
-# INDEXING #####################################################################
-################################################################################
-# NUMERICAL INDEXING -----------------------------------------------------------
-getindex(x::TS) = TS(x.values[1,1], x.index[1], x.fields[1])
-getindex(x::TS, r::Int) = size(x,2) > 1 ? TS(x.values[r,:], x.index[[r]], x.fields) : TS(x.values[[r]], x.index[[r]], x.fields)
-getindex(x::TS, r::Int, c::Int) = TS([x.values[r,c]], [x.index[r]], [x.fields[c]])
-getindex(x::TS, r::Int, c::Vector{Int}) = TS(x.values[r,c], [x.index[r]], x.fields[c])
-getindex(x::TS, r::Int, c::UnitRange{Int}) = TS(x.values[r,c], [x.index[r]], x.fields[c])
-getindex(x::TS, r::Int, c::Colon) = TS(x.values[r,:], [x.index[r]], x.fields)
-getindex(x::TS, r::Vector{Int}) = TS(x.values[r,:], x.index[r], x.fields)
-getindex(x::TS, r::Vector{Int}, c::Int) = TS(x.values[r,c], x.index[r], [x.fields[c]])
-getindex(x::TS, r::Vector{Int}, c::Vector{Int}) = TS(x.values[r, c], x.index[r], x.fields[c])
-getindex(x::TS, r::Vector{Int}, c::UnitRange{Int}) = TS(x.values[r, c], x.index[r], x.fields[c])
-getindex(x::TS, r::Vector{Int}, c::Colon) = TS(x.values[r,:], x.index[r], x.fields)
-getindex(x::TS, r::UnitRange{Int}) = TS(x.values[r,:], x.index[r], x.fields)
-getindex(x::TS, r::UnitRange{Int}, c::Int) = TS(x.values[r,c], x.index[r], [x.fields[c]])
-getindex(x::TS, r::UnitRange{Int}, c::Vector{Int}) = TS(x.values[r, c], x.index[r], x.fields[c])
-getindex(x::TS, r::UnitRange{Int}, c::UnitRange{Int}) = TS(x.values[r, c], x.index[r], x.fields[c])
-getindex(x::TS, r::UnitRange{Int}, c::Colon) = TS(x.values[r,:], x.index[r], x.fields)
-getindex(x::TS, r::Colon, c::Int) = TS(x.values[:,c], x.index, [x.fields[c]])
-getindex(x::TS, r::Colon, c::Vector{Int}) = TS(x.values[:,c], x.index, x.fields[c])
-getindex(x::TS, r::Colon, c::UnitRange{Int}) = TS(x.values[:,c], x.index, x.fields[c])
-getindex(x::TS, r::Colon, c::Colon) = x
-
-# BOOL INDEXING ----------------------------------------------------------------
-getindex(x::TS, b::Vector{Bool}, c) = x[find(b), c]
-getindex(x::TS, b::Vector{Bool}) = x[find(b)]
-getindex(x::TS, b::BitArray, c) = x[find(b), c]
-getindex(x::TS, b::BitArray) = x[find(b)]
-
-# DATE INDEXING ----------------------------------------------------------------
 function overlaps(x::Vector, y::Vector)
     xx = falses(x)
     yy = falses(y)
@@ -121,7 +88,6 @@ function overlaps(x::Vector, y::Vector)
     end
     return (xx, yy)
 end
-
 function overlaps(x::Vector, y::Vector, n::Int=1)
     if n == 1
         xx = falses(x)
@@ -144,59 +110,76 @@ function overlaps(x::Vector, y::Vector, n::Int=1)
     end
 end
 
-getindex(x::TS, d::Date, c) = x[find(x.index .== d), c]
-getindex(x::TS, d::Date) = x[find(x.index .== d)]
-getindex(x::TS, d::DateTime, c) = x[find(x.index .== d), c]
-getindex(x::TS, d::DateTime) = x[find(x.index .== d)]
-function getindex(x::TS, d::Vector{Date}, c)
-    idx = find(overlaps(x.index, d, 1))
-    return x[idx, c]
-end
-function getindex(x::TS, d::Vector{Date})
-    idx = find(overlaps(x.index, d, 1))
-    return x[idx]
-end
-function getindex(x::TS, d::Vector{DateTime}, c)
-    idx = find(overlaps(x.index, d, 1))
-    return x[idx, c]
-end
-function getindex(x::TS, d::Vector{DateTime})
-    idx = find(overlaps(x.index, d, 1))
-    return x[idx]
-end
 
+################################################################################
+# INDEXING #####################################################################
+################################################################################
+# NUMERICAL INDEXING -----------------------------------------------------------
+getindex{V,T}(x::TS{V,T}) = TS(x.values[1,1], x.index[1], x.fields[1])
+getindex{V,T}(x::TS{V,T}, r::Int) = size(x,2) > 1 ? TS(x.values[r,:], x.index[[r]], x.fields) : TS(x.values[[r]], x.index[[r]], x.fields)
+getindex{V,T}(x::TS{V,T}, r::Int, c::Int) = TS([x.values[r,c]], [x.index[r]], [x.fields[c]])
+getindex{V,T}(x::TS{V,T}, r::Int, c::Vector{Int}) = TS(x.values[r,c], [x.index[r]], x.fields[c])
+getindex{V,T}(x::TS{V,T}, r::Int, c::UnitRange{Int}) = TS(x.values[r,c], [x.index[r]], x.fields[c])
+getindex{V,T}(x::TS{V,T}, r::Int, c::Colon) = TS(x.values[r,:], [x.index[r]], x.fields)
+getindex{V,T}(x::TS{V,T}, r::Vector{Int}) = TS(x.values[r,:], x.index[r], x.fields)
+getindex{V,T}(x::TS{V,T}, r::Vector{Int}, c::Int) = TS(x.values[r,c], x.index[r], [x.fields[c]])
+getindex{V,T}(x::TS{V,T}, r::Vector{Int}, c::Vector{Int}) = TS(x.values[r, c], x.index[r], x.fields[c])
+getindex{V,T}(x::TS{V,T}, r::Vector{Int}, c::UnitRange{Int}) = TS(x.values[r, c], x.index[r], x.fields[c])
+getindex{V,T}(x::TS{V,T}, r::Vector{Int}, c::Colon) = TS(x.values[r,:], x.index[r], x.fields)
+getindex{V,T}(x::TS{V,T}, r::UnitRange{Int}) = TS(x.values[r,:], x.index[r], x.fields)
+getindex{V,T}(x::TS{V,T}, r::UnitRange{Int}, c::Int) = TS(x.values[r,c], x.index[r], [x.fields[c]])
+getindex{V,T}(x::TS{V,T}, r::UnitRange{Int}, c::Vector{Int}) = TS(x.values[r, c], x.index[r], x.fields[c])
+getindex{V,T}(x::TS{V,T}, r::UnitRange{Int}, c::UnitRange{Int}) = TS(x.values[r, c], x.index[r], x.fields[c])
+getindex{V,T}(x::TS{V,T}, r::UnitRange{Int}, c::Colon) = TS(x.values[r,:], x.index[r], x.fields)
+getindex{V,T}(x::TS{V,T}, r::Colon, c::Int) = TS(x.values[:,c], x.index, [x.fields[c]])
+getindex{V,T}(x::TS{V,T}, r::Colon, c::Vector{Int}) = TS(x.values[:,c], x.index, x.fields[c])
+getindex{V,T}(x::TS{V,T}, r::Colon, c::UnitRange{Int}) = TS(x.values[:,c], x.index, x.fields[c])
+getindex{V,T}(x::TS{V,T}, r::Colon, c::Colon) = x
 
+# BOOL INDEXING ----------------------------------------------------------------
+getindex{V,T}(x::TS{V,T}, b::Vector{Bool}) = x[find(b)]
+getindex{V,T}(x::TS{V,T}, b::Vector{Bool}, c::Int) = x[find(b), c]
+getindex{V,T}(x::TS{V,T}, b::Vector{Bool}, c::Vector{Int}) = x[find(b), c]
+getindex{V,T}(x::TS{V,T}, b::Vector{Bool}, c::UnitRange{Int}) = x[find(b), c]
+getindex{V,T}(x::TS{V,T}, b::Vector{Bool}, c::Colon) = x[find(b), c]
+getindex{V,T}(x::TS{V,T}, b::BitArray) = x[find(b)]
+getindex{V,T}(x::TS{V,T}, b::BitArray, c::Int) = x[find(b), c]
+getindex{V,T}(x::TS{V,T}, b::BitArray, c::Vector{Int}) = x[find(b), c]
+getindex{V,T}(x::TS{V,T}, b::BitArray, c::UnitRange{Int}) = x[find(b), c]
+getindex{V,T}(x::TS{V,T}, b::BitArray, c::Colon) = x[find(b), c]
 
-#TODO:
-# STRING INDEXING --------------------------------------------------------------
-#=
-Check if string a valid date format
-    Possible syntax:
-        YYYY (4)
-        YYYY:: (6)
-        YYYY-mm (7)
-        YYYY-mm:: (9)
-        YYYY::YYYY (10)
-        YYYY-mm-dd (10)
-        YYYY-mm-dd:: (12)
-        YYYY-mm-dd::YYYY (16)
-        YYYY-mm-dd::YYYY-mm (19)
-        YYYY-mm-ddTHH:MM:SS (19)
-        YYYY-mm-dd::YYYY-mm-dd (22)
-        YYYY-mm-ddTHH:MM:SS::YYYY (25)
-        YYYY-mm-ddTHH:MM:SS::YYYY-mm (28)
-        YYYY-mm-ddTHH:MM:SS::YYYY-mm-dd (31)
-        YYYY-mm-ddTHH:MM:SS::YYYY-mm-ddTHH (34)
-        YYYY-mm-ddTHH:MM:SS::YYYY-mm-ddTHH:MM (37)
-        YYYY-mm-ddTHH:MM:SS::YYYY-mm-ddTHH:MM:SS (40)
-=#
-# Set up date string parser helper functions
-const DTCHARS = Char['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', ':', 'T']
-const DTLENGTHS = Int[4, 6, 7, 9, 10, 12, 16, 19, 22, 25, 28, 31, 34, 37, 40]
-isdt(c::Char) = in(c, DTCHARS)
-isdt(s::AbstractString) = all(map(isdt, collect(s)))
-isvalidlength(s::AbstractString) = in(length(s), DTLENGTHS)
-isrowidx(s::AbstractString) = isdt(s) && isvalidlength(s)
+# DATE INDEXING ----------------------------------------------------------------
+getindex{V,T}(x::TS{V,T}, d::T) = x[find(x.index .== d)]
+getindex{V,T}(x::TS{V,T}, d::T, c) = x[find(x.index .== d), c]
+getindex{V,T}(x::TS{V,T}, d::Vector{T}) = x[find(overlaps(x.index, d, 1))]
+getindex{V,T}(x::TS{V,T}, d::Vector{T}, c::Int) = x[find(overlaps(x.index, d, 1)), c]
+getindex{V,T}(x::TS{V,T}, d::Vector{T}, c::Vector{Int}) = x[find(overlaps(x.index, d, 1)), c]
+getindex{V,T}(x::TS{V,T}, d::Vector{T}, c::UnitRange{Int}) = x[find(overlaps(x.index, d, 1)), c]
+getindex{V,T}(x::TS{V,T}, d::Vector{T}, c::Colon) = x[find(overlaps(x.index, d, 1)), c]
+getindex{V,T}(x::TS{V,T}, d::StepRange{T}) = x[find(overlaps(x.index, collect(d), 1))]
+getindex{V,T}(x::TS{V,T}, d::StepRange{T}, c::Int) = x[find(overlaps(x.index, collect(d), 1)), c]
+getindex{V,T}(x::TS{V,T}, d::StepRange{T}, c::Vector{Int}) = x[find(overlaps(x.index, collect(d), 1)), c]
+getindex{V,T}(x::TS{V,T}, d::StepRange{T}, c::UnitRange{Int}) = x[find(overlaps(x.index, collect(d), 1)), c]
+getindex{V,T}(x::TS{V,T}, d::StepRange{T}, c::Colon) = x[find(overlaps(x.index, collect(d), 1)), c]
+
+# STRING INDEXING (FIELDS) -----------------------------------------------------
+getindex{V,T}(x::TS{V,T}, r::Int, s::ByteString) = x[r, find(x.fields .== s)]
+getindex{V,T}(x::TS{V,T}, r::Int, s::Vector{ByteString}) = x[r, find(overlaps(x.fields, s, 1))]
+getindex{V,T}(x::TS{V,T}, r::Int, s::Vector{ASCIIString}) = x[r, find(overlaps(x.fields, s, 1))]
+getindex{V,T}(x::TS{V,T}, r::Int, s::Vector{UTF8String}) = x[r, find(overlaps(x.fields, s, 1))]
+getindex{V,T}(x::TS{V,T}, r::Vector{Int}, s::ByteString) = x[r, find(x.fields .== s)]
+getindex{V,T}(x::TS{V,T}, r::Vector{Int}, s::Vector{ByteString}) = x[r, find(overlaps(x.fields, s, 1))]
+getindex{V,T}(x::TS{V,T}, r::Vector{Int}, s::Vector{ASCIIString}) = x[r, find(overlaps(x.fields, s, 1))]
+getindex{V,T}(x::TS{V,T}, r::Vector{Int}, s::Vector{UTF8String}) = x[r, find(overlaps(x.fields, s, 1))]
+getindex{V,T}(x::TS{V,T}, r::Colon, s::ByteString) = x[r, find(x.fields .== s)]
+getindex{V,T}(x::TS{V,T}, r::Colon, s::Vector{ByteString}) = x[r, find(overlaps(x.fields, s, 1))]
+getindex{V,T}(x::TS{V,T}, r::Colon, s::Vector{ASCIIString}) = x[r, find(overlaps(x.fields, s, 1))]
+getindex{V,T}(x::TS{V,T}, r::Colon, s::Vector{UTF8String}) = x[r, find(overlaps(x.fields, s, 1))]
+getindex{V,T}(x::TS{V,T}, r::UnitRange{Int}, s::ByteString) = x[r, find(x.fields .== s)]
+getindex{V,T}(x::TS{V,T}, r::UnitRange{Int}, s::Vector{ByteString}) = x[r, find(overlaps(x.fields, s, 1))]
+getindex{V,T}(x::TS{V,T}, r::UnitRange{Int}, s::Vector{ASCIIString}) = x[r, find(overlaps(x.fields, s, 1))]
+getindex{V,T}(x::TS{V,T}, r::UnitRange{Int}, s::Vector{UTF8String}) = x[r, find(overlaps(x.fields, s, 1))]
+
 
 ################################################################################
 # SHOW / PRINT METHOD ##########################################################
@@ -303,6 +286,4 @@ function show{V,T}(io::IO, x::TS{V,T})
         end
     end
 end
-
-
 
