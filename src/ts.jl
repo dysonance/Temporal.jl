@@ -1,6 +1,7 @@
 import Base: size, length, show, getindex, start, next, done, endof, isempty
 using Base.Dates
 
+
 ################################################################################
 # TYPE DEFINITION ##############################################################
 ################################################################################
@@ -12,7 +13,7 @@ Motivated by the `xts` package in R and the `pandas` package in Python.
 type TS{V<:Number, T<:TimeType} <: AbstractTS
     values::Array{V}
     index::Vector{T}
-    fields::Vector{Symbol}
+    fields::Vector{ByteString}
     function TS(values, index, fields)
         if size(values,1) != length(index)
             error("Length of index not equal to number of value rows.")
@@ -32,20 +33,34 @@ type TS{V<:Number, T<:TimeType} <: AbstractTS
         new(values, index, fields)
     end
 end
-TS{V,T}(v::Array{V}, t::Vector{T}, f::Symbol) = TS{V,T}(v, t, Symbol[f])
-TS{V,T}(v::Array{V}, t::Vector{T}, f::ByteString) = TS{V,T}(v, t, Symbol[f])
-TS{V,T}(v::Array{V}, t::Vector{T}, f::ASCIIString) = TS{V,T}(v, t, Symbol[f])
-TS{V,T}(v::Array{V}, t::Vector{T}, f::Vector{Symbol}) = TS{V,T}(v, t, f)
-TS{V,T}(v::Array{V}, t::Vector{T}, f::Vector{ByteString}) = TS{V,T}(v, t, Symbol[fld for fld=f])
-TS{V,T}(v::Array{V}, t::Vector{T}, f::Vector{ASCIIString}) = TS{V,T}(v, t, Symbol[fld for fld=f])
-TS{V,T}(v::Array{V}, t::Vector{T}) = TS{V,T}(v, t, Symbol[string("V",i) for i=1:size(v,2)])
-#TODO: make chars work?
-# TS{V,T}(v::Array{V}, t::Vector{T}, f::Char) = TS{V,T}(v, t, Symbol[f])
-# TS{V,T}(v::Array{V}, t::Vector{T}, f::Vector{Char}) = TS{V,T}(v, t, Symbol[fld for fld=f])
+TS{V,T}(v::Array{V}, t::Vector{T}, f::ByteString) = TS{V,T}(v, t, [f])
+TS{V,T}(v::Array{V}, t::Vector{T}, f::ASCIIString) = TS{V,T}(v, t, ByteString[f])
+TS{V,T}(v::Array{V}, t::Vector{T}, f::UTF8String) = TS{V,T}(v, t, ByteString[f])
+TS{V,T}(v::Array{V}, t::Vector{T}, f::Vector{ByteString}) = TS{V,T}(v, t, f)
+TS{V,T}(v::Array{V}, t::Vector{T}, f::Vector{ASCIIString}) = TS{V,T}(v, t, Vector{ByteString}(f))
+TS{V,T}(v::Array{V}, t::Vector{T}, f::Vector{UTF8String}) = TS{V,T}(v, t, Vector{ByteString}(f))
+TS{V,T}(v::Array{V}, t::Vector{T}, f::Char) = TS{V,T}(v, t, ByteString[string(f)])
+TS{V,T}(v::Array{V}, t::Vector{T}, f::Vector{Char}) = TS{V,T}(v, t, ByteString[string(fld) for fld=f])
+function autocolname(idx::Int)
+    if idx < 1
+        error("Column index too small.")
+    elseif idx <= 26
+        return string(Char(64 + idx))
+    end
+    colname = ""
+    modulo = 0
+    dividend = idx
+    while dividend > 0
+        modulo = (dividend - 1) % 26
+        colname = string(Char(65 + modulo)) * colname
+        dividend = Int(round((dividend - modulo) / 26))
+    end
+    return colname
+end
+TS{V,T}(v::Array{V}, t::Vector{T}) = TS{V,T}(v, t, map(autocolname, 1:size(v,2)))
 
 # Conversions ------------------------------------------------------------------
 convert(::Type{TS{Float64}}, x::TS{Bool}) = TS{Float64}(map(Float64, x.values), x.index, x.fields)
-convert(::Type{Symbol}, ::Char) = symbol(string(a))
 
 typealias ts TS
 
@@ -88,29 +103,69 @@ getindex(x::TS, r::Colon, c::Vector{Int}) = TS(x.values[:,c], x.index, x.fields[
 getindex(x::TS, r::Colon, c::UnitRange{Int}) = TS(x.values[:,c], x.index, x.fields[c])
 getindex(x::TS, r::Colon, c::Colon) = x
 
+# BOOL INDEXING ----------------------------------------------------------------
+getindex(x::TS, b::Vector{Bool}, c) = x[find(b), c]
+getindex(x::TS, b::Vector{Bool}) = x[find(b)]
+getindex(x::TS, b::BitArray, c) = x[find(b), c]
+getindex(x::TS, b::BitArray) = x[find(b)]
+
 # DATE INDEXING ----------------------------------------------------------------
-whichdate(t::TimeType, idx::Vector{Date}) = find(map(r -> r == t, idx))[1]
-whichdate(t::TimeType, idx::Vector{DateTime}) = find(map(r -> r == t, idx))[1]
-function whichdate(t::Vector{Date}, idx::Vector{Date})
-    r = Int[]
-    for i in 1:size(t,1)
-        append!(r, find(map((r) -> r == t[i], idx)))
+function overlaps(x::Vector, y::Vector)
+    xx = falses(x)
+    yy = falses(y)
+    for i = 1:size(x,1), j = 1:size(y,1)
+        if x[i] == y[j]
+            xx[i] = true
+            yy[j] = true
+        end
     end
-    return r
+    return (xx, yy)
 end
-function whichdate(t::Vector{DateTime}, idx::Vector{DateTime})
-    r = Int[]
-    for i in 1:size(t,1)
-        append!(r, find(map((r) -> r == t[i], idx)))
+
+function overlaps(x::Vector, y::Vector, n::Int=1)
+    if n == 1
+        xx = falses(x)
+        for i = 1:size(x,1), j = 1:size(y,1)
+            if x[i] == y[j]
+                xx[i] = true
+            end
+        end
+        return xx
+    elseif n == 2
+        yy = falses(y)
+        for i = 1:size(x,1), j = 1:size(y,1)
+            if x[i] == y[j]
+                yy[i] = true
+            end
+        end
+        return yy
+    else
+        error("Argument `n` must be either 1 (x) or 2 (y).")
     end
-    return r
 end
-getindex(x::TS, t::TimeType) = x[whichdate(t, x.index)]
-getindex(x::TS, t::TimeType, c) = x[whichdate(t, x.index), c]
-getindex(x::TS, t::Vector{Date}) = x[whichdate(t, x.index)]
-getindex(x::TS, t::Vector{Date}, c) = x[whichdate(t, x.index), c]
-getindex(x::TS, t::Vector{DateTime}) = x[whichdate(t, x.index)]
-getindex(x::TS, t::Vector{DateTime}, c) = x[whichdate(t, x.index), c]
+
+getindex(x::TS, d::Date, c) = x[find(x.index .== d), c]
+getindex(x::TS, d::Date) = x[find(x.index .== d)]
+getindex(x::TS, d::DateTime, c) = x[find(x.index .== d), c]
+getindex(x::TS, d::DateTime) = x[find(x.index .== d)]
+function getindex(x::TS, d::Vector{Date}, c)
+    idx = find(overlaps(x.index, d, 1))
+    return x[idx, c]
+end
+function getindex(x::TS, d::Vector{Date})
+    idx = find(overlaps(x.index, d, 1))
+    return x[idx]
+end
+function getindex(x::TS, d::Vector{DateTime}, c)
+    idx = find(overlaps(x.index, d, 1))
+    return x[idx, c]
+end
+function getindex(x::TS, d::Vector{DateTime})
+    idx = find(overlaps(x.index, d, 1))
+    return x[idx]
+end
+
+
 
 #TODO:
 # STRING INDEXING --------------------------------------------------------------
@@ -142,14 +197,6 @@ isdt(c::Char) = in(c, DTCHARS)
 isdt(s::AbstractString) = all(map(isdt, collect(s)))
 isvalidlength(s::AbstractString) = in(length(s), DTLENGTHS)
 isrowidx(s::AbstractString) = isdt(s) && isvalidlength(s)
-function whichfield(x::TS, s::AbstractString)
-    for j = 1:size(x,2)
-        if s == x.fields[j]
-            return j
-        end
-    end
-    error("Invalid field name given.")
-end
 
 ################################################################################
 # SHOW / PRINT METHOD ##########################################################
@@ -182,13 +229,13 @@ function show{V,T}(io::IO, x::TS{V,T})
         end
     end
     spacetime = nrow > 0 ? strwidth(string(x.index[1])) + 3 : 3
-    firstcolwidth = strwidth(string(fields[1]))
+    firstcolwidth = strwidth(fields[1])
     colwidth = Int[]
     for j = 1:ncol
         if T == Bool || nrow == 0
-            push!(colwidth, max(strwidth(string(fields[j])), 5))
+            push!(colwidth, max(strwidth(fields[j]), 5))
         else
-            push!(colwidth, max(strwidth(string(fields[j])), strwidth(@sprintf("%.2f", maximum(x.values[:,j]))) + DECIMALS - 2))
+            push!(colwidth, max(strwidth(fields[j]), strwidth(@sprintf("%.2f", maximum(x.values[:,j]))) + DECIMALS - 2))
         end
     end
 
