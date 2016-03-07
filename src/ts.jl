@@ -244,7 +244,7 @@ function show{V,T}(io::IO, x::TS{V,T})
                     print(io, rpad(x.values[i,j], colwidth[j]+2, " "))
                 else
                     if intcatcher[j] & SHOWINT
-                        print(io, rpad(round(Integer, x.values[i,j]), colwdith[j]+2, " "))
+                        print(io, rpad(round(Integer, x.values[i,j]), colwidth[j]+2, " "))
                     else
                         print(io, rpad(round(x.values[i,j], DECIMALS), colwidth[j]+2, " "))
                     end
