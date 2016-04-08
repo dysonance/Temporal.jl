@@ -6,5 +6,8 @@ module Temporal
 export TS, ts, size
 
 include("ts.jl")
+include("indexing.jl")
+include("combine.jl")
+include("operations.jl")
 
 end
