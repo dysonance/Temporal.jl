@@ -10,3 +10,5 @@ notifications:
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - julia -e 'Pkg.clone(pwd()); Pkg.build("Temporal"); Pkg.test("Temporal"; coverage=true)'
+# after_succes:
+#   - julia -e 'cd(Pkg.dir("Temporal"); Pkg.add("Coverage"); using Coverage; Coveralls.submit(process_folder())'
