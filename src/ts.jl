@@ -1,45 +1,36 @@
-<<<<<<< HEAD
 import Base: size, length, show, getindex, isempty, convert
-=======
 import Base: size, length, show, getindex, start, next, done, endof, isempty
->>>>>>> 617658a75fa4bc0a1f34f721d84baa27c7757cbe
 using Base.Dates
 
 
 ################################################################################
 # TYPE DEFINITION ##############################################################
 ################################################################################
-<<<<<<< HEAD
 abstract ATS
 @doc doc"""
 Time series type aimed at efficiency and simplicity.
 Motivated by the `xts` package in R and the `pandas` package in Python.
 """ ->
 type TS{V<:Number, T<:TimeType, F<:ByteString} <: ATS
-=======
 abstract AbstractTS
 @doc """
 Time series type aimed at efficiency and simplicity.
 Motivated by the `xts` package in R and the `pandas` package in Python.
 """ ->
 type TS{V<:Number, T<:TimeType} <: AbstractTS
->>>>>>> 617658a75fa4bc0a1f34f721d84baa27c7757cbe
     values::Array{V}
     index::Vector{T}
     fields::Vector{ByteString}
     function TS(values, index, fields)
-<<<<<<< HEAD
 		@assert size(values,1) == length(index) "Length of index not equal to number of value rows."
 		@assert size(values,2) == length(fields) "Length of fields not equal to number of columns in values."
         if size(values,2) == 1
             values = hcat(values)  # ensure 2-dimensional array
-=======
         if size(values,1) != length(index)
             error("Length of index not equal to number of value rows.")
         end
         if length(fields) != size(values,2)
             error("Length of fields not equal to number of columns in values")
->>>>>>> 617658a75fa4bc0a1f34f721d84baa27c7757cbe
         end
         order = sortperm(index)
         index = index[order]
@@ -81,11 +72,8 @@ TS{V,T}(v::Array{V}, t::Vector{T}) = TS{V,T}(v, t, map(autocolname, 1:size(v,2))
 
 # Conversions ------------------------------------------------------------------
 convert(::Type{TS{Float64}}, x::TS{Bool}) = TS{Float64}(map(Float64, x.values), x.index, x.fields)
-<<<<<<< HEAD
 convert{V<:Number, T<:TimeType, F<:AbstractString}(::Type{TS{V,T,F}}, v::Array{V}, t::Vector{T}, f::Vector{F}) = TS(v,t,f)
 convert(x::TS{Bool}) = convert(TS{Float64}, x::TS{Bool})
-=======
->>>>>>> 617658a75fa4bc0a1f34f721d84baa27c7757cbe
 
 typealias ts TS
 
@@ -98,8 +86,6 @@ start(x::TS) = 1
 next(x::TS, i::Int) = ((x.index[i], x.values[i,:]), i+1)
 done(x::TS, i::Int) = (i > size(x,1))
 isempty(x::TS) = (isempty(x.index) && isempty(x.values))
-<<<<<<< HEAD
-=======
 endof(x::TS) = size(x,1)
 length(x::TS) = prod(size(x))::Int
 first(x::TS) = x[1]
@@ -136,78 +122,6 @@ function overlaps(x::Vector, y::Vector, n::Int=1)
         error("Argument `n` must be either 1 (x) or 2 (y).")
     end
 end
-
-
-################################################################################
-# INDEXING #####################################################################
-################################################################################
-# NUMERICAL INDEXING -----------------------------------------------------------
-getindex{V,T}(x::TS{V,T}) = TS(x.values[1,1], x.index[1], x.fields[1])
-getindex{V,T}(x::TS{V,T}, r::Int) = size(x,2) > 1 ? TS(x.values[r,:], x.index[[r]], x.fields) : TS(x.values[[r]], x.index[[r]], x.fields)
-getindex{V,T}(x::TS{V,T}, r::Int, c::Int) = TS([x.values[r,c]], [x.index[r]], [x.fields[c]])
-getindex{V,T}(x::TS{V,T}, r::Int, c::Vector{Int}) = TS(x.values[r,c], [x.index[r]], x.fields[c])
-getindex{V,T}(x::TS{V,T}, r::Int, c::UnitRange{Int}) = TS(x.values[r,c], [x.index[r]], x.fields[c])
-getindex{V,T}(x::TS{V,T}, r::Int, c::Colon) = TS(x.values[r,:], [x.index[r]], x.fields)
-getindex{V,T}(x::TS{V,T}, r::Vector{Int}) = TS(x.values[r,:], x.index[r], x.fields)
-getindex{V,T}(x::TS{V,T}, r::Vector{Int}, c::Int) = TS(x.values[r,c], x.index[r], [x.fields[c]])
-getindex{V,T}(x::TS{V,T}, r::Vector{Int}, c::Vector{Int}) = TS(x.values[r, c], x.index[r], x.fields[c])
-getindex{V,T}(x::TS{V,T}, r::Vector{Int}, c::UnitRange{Int}) = TS(x.values[r, c], x.index[r], x.fields[c])
-getindex{V,T}(x::TS{V,T}, r::Vector{Int}, c::Colon) = TS(x.values[r,:], x.index[r], x.fields)
-getindex{V,T}(x::TS{V,T}, r::UnitRange{Int}) = TS(x.values[r,:], x.index[r], x.fields)
-getindex{V,T}(x::TS{V,T}, r::UnitRange{Int}, c::Int) = TS(x.values[r,c], x.index[r], [x.fields[c]])
-getindex{V,T}(x::TS{V,T}, r::UnitRange{Int}, c::Vector{Int}) = TS(x.values[r, c], x.index[r], x.fields[c])
-getindex{V,T}(x::TS{V,T}, r::UnitRange{Int}, c::UnitRange{Int}) = TS(x.values[r, c], x.index[r], x.fields[c])
-getindex{V,T}(x::TS{V,T}, r::UnitRange{Int}, c::Colon) = TS(x.values[r,:], x.index[r], x.fields)
-getindex{V,T}(x::TS{V,T}, r::Colon, c::Int) = TS(x.values[:,c], x.index, [x.fields[c]])
-getindex{V,T}(x::TS{V,T}, r::Colon, c::Vector{Int}) = TS(x.values[:,c], x.index, x.fields[c])
-getindex{V,T}(x::TS{V,T}, r::Colon, c::UnitRange{Int}) = TS(x.values[:,c], x.index, x.fields[c])
-getindex{V,T}(x::TS{V,T}, r::Colon, c::Colon) = x
-
-# BOOL INDEXING ----------------------------------------------------------------
-getindex{V,T}(x::TS{V,T}, b::Vector{Bool}) = x[find(b)]
-getindex{V,T}(x::TS{V,T}, b::Vector{Bool}, c::Int) = x[find(b), c]
-getindex{V,T}(x::TS{V,T}, b::Vector{Bool}, c::Vector{Int}) = x[find(b), c]
-getindex{V,T}(x::TS{V,T}, b::Vector{Bool}, c::UnitRange{Int}) = x[find(b), c]
-getindex{V,T}(x::TS{V,T}, b::Vector{Bool}, c::Colon) = x[find(b), c]
-getindex{V,T}(x::TS{V,T}, b::BitArray) = x[find(b)]
-getindex{V,T}(x::TS{V,T}, b::BitArray, c::Int) = x[find(b), c]
-getindex{V,T}(x::TS{V,T}, b::BitArray, c::Vector{Int}) = x[find(b), c]
-getindex{V,T}(x::TS{V,T}, b::BitArray, c::UnitRange{Int}) = x[find(b), c]
-getindex{V,T}(x::TS{V,T}, b::BitArray, c::Colon) = x[find(b), c]
-
-# DATE INDEXING ----------------------------------------------------------------
-getindex{V,T}(x::TS{V,T}, d::T) = x[find(x.index .== d)]
-getindex{V,T}(x::TS{V,T}, d::T, c) = x[find(x.index .== d), c]
-getindex{V,T}(x::TS{V,T}, d::Vector{T}) = x[find(overlaps(x.index, d, 1))]
-getindex{V,T}(x::TS{V,T}, d::Vector{T}, c::Int) = x[find(overlaps(x.index, d, 1)), c]
-getindex{V,T}(x::TS{V,T}, d::Vector{T}, c::Vector{Int}) = x[find(overlaps(x.index, d, 1)), c]
-getindex{V,T}(x::TS{V,T}, d::Vector{T}, c::UnitRange{Int}) = x[find(overlaps(x.index, d, 1)), c]
-getindex{V,T}(x::TS{V,T}, d::Vector{T}, c::Colon) = x[find(overlaps(x.index, d, 1)), c]
-getindex{V,T}(x::TS{V,T}, d::StepRange{T}) = x[find(overlaps(x.index, collect(d), 1))]
-getindex{V,T}(x::TS{V,T}, d::StepRange{T}, c::Int) = x[find(overlaps(x.index, collect(d), 1)), c]
-getindex{V,T}(x::TS{V,T}, d::StepRange{T}, c::Vector{Int}) = x[find(overlaps(x.index, collect(d), 1)), c]
-getindex{V,T}(x::TS{V,T}, d::StepRange{T}, c::UnitRange{Int}) = x[find(overlaps(x.index, collect(d), 1)), c]
-getindex{V,T}(x::TS{V,T}, d::StepRange{T}, c::Colon) = x[find(overlaps(x.index, collect(d), 1)), c]
-
-# STRING INDEXING (FIELDS) -----------------------------------------------------
-getindex{V,T}(x::TS{V,T}, r::Int, s::ByteString) = x[r, find(x.fields .== s)]
-getindex{V,T}(x::TS{V,T}, r::Int, s::Vector{ByteString}) = x[r, find(overlaps(x.fields, s, 1))]
-getindex{V,T}(x::TS{V,T}, r::Int, s::Vector{ASCIIString}) = x[r, find(overlaps(x.fields, s, 1))]
-getindex{V,T}(x::TS{V,T}, r::Int, s::Vector{UTF8String}) = x[r, find(overlaps(x.fields, s, 1))]
-getindex{V,T}(x::TS{V,T}, r::Vector{Int}, s::ByteString) = x[r, find(x.fields .== s)]
-getindex{V,T}(x::TS{V,T}, r::Vector{Int}, s::Vector{ByteString}) = x[r, find(overlaps(x.fields, s, 1))]
-getindex{V,T}(x::TS{V,T}, r::Vector{Int}, s::Vector{ASCIIString}) = x[r, find(overlaps(x.fields, s, 1))]
-getindex{V,T}(x::TS{V,T}, r::Vector{Int}, s::Vector{UTF8String}) = x[r, find(overlaps(x.fields, s, 1))]
-getindex{V,T}(x::TS{V,T}, r::Colon, s::ByteString) = x[r, find(x.fields .== s)]
-getindex{V,T}(x::TS{V,T}, r::Colon, s::Vector{ByteString}) = x[r, find(overlaps(x.fields, s, 1))]
-getindex{V,T}(x::TS{V,T}, r::Colon, s::Vector{ASCIIString}) = x[r, find(overlaps(x.fields, s, 1))]
-getindex{V,T}(x::TS{V,T}, r::Colon, s::Vector{UTF8String}) = x[r, find(overlaps(x.fields, s, 1))]
-getindex{V,T}(x::TS{V,T}, r::UnitRange{Int}, s::ByteString) = x[r, find(x.fields .== s)]
-getindex{V,T}(x::TS{V,T}, r::UnitRange{Int}, s::Vector{ByteString}) = x[r, find(overlaps(x.fields, s, 1))]
-getindex{V,T}(x::TS{V,T}, r::UnitRange{Int}, s::Vector{ASCIIString}) = x[r, find(overlaps(x.fields, s, 1))]
-getindex{V,T}(x::TS{V,T}, r::UnitRange{Int}, s::Vector{UTF8String}) = x[r, find(overlaps(x.fields, s, 1))]
-
->>>>>>> 617658a75fa4bc0a1f34f721d84baa27c7757cbe
 
 ################################################################################
 # SHOW / PRINT METHOD ##########################################################
