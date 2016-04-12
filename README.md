@@ -85,6 +85,7 @@ Index        Settle    Volume
 - Add more methods for managing & cleaning data (`merge`, `dropnan`, `dropnil`, etc.)
 - Allow non-numeric values in the array
 - Add more operators and basic functions
+- Temporal aggregation/collapsing
 - ~~Add indexing functionality~~
     - ~~Index by row and column numbers/ranges~~
     - ~~Index rows by Date and DateTime types~~
