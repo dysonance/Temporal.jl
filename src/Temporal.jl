@@ -3,7 +3,7 @@ VERSION >= v"0.4.0" && __precompile__(true)
 using Base.Dates
 module Temporal
 
-export TS, ts, size, overlaps, tsread
+export TS, ts, size, ojoin, ijoin, ljoin, rjoin, merge, dropnan, dropnil
 
 include("ts.jl")
 include("indexing.jl")
