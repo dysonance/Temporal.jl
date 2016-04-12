@@ -1,15 +1,4 @@
-function overlaps(x::Vector, y::Vector)
-    xx = falses(x)
-    yy = falses(y)
-    for i = 1:size(x,1), j = 1:size(y,1)
-        if x[i] == y[j]
-            xx[i] = true
-            yy[j] = true
-        end
-    end
-    return (xx, yy)
-end
-function overlaps(x::Vector, y::Vector, n::Int=1)
+function overlaps(x::AbstractArray, y::AbstractArray, n::Int=1)
     if n == 1
         xx = falses(x)
         for i = 1:size(x,1), j = 1:size(y,1)
@@ -67,17 +56,17 @@ getindex(x::TS, t::TimeType) = x[find(map((r) -> r == t, x.index))]
 getindex(x::TS, t::TimeType, ::Colon) = x[find(map((r) -> r == t, x.index)), :]
 getindex(x::TS, t::TimeType, c::Int) = x[find(map((r) -> r == t, x.index)), c]
 getindex(x::TS, t::TimeType, c::AbstractArray{Int,1}) = x[find(map((r) -> r == t, x.index)), c]
-getindex(x::TS, r::TimeType, c::BitArray{1}) = TS(x.values[r,c], x.index[r], x.fields[c])
-getindex(x::TS, t::AbstractArray{Date,1}) = x[find(map((r) -> r == t, x.index))]
-getindex(x::TS, t::AbstractArray{Date,1}, ::Colon) = x[find(map((r) -> r == t, x.index)), :]
-getindex(x::TS, t::AbstractArray{Date,1}, c::Int) = x[find(map((r) -> r == t, x.index)), c]
-getindex(x::TS, t::AbstractArray{Date,1}, c::AbstractArray{Int,1}) = x[find(map((r) -> r == t, x.index)), c]
-getindex(x::TS, t::AbstractArray{Date,1}, c::BitArray{1}) = x[find(map((r) -> r == t, x.index)), c]
-getindex(x::TS, t::AbstractArray{DateTime,1}) = x[find(map((r) -> r == t, x.index))]
-getindex(x::TS, t::AbstractArray{DateTime,1}, ::Colon) = x[find(map((r) -> r == t, x.index)), :]
-getindex(x::TS, t::AbstractArray{DateTime,1}, c::Int) = x[find(map((r) -> r == t, x.index)), c]
-getindex(x::TS, t::AbstractArray{DateTime,1}, c::AbstractArray{Int,1}) = x[find(map((r) -> r == t, x.index)), c]
-getindex(x::TS, t::AbstractArray{DateTime,1}, c::BitArray{1}) = x[find(map((r) -> r == t, x.index)), c]
+getindex(x::TS, t::TimeType, c::BitArray{1}) = TS(x.values[r,c], x.index[r], x.fields[c])
+getindex(x::TS, t::AbstractArray{Date,1}) = x[overlaps(x.index, t)]
+getindex(x::TS, t::AbstractArray{Date,1}, ::Colon) = x[overlaps(x.index, t), :]
+getindex(x::TS, t::AbstractArray{Date,1}, c::Int) = x[overlaps(x.index, t), c]
+getindex(x::TS, t::AbstractArray{Date,1}, c::AbstractArray{Int,1}) = x[overlaps(x.index, t), c]
+getindex(x::TS, t::AbstractArray{Date,1}, c::BitArray{1}) = x[overlaps(x.index, t), c]
+getindex(x::TS, t::AbstractArray{DateTime,1}) = x[overlaps(x.index, t)]
+getindex(x::TS, t::AbstractArray{DateTime,1}, ::Colon) = x[overlaps(x.index, t), :]
+getindex(x::TS, t::AbstractArray{DateTime,1}, c::Int) = x[overlaps(x.index, t), c]
+getindex(x::TS, t::AbstractArray{DateTime,1}, c::AbstractArray{Int,1}) = x[overlaps(x.index, t), c]
+getindex(x::TS, t::AbstractArray{DateTime,1}, c::BitArray{1}) = x[overlaps(x.index, t), c]
 
 #===============================================================================
 							TEXTUAL INDEXING
@@ -106,16 +95,6 @@ getindex(x::TS, r::BitArray{1}, c::UTF8String) = x[r, find(x.fields .== c)]
 getindex(x::TS, r::BitArray{1}, c::Vector{ByteString}) = x[:, find(overlaps(x.fields, c))]
 getindex(x::TS, r::BitArray{1}, c::Vector{ASCIIString}) = x[:, find(overlaps(x.fields, c))]
 getindex(x::TS, r::BitArray{1}, c::Vector{UTF8String}) = x[:, find(overlaps(x.fields, c))]
-#=
-Check if string a valid date format
-    Possible syntax:
-        yyyy (4)
-        yyyy-mm (7)
-        yyyy-mm-dd (10)
-        yyyy-mm-ddTHH (13)
-        yyyy-mm-ddTHH:MM (16)
-        yyyy-mm-ddTHH:MM:SS (19)
-=#
 
 function thrudt(s::AbstractString, t::Vector{Date})
     n = length(s)
@@ -399,3 +378,4 @@ getindex(x::TS, r::AbstractString, c::UTF8String) = x[dtidx(r, x.index), c]
 getindex(x::TS, r::AbstractString, c::Vector{ByteString}) = x[dtidx(r, x.index), c]
 getindex(x::TS, r::AbstractString, c::Vector{ASCIIString}) = x[dtidx(r, x.index), c]
 getindex(x::TS, r::AbstractString, c::Vector{UTF8String}) = x[dtidx(r, x.index), c]
+
