@@ -44,9 +44,17 @@ getindex(x::TS, r::BitArray{1}, ::Colon) = TS(x.values[r,:], x.index[r], x.field
 getindex(x::TS, r::BitArray{1}, c::Int) = TS(x.values[r,c], x.index[r], x.fields[c])
 getindex(x::TS, r::BitArray{1}, c::AbstractArray{Int,1}) = TS(x.values[r,c], x.index[r], x.fields[c])
 getindex(x::TS, r::BitArray{1}, c::BitArray{1}) = TS(x.values[r,c], x.index[r], x.fields[c])
-getindex(x::TS, ::Colon, c::BitArray{1}) = TS(x.values[r,c], x.index[r], x.fields[c])
-getindex(x::TS, r::Int, c::BitArray{1}) = TS(x.values[r,c], x.index[r], x.fields[c])
+getindex(x::TS, r::Vector{Bool}) = TS(x.values[r,:], x.index[r], x.fields)
+getindex(x::TS, r::Vector{Bool}, ::Colon) = TS(x.values[r,:], x.index[r], x.fields)
+getindex(x::TS, r::Vector{Bool}, c::Int) = TS(x.values[r,c], x.index[r], x.fields[c])
+getindex(x::TS, r::Vector{Bool}, c::AbstractArray{Int,1}) = TS(x.values[r,c], x.index[r], x.fields[c])
+getindex(x::TS, r::Vector{Bool}, c::Vector{Bool}) = TS(x.values[r,c], x.index[r], x.fields[c])
 getindex(x::TS, r::AbstractArray{Int,1}, c::BitArray{1}) = TS(x.values[r,c], x.index[r], x.fields[c])
+getindex(x::TS, r::AbstractArray{Int,1}, c::Vector{Bool}) = TS(x.values[r,c], x.index[r], x.fields[c])
+getindex(x::TS, r::Int, c::BitArray{1}) = TS(x.values[r,c], x.index[r], x.fields[c])
+getindex(x::TS, r::Int, c::Vector{Bool}) = TS(x.values[r,c], x.index[r], x.fields[c])
+getindex(x::TS, ::Colon, c::BitArray{1}) = TS(x.values[r,c], x.index[r], x.fields[c])
+getindex(x::TS, ::Colon, c::Vector{Bool}) = TS(x.values[r,c], x.index[r], x.fields[c])
 
 
 #===============================================================================

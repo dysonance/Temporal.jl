@@ -8,6 +8,8 @@ export
     ojoin, ijoin, ljoin, rjoin, merge,
     dropnan, dropnil,
     ones, zeros, trues, falses,
+    mondays, tuesdays, wednesdays, thursdays, fridays, saturdays, sundays, 
+    iseom, isweekday, monthends,
     tsread, tswrite
 
 include("ts.jl")
