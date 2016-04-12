@@ -25,16 +25,16 @@ end
 getindex(x::TS) = x
 getindex(x::TS, ::Colon) = x
 getindex(x::TS, ::Colon, ::Colon) = x
-getindex(x::TS, ::Colon, c::Int) = TS(x.values[:,c], x.index, [x.fields[c]])
-getindex(x::TS, ::Colon, c::AbstractArray{Int,1}) = TS(x.values[:,c], x.index, x.fields[c])
-getindex(x::TS, r::Int) = ts(x.values[r,:], x.index[r], x.fields)
-getindex(x::TS, r::Int, ::Colon) = TS(x.values[r,:], [x.index[r]], x.fields)
-getindex(x::TS, r::Int, c::Int) = TS([x.values[r,c]], [x.index[r]], [x.fields[c]])
-getindex(x::TS, r::Int, c::AbstractArray{Int,1}) = TS(x.values[r,c], [x.index[r]], x.fields[c])
+getindex(x::TS, ::Colon, c::Int) = ts(x.values[:,c], x.index, [x.fields[c]])
+getindex(x::TS, ::Colon, c::AbstractArray{Int,1}) = ts(x.values[:,c], x.index, x.fields[c])
+getindex(x::TS, r::Int) = ts(x.values[r,:], [x.index[r]], x.fields)
+getindex(x::TS, r::Int, ::Colon) = ts(x.values[r,:], [x.index[r]], x.fields)
+getindex(x::TS, r::Int, c::Int) = ts([x.values[r,c]], [x.index[r]], [x.fields[c]])
+getindex(x::TS, r::Int, c::AbstractArray{Int,1}) = ts(x.values[r,c], [x.index[r]], x.fields[c])
 getindex(x::TS, r::AbstractArray{Int,1}) = ts(x.values[r,:], x.index[r], x.fields)
-getindex(x::TS, r::AbstractArray{Int,1}, ::Colon) = TS(x.values[r,:], x.index[r], x.fields)
-getindex(x::TS, r::AbstractArray{Int,1}, c::Int) = TS(x.values[r,c], x.index[r], [x.fields[c]])
-getindex(x::TS, r::AbstractArray{Int,1}, c::AbstractArray{Int,1}) = TS(x.values[r, c], x.index[r], x.fields[c])
+getindex(x::TS, r::AbstractArray{Int,1}, ::Colon) = ts(x.values[r,:], x.index[r], x.fields)
+getindex(x::TS, r::AbstractArray{Int,1}, c::Int) = ts(x.values[r,c], x.index[r], [x.fields[c]])
+getindex(x::TS, r::AbstractArray{Int,1}, c::AbstractArray{Int,1}) = ts(x.values[r, c], x.index[r], x.fields[c])
 
 #===============================================================================
 							BOOLEAN INDEXING
@@ -49,60 +49,56 @@ getindex(x::TS, r::Vector{Bool}, ::Colon) = TS(x.values[r,:], x.index[r], x.fiel
 getindex(x::TS, r::Vector{Bool}, c::Int) = TS(x.values[r,c], x.index[r], x.fields[c])
 getindex(x::TS, r::Vector{Bool}, c::AbstractArray{Int,1}) = TS(x.values[r,c], x.index[r], x.fields[c])
 getindex(x::TS, r::Vector{Bool}, c::Vector{Bool}) = TS(x.values[r,c], x.index[r], x.fields[c])
+
 getindex(x::TS, r::AbstractArray{Int,1}, c::BitArray{1}) = TS(x.values[r,c], x.index[r], x.fields[c])
 getindex(x::TS, r::AbstractArray{Int,1}, c::Vector{Bool}) = TS(x.values[r,c], x.index[r], x.fields[c])
 getindex(x::TS, r::Int, c::BitArray{1}) = TS(x.values[r,c], x.index[r], x.fields[c])
 getindex(x::TS, r::Int, c::Vector{Bool}) = TS(x.values[r,c], x.index[r], x.fields[c])
-getindex(x::TS, ::Colon, c::BitArray{1}) = TS(x.values[r,c], x.index[r], x.fields[c])
-getindex(x::TS, ::Colon, c::Vector{Bool}) = TS(x.values[r,c], x.index[r], x.fields[c])
+getindex(x::TS, ::Colon, c::BitArray{1}) = TS(x.values[:,c], x.index[:], x.fields[c])
+getindex(x::TS, ::Colon, c::Vector{Bool}) = TS(x.values[:,c], x.index[:], x.fields[c])
 
 
 #===============================================================================
 							TEMPORAL INDEXING
 ===============================================================================#
-getindex(x::TS, t::TimeType) = x[find(map((r) -> r == t, x.index))]
-getindex(x::TS, t::TimeType, ::Colon) = x[find(map((r) -> r == t, x.index)), :]
-getindex(x::TS, t::TimeType, c::Int) = x[find(map((r) -> r == t, x.index)), c]
-getindex(x::TS, t::TimeType, c::AbstractArray{Int,1}) = x[find(map((r) -> r == t, x.index)), c]
-getindex(x::TS, t::TimeType, c::BitArray{1}) = TS(x.values[r,c], x.index[r], x.fields[c])
-getindex(x::TS, t::AbstractArray{Date,1}) = x[overlaps(x.index, t)]
-getindex(x::TS, t::AbstractArray{Date,1}, ::Colon) = x[overlaps(x.index, t), :]
-getindex(x::TS, t::AbstractArray{Date,1}, c::Int) = x[overlaps(x.index, t), c]
-getindex(x::TS, t::AbstractArray{Date,1}, c::AbstractArray{Int,1}) = x[overlaps(x.index, t), c]
-getindex(x::TS, t::AbstractArray{Date,1}, c::BitArray{1}) = x[overlaps(x.index, t), c]
-getindex(x::TS, t::AbstractArray{DateTime,1}) = x[overlaps(x.index, t)]
-getindex(x::TS, t::AbstractArray{DateTime,1}, ::Colon) = x[overlaps(x.index, t), :]
-getindex(x::TS, t::AbstractArray{DateTime,1}, c::Int) = x[overlaps(x.index, t), c]
-getindex(x::TS, t::AbstractArray{DateTime,1}, c::AbstractArray{Int,1}) = x[overlaps(x.index, t), c]
-getindex(x::TS, t::AbstractArray{DateTime,1}, c::BitArray{1}) = x[overlaps(x.index, t), c]
+getindex(x::TS, r::TimeType) = x[x.index.==r]
+getindex(x::TS, r::TimeType, ::Colon) = x[x.index.==r,:]
+getindex(x::TS, r::TimeType, c::Int) = x[x.index.==r,c]
+getindex(x::TS, r::TimeType, c::AbstractArray{Int,1}) = x[x.index.==r,c]
+getindex(x::TS, r::TimeType, c::BitArray{1}) = x[x.index.==r,c]
+
+getindex(x::TS, r::AbstractArray{Date,1}) = x[overlaps(x.index, r)]
+getindex(x::TS, r::AbstractArray{Date,1}, ::Colon) = x[overlaps(x.index, r), :]
+getindex(x::TS, r::AbstractArray{Date,1}, c::Int) = x[overlaps(x.index, r), c]
+getindex(x::TS, r::AbstractArray{Date,1}, c::AbstractArray{Int,1}) = x[overlaps(x.index, r), c]
+getindex(x::TS, r::AbstractArray{Date,1}, c::BitArray{1}) = x[overlaps(x.index, r), c]
+
+getindex(x::TS, r::AbstractArray{DateTime,1}) = x[overlaps(x.index, r)]
+getindex(x::TS, r::AbstractArray{DateTime,1}, ::Colon) = x[overlaps(x.index, r), :]
+getindex(x::TS, r::AbstractArray{DateTime,1}, c::Int) = x[overlaps(x.index, r), c]
+getindex(x::TS, r::AbstractArray{DateTime,1}, c::AbstractArray{Int,1}) = x[overlaps(x.index, r), c]
+getindex(x::TS, r::AbstractArray{DateTime,1}, c::BitArray{1}) = x[overlaps(x.index, r), c]
 
 #===============================================================================
 							TEXTUAL INDEXING
 ===============================================================================#
-getindex(x::TS, ::Colon, c::ByteString) = x[:, find(x.fields .== c)]
-getindex(x::TS, ::Colon, c::ASCIIString) = x[:, find(x.fields .== c)]
-getindex(x::TS, ::Colon, c::UTF8String) = x[:, find(x.fields .== c)]
-getindex(x::TS, ::Colon, c::Vector{ByteString}) = x[:, find(overlaps(x.fields, c))]
-getindex(x::TS, ::Colon, c::Vector{ASCIIString}) = x[:, find(overlaps(x.fields, c))]
-getindex(x::TS, ::Colon, c::Vector{UTF8String}) = x[:, find(overlaps(x.fields, c))]
-getindex(x::TS, r::Int, c::ByteString) = x[r, find(x.fields .== c)]
-getindex(x::TS, r::Int, c::ASCIIString) = x[r, find(x.fields .== c)]
-getindex(x::TS, r::Int, c::UTF8String) = x[r, find(x.fields .== c)]
-getindex(x::TS, r::Int, c::Vector{ByteString}) = x[r, find(overlaps(x.fields, c))]
-getindex(x::TS, r::Int, c::Vector{ASCIIString}) = x[r, find(overlaps(x.fields, c))]
-getindex(x::TS, r::Int, c::Vector{UTF8String}) = x[r, find(overlaps(x.fields, c))]
-getindex(x::TS, r::AbstractArray{Int,1}, c::ByteString) = x[r, find(x.fields .== c)]
-getindex(x::TS, r::AbstractArray{Int,1}, c::ASCIIString) = x[r, find(x.fields .== c)]
-getindex(x::TS, r::AbstractArray{Int,1}, c::UTF8String) = x[r, find(x.fields .== c)]
-getindex(x::TS, r::AbstractArray{Int,1}, c::Vector{ByteString}) = x[r, find(overlaps(x.fields, c))]
-getindex(x::TS, r::AbstractArray{Int,1}, c::Vector{ASCIIString}) = x[r, find(overlaps(x.fields, c))]
-getindex(x::TS, r::AbstractArray{Int,1}, c::Vector{UTF8String}) = x[r, find(overlaps(x.fields, c))]
-getindex(x::TS, r::BitArray{1}, c::ByteString) = x[r, find(x.fields .== c)]
-getindex(x::TS, r::BitArray{1}, c::ASCIIString) = x[r, find(x.fields .== c)]
-getindex(x::TS, r::BitArray{1}, c::UTF8String) = x[r, find(x.fields .== c)]
-getindex(x::TS, r::BitArray{1}, c::Vector{ByteString}) = x[:, find(overlaps(x.fields, c))]
-getindex(x::TS, r::BitArray{1}, c::Vector{ASCIIString}) = x[:, find(overlaps(x.fields, c))]
-getindex(x::TS, r::BitArray{1}, c::Vector{UTF8String}) = x[:, find(overlaps(x.fields, c))]
+getindex(x::TS, ::Colon, c::Symbol) = x[:, x.fields.==c]
+getindex(x::TS, r::Int, c::Symbol) = x[r, x.fields.==c]
+getindex(x::TS, r::AbstractArray{Int,1}, c::Symbol) = x[r, x.fields.==c]
+getindex(x::TS, r::BitArray{1}, c::Symbol) = x[r, x.fields.==c]
+getindex(x::TS, r::Vector{Bool}, c::Symbol) = x[r, x.fields.==c]
+getindex(x::TS, r::TimeType, c::Symbol) = x[r, x.fields.==c]
+getindex(x::TS, r::AbstractArray{Date,1}, c::Symbol) = x[r, x.fields.==c]
+getindex(x::TS, r::AbstractArray{DateTime,1}, c::Symbol) = x[r, x.fields.==c]
+
+getindex(x::TS, ::Colon, c::Vector{Symbol}) = x[r, overlaps(x.fields, c)]
+getindex(x::TS, r::Int, c::Vector{Symbol}) = x[r, overlaps(x.fields, c)]
+getindex(x::TS, r::AbstractArray{Int,1}, c::Vector{Symbol}) = x[r, overlaps(x.fields, c)]
+getindex(x::TS, r::BitArray{1}, c::Vector{Symbol}) = x[r, overlaps(x.fields, c)]
+getindex(x::TS, r::Vector{Bool}, c::Vector{Symbol}) = x[r, overlaps(x.fields, c)]
+getindex(x::TS, r::TimeType, c::Vector{Symbol}) = x[r, overlaps(x.fields, c)]
+getindex(x::TS, r::AbstractArray{Date,1}, c::Vector{Symbol}) = x[r, overlaps(x.fields, c)]
+getindex(x::TS, r::AbstractArray{DateTime,1}, c::Vector{Symbol}) = x[r, overlaps(x.fields, c)]
 
 function thrudt(s::AbstractString, t::Vector{Date})
     n = length(s)
@@ -380,10 +376,6 @@ getindex(x::TS, r::AbstractString, ::Colon) = x[dtidx(r, x.index)]
 getindex(x::TS, r::AbstractString, c::Int) = x[dtidx(r, x.index), c]
 getindex(x::TS, r::AbstractString, c::AbstractArray{Int,1}) = x[dtidx(r, x.index), c]
 getindex(x::TS, r::AbstractString, c::BitArray{1}) = x[dtidx(r, x.index), c]
-getindex(x::TS, r::AbstractString, c::ByteString) = x[dtidx(r, x.index), c]
-getindex(x::TS, r::AbstractString, c::ASCIIString) = x[dtidx(r, x.index), c]
-getindex(x::TS, r::AbstractString, c::UTF8String) = x[dtidx(r, x.index), c]
-getindex(x::TS, r::AbstractString, c::Vector{ByteString}) = x[dtidx(r, x.index), c]
-getindex(x::TS, r::AbstractString, c::Vector{ASCIIString}) = x[dtidx(r, x.index), c]
-getindex(x::TS, r::AbstractString, c::Vector{UTF8String}) = x[dtidx(r, x.index), c]
+getindex(x::TS, r::AbstractString, c::Symbol) = x[dtidx(r, x.index), c]
+getindex(x::TS, r::AbstractString, c::Vector{Symbol}) = x[dtidx(r, x.index), c]
 

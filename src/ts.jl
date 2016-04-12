@@ -1,10 +1,14 @@
 import Base: size, length, show, getindex, start, next, done, endof, isempty, convert, ndims
 using Base.Dates
 
-
 ################################################################################
 # TYPE DEFINITION ##############################################################
 ################################################################################
+namefix(s::AbstractString) = s[map(isalpha, split(s, ""))]
+namefix(s::Symbol) = Symbol(namefix(string(s)))
+namefix(s::Vector{AbstractString}) = map(namefix, s)
+namefix(s::Vector{Symbol}) = map(namefix, s)
+
 abstract AbstractTS
 @doc doc"""
 Time series type aimed at efficiency and simplicity.
@@ -13,33 +17,23 @@ Motivated by the `xts` package in R and the `pandas` package in Python.
 type TS{V<:Number, T<:TimeType} <: AbstractTS
     values::AbstractArray{V}
     index::Vector{T}
-    fields::Vector{ByteString}
+    fields::Vector{Symbol}
     function TS(values, index, fields)
         @assert size(values,1) == length(index) "Length of index not equal to number of value rows."
         @assert size(values,2) == length(fields) "Length of fields not equal to number of columns in values."
         order = sortperm(index)
         if size(values,2) == 1
-            new(values[order], index[order], fields)
+            new(values[order], index[order], namefix(fields))
         else
-            new(values[order,:], index[order], fields)
+            new(values[order,:], index[order], namefix(fields))
         end
     end
 end
 
-TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::ByteString) = TS{V,T}(v, t, [f])
-TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::ASCIIString) = TS{V,T}(v, t, ByteString[f])
-TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::UTF8String) = TS{V,T}(v, t, ByteString[f])
-TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{ByteString}) = TS{V,T}(v, t, f)
-TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{ASCIIString}) = TS{V,T}(v, t, Vector{ByteString}(f))
-TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{UTF8String}) = TS{V,T}(v, t, Vector{ByteString}(f))
-TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Char) = TS{V,T}(v, t, ByteString[string(f)])
-TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{Char}) = TS{V,T}(v, t, ByteString[string(fld) for fld=f])
-TS{V,T}(v::AbstractArray{V}, t::T, f::Vector{ByteString}) = TS{V,T}(v, [t], f)
-function autocolname(col::Int)
-    if col < 1
-        error("Column index too small.")
-    elseif col <= 26
-        return string(Char(64 + col))
+function autocol(col::Int)
+    @assert col >= 1 "Invalid column number $col - cannot generate column name"
+    if col <= 26
+        return symbol(Char(64 + col))
     end
     colname = ""
     modulo = 0
@@ -49,10 +43,22 @@ function autocolname(col::Int)
         colname = string(Char(65 + modulo)) * colname
         dividend = Int(round((dividend - modulo) / 26))
     end
-    return colname
+    return symbol(colname)
 end
-autocolname(cols::AbstractArray{Int,1}) = map(autocolname, cols)
-TS{V,T}(v::Array{V}, t::Vector{T}) = TS{V,T}(v, t, map(autocolname, 1:size(v,2)))
+autocol(cols::AbstractArray{Int,1}) = map(autocol, cols)
+autoidx(n::Int; dt::Period=Day(1), from::Date=today()-(n-1)*dt, thru::Date=from+(n-1)*dt) = collect(from:dt:thru)
+
+TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Symbol) = TS{V,T}(v, t, [f])
+TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{Symbol}) = TS{V,T}(v, t, f)
+TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Char) = TS{V,T}(v, t, Symbol[f])
+TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::ByteString) = TS{V,T}(v, t, Symbol[f])
+TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::ASCIIString) = TS{V,T}(v, t, Symbol[f])
+TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::UTF8String) = TS{V,T}(v, t, Symbol[f])
+TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{ByteString}) = TS{V,T}(v, t, map(symbol, f))
+TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{ASCIIString}) = TS{V,T}(v, t, map(symbol, f))
+TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{UTF8String}) = TS{V,T}(v, t, map(symbol, f))
+TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{Char}) = TS{V,T}(v, t, map(symbol, f))
+TS{V,T}(v::AbstractArray{V}, t::Vector{T}) = TS{V,T}(v, t, autocol(1:size(v,2)))
 
 # Conversions ------------------------------------------------------------------
 convert(::Type{TS{Float64}}, x::TS{Bool}) = TS{Float64}(map(Float64, x.values), x.index, x.fields)
@@ -109,9 +115,9 @@ function show{V,T}(io::IO, x::TS{V,T})
     colwidth = Int[]
     for j = 1:ncol
         if T == Bool || nrow == 0
-            push!(colwidth, max(strwidth(fields[j]), 5))
+            push!(colwidth, max(strwidth(string(fields[j])), 5))
         else
-            push!(colwidth, max(strwidth(fields[j]), strwidth(@sprintf("%.2f", maximum(x.values[:,j]))) + DECIMALS - 2))
+            push!(colwidth, max(strwidth(string(fields[j])), strwidth(@sprintf("%.2f", maximum(x.values[:,j]))) + DECIMALS - 2))
         end
     end
 
