@@ -17,12 +17,12 @@ type TS{V<:Number, T<:TimeType} <: AbstractTS
     function TS(values, index, fields)
         @assert size(values,1) == length(index) "Length of index not equal to number of value rows."
         @assert size(values,2) == length(fields) "Length of fields not equal to number of columns in values."
-        if size(values,2) == 1
-            values = hcat(values)  # ensure 2-dimensional array
-        end
         order = sortperm(index)
-        index = index[order]
-        new(values[order,:], index, fields)
+        if size(values,2) == 1
+            new(values[order], index[order], fields)
+        else
+            new(values[order,:], index[order], fields)
+        end
     end
 end
 
