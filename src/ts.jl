@@ -35,15 +35,15 @@ TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{UTF8String}) = TS{V,T}(v, t
 TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Char) = TS{V,T}(v, t, ByteString[string(f)])
 TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{Char}) = TS{V,T}(v, t, ByteString[string(fld) for fld=f])
 TS{V,T}(v::AbstractArray{V}, t::T, f::Vector{ByteString}) = TS{V,T}(v, [t], f)
-function autocolname(idx::Int)
-    if idx < 1
+function autocolname(col::Int)
+    if col < 1
         error("Column index too small.")
-    elseif idx <= 26
-        return string(Char(64 + idx))
+    elseif col <= 26
+        return string(Char(64 + col))
     end
     colname = ""
     modulo = 0
-    dividend = idx
+    dividend = col
     while dividend > 0
         modulo = (dividend - 1) % 26
         colname = string(Char(65 + modulo)) * colname
@@ -51,6 +51,7 @@ function autocolname(idx::Int)
     end
     return colname
 end
+autocolname(cols::AbstractArray{Int,1}) = map(autocolname, cols)
 TS{V,T}(v::Array{V}, t::Vector{T}) = TS{V,T}(v, t, map(autocolname, 1:size(v,2)))
 
 # Conversions ------------------------------------------------------------------

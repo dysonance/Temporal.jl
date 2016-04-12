@@ -8,7 +8,7 @@ export
     ojoin, ijoin, ljoin, rjoin, merge,
     dropnan, dropnil,
     ones, zeros, trues, falses,
-    tsread
+    tsread, tswrite
 
 include("ts.jl")
 include("indexing.jl")
