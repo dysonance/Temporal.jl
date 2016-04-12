@@ -328,9 +328,11 @@ function fromthru(from::AbstractString, thru::AbstractString, t::Vector{DateTime
     return fromidx .* thruidx
 end
 
+const RNG_DLM = '/'
+
 function dtidx(s::AbstractString, t::Vector{Date})
     @assert !in('T', s) "Cannot index Date type with sub-daily frequency."
-    bds = split(s, "::")
+    bds = split(s, RNG_DLM)
     if length(bds) == 1  # single date
         return thisdt(s, t)
     elseif length(bds) == 2  # date range
@@ -351,7 +353,7 @@ function dtidx(s::AbstractString, t::Vector{Date})
 end
 function dtidx(s::AbstractString, t::Vector{DateTime})
     @assert !in('T', s) "Cannot index Date type with sub-daily frequency."
-    bds = split(s, "::")
+    bds = split(s, RNG_DLM)
     if length(bds) == 1  # single date
         return thisdt(s, t)
     elseif length(bds) == 2  # date range
