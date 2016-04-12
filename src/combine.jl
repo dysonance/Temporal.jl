@@ -19,19 +19,21 @@ function ijoin{V,T}(x::TS{V,T}, y::TS{V,T})
 end
 
 function ljoin{V,T}(x::TS{V,T}, y::TS{V,T})
-    idx = intersect(x.index, y.index)
-    yna = setdiff(x.index, y.index)
-    yi = sortperm(setdiff(y.index, yna))
-    yvals = [y[idx].values; fill(NaN, (length(yna), size(y,2)))][yi,:]
-    return ts([x.values yvals], x.index, [x.fields; y.fields])
+    return ts([x.values partner(x,y).values], x.index, [x.fields; y.fields])
+    # idx = intersect(x.index, y.index)
+    # yna = setdiff(x.index, y.index)
+    # yi = sortperm(setdiff(y.index, yna))
+    # yvals = [y[idx].values; fill(NaN, (length(yna), size(y,2)))][yi,:]
+    # return ts([x.values yvals], x.index, [x.fields; y.fields])
 end
 
 function rjoin{V,T}(x::TS{V,T}, y::TS{V,T})
-    idx = intersect(x.index, y.index)
-    xna = setdiff(y.index, x.index)
-    xi = sortperm(setdiff(x.index, xna))
-    xvals = [x[idx].values; fill(NaN, (length(xna), size(x,2)))][xi,:]
-    return ts([xvals y.values], y.index, [x.fields; y.fields])
+    return ts([partner(y,x).values y.values], y.index, [x.fields; y.fields])
+    # idx = intersect(x.index, y.index)
+    # xna = setdiff(y.index, x.index)
+    # xi = sortperm(setdiff(x.index, xna))
+    # xvals = [x[idx].values; fill(NaN, (length(xna), size(x,2)))][xi,:]
+    # return ts([xvals y.values], y.index, [x.fields; y.fields])
 end
 
 function merge{V,T}(x::TS{V,T}, y::TS{V,T}; join::Char='o')
@@ -47,40 +49,3 @@ function merge{V,T}(x::TS{V,T}, y::TS{V,T}; join::Char='o')
     end
 end
 
-function dropnan{V,T}(x::TS{V,T}; rows::Bool=true, cols::Bool=false, fun::Function=any)
-    @assert fun == any || fun == all "`fun` must be either `any` or `all`"
-    n, k = size(x)
-    vals = x.values
-    cutrows = falses(n)
-    cutcols = falses(k)
-    if rows
-        for i = 1:n
-            cutrows[i] = fun(isnan(vals[i,:]))
-        end
-    end
-    if cols
-        for j = 1:k
-            cutcols[j] = fun(isnan(vals[:,j]))
-        end
-    end
-    return x[cutrows,cutcols]
-end
-
-function dropnil{V,T}(x::TS{V,T}; rows::Bool=true, cols::Bool=false, fun::Function=any)
-    @assert fun == any || fun == all "`fun` must be either `any` or `all`"
-    n, k = size(x)
-    vals = x.values
-    cutrows = falses(n)
-    cutcols = falses(k)
-    if rows
-        for i = 1:n
-            cutrows[i] = fun(vals[i,:] .== 0.0)
-        end
-    end
-    if cols
-        for j = 1:k
-            cutcols[j] = fun(vals[:,j] .== 0.0)
-        end
-    end
-    return x[cutrows,cutcols]
-end

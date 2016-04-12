@@ -1,7 +1,7 @@
 function overlaps(x::AbstractArray, y::AbstractArray, n::Int=1)
     if n == 1
         xx = falses(x)
-        for i = 1:size(x,1), j = 1:size(y,1)
+        @inbounds for i = 1:size(x,1), j = 1:size(y,1)
             if x[i] == y[j]
                 xx[i] = true
             end
@@ -9,7 +9,7 @@ function overlaps(x::AbstractArray, y::AbstractArray, n::Int=1)
         return xx
     elseif n == 2
         yy = falses(y)
-        for i = 1:size(x,1), j = 1:size(y,1)
+        @inbounds for i = 1:size(x,1), j = 1:size(y,1)
             if x[i] == y[j]
                 yy[i] = true
             end

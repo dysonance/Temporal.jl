@@ -4,7 +4,7 @@ using Base.Dates
 module Temporal
 
 export
-    TS, ts, size,
+    TS, ts, size, overlaps,
     ojoin, ijoin, ljoin, rjoin, merge,
     dropnan, dropnil,
     ones, zeros, trues, falses,
@@ -14,6 +14,7 @@ include("ts.jl")
 include("indexing.jl")
 include("combine.jl")
 include("operations.jl")
+include("slice.jl")
 include("io.jl")
 
 end
