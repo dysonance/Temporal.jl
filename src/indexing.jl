@@ -110,31 +110,14 @@ getindex(x::TS, r::BitArray{1}, c::Vector{UTF8String}) = x[:, find(overlaps(x.fi
 Check if string a valid date format
     Possible syntax:
         yyyy (4)
-        yyyy:: (6)
-        ::yyyy (6)
         yyyy-mm (7)
-        yyyy-mm:: (9)
-        ::yyyy-mm (9)
-        yyyy::yyyy (10)
         yyyy-mm-dd (10)
-        yyyy-mm-dd:: (12)
-        yyyy-mm::yyyy-mm (16)
-        yyyy-mm-dd::yyyy (16)
-        yyyy-mm-dd::yyyy-mm (19)
+        yyyy-mm-ddTHH (13)
+        yyyy-mm-ddTHH:MM (16)
         yyyy-mm-ddTHH:MM:SS (19)
-        yyyy-mm-dd::yyyy-mm-dd (22)
-        yyyy-mm-ddTHH:MM:SS::yyyy (25)
-        yyyy::yyyy-mm-ddTHH:MM:SS (25)
-        yyyy-mm::yyyy-mm-ddTHH:MM:SS (28)
-        yyyy-mm-ddTHH:MM:SS::yyyy-mm (28)
-        yyyy-mm-dd::yyyy-mm-ddTHH:MM:SS (31)
-        yyyy-mm-ddTHH:MM:SS::yyyy-mm-dd (31)
-        yyyy-mm-ddTHH:MM:SS::yyyy-mm-ddTHH (34)
-        yyyy-mm-ddTHH:MM:SS::yyyy-mm-ddTHH:MM (37)
-        yyyy-mm-ddTHH:MM:SS::yyyy-mm-ddTHH:MM:SS (40)
 =#
 
-function thrudate(s::AbstractString, t::Vector{Date})
+function thrudt(s::AbstractString, t::Vector{Date})
     n = length(s)
     if n == 4  # yyyy given
         y = parse(Int, s)
@@ -155,7 +138,7 @@ function thrudate(s::AbstractString, t::Vector{Date})
     end
     return t .<= ymd
 end
-function fromdate(s::AbstractString, t::Vector{Date})
+function fromdt(s::AbstractString, t::Vector{Date})
     n = length(s)
     if n == 4  # yyyy given
         y = parse(Int, s)
@@ -176,7 +159,7 @@ function fromdate(s::AbstractString, t::Vector{Date})
     end
     return t .>= ymd
 end
-function thisdate(s::AbstractString, t::Vector{Date})
+function thisdt(s::AbstractString, t::Vector{Date})
     n = length(s)
     if n == 4  # yyyy given
         y = parse(Int, s)
@@ -197,22 +180,204 @@ function thisdate(s::AbstractString, t::Vector{Date})
     end
 end
 function fromthru(from::AbstractString, thru::AbstractString, t::Vector{Date})
-    fromidx = fromdate(from, t)
-    thruidx = thrudate(thru, t)
+    fromidx = fromdt(from, t)
+    thruidx = thrudt(thru, t)
     return fromidx .* thruidx
 end
-function dateidx(s::AbstractString, t::Vector{Date})
+function thrudt(s::AbstractString, t::Vector{DateTime})
+    n = length(s)
+    if n == 4  # yyyy given
+        y = parse(Int, s)
+        ymdhms = DateTime(y, 12, 31)
+    elseif n == 7  # yyyy-mm given
+        a = split(s, '-')
+        y = parse(Int, a[1])
+        m = parse(Int, a[2])
+        ymdhms = lastdayofmonth(DateTime(y, m, 1))
+    elseif n == 10  # yyyy-mm-dd given
+        a = split(s, '-')
+        y = parse(Int, a[1])
+        m = parse(Int, a[2])
+        d = parse(Int, a[3])
+        ymdhms = DateTime(y, m, d)
+    elseif n == 13  # yyyy-mm-ddTHH given
+        a = split(s, 'T')
+        b = split(a[1], '-')
+        c = split(a[2], ':')
+        y = parse(Int, b[1])
+        m = parse(Int, b[2])
+        d = parse(Int, b[3])
+        hr = parse(Int, c[1])
+        min = 59
+        sec = 59
+        ymdhms = DateTime(y, m, d, hr, min, sec)
+    elseif n == 16  # yyyy-mm-ddTHH:MM given
+        a = split(s, 'T')
+        b = split(a[1], '-')
+        c = split(a[2], ':')
+        y = parse(Int, b[1])
+        m = parse(Int, b[2])
+        d = parse(Int, b[3])
+        hr = parse(Int, c[1])
+        min = parse(Int, c[2])
+        sec = 59
+        ymdhms = DateTime(y, m, d, hr, min, sec)
+    elseif n == 19  # yyyy-mm-ddTHH:MM:SS given
+        a = split(s, 'T')
+        b = split(a[1], '-')
+        c = split(a[2], ':')
+        y = parse(Int, b[1])
+        m = parse(Int, b[2])
+        d = parse(Int, b[3])
+        hr = parse(Int, c[1])
+        min = parse(Int, c[2])
+        sec = parse(Int, c[3])
+        ymdhms = DateTime(y, m, d, hr, min, sec)
+    else
+        error("Unable to parse date string $s.")
+    end
+    return t .<= ymdhms
+end
+function fromdt(s::AbstractString, t::Vector{DateTime})
+    n = length(s)
+    if n == 4  # yyyy given
+        y = parse(Int, s)
+        ymdhms = DateTime(y)
+    elseif n == 7  # yyyy-mm given
+        a = split(s, '-')
+        y = parse(Int, a[1])
+        m = parse(Int, a[2])
+        ymdhms = DateTime(y, m)
+    elseif n == 10  # yyyy-mm-dd given
+        a = split(s, '-')
+        y = parse(Int, a[1])
+        m = parse(Int, a[2])
+        d = parse(Int, a[3])
+        ymdhms = DateTime(y, m, d)
+    elseif n == 13  # yyyy-mm-ddTHH given
+        a = split(s, 'T')
+        b = split(a[1], '-')
+        c = split(a[2], ':')
+        y = parse(Int, b[1])
+        m = parse(Int, b[2])
+        d = parse(Int, b[3])
+        hr = parse(Int, c[1])
+        ymdhms = DateTime(y, m, d, hr, min, sec)
+    elseif n == 16  # yyyy-mm-ddTHH:MM given
+        a = split(s, 'T')
+        b = split(a[1], '-')
+        c = split(a[2], ':')
+        y = parse(Int, b[1])
+        m = parse(Int, b[2])
+        d = parse(Int, b[3])
+        hr = parse(Int, c[1])
+        min = parse(Int, c[2])
+        ymdhms = DateTime(y, m, d, hr, min, sec)
+    elseif n == 19  # yyyy-mm-ddTHH:MM:SS given
+        a = split(s, 'T')
+        b = split(a[1], '-')
+        c = split(a[2], ':')
+        y = parse(Int, b[1])
+        m = parse(Int, b[2])
+        d = parse(Int, b[3])
+        hr = parse(Int, c[1])
+        min = parse(Int, c[2])
+        sec = parse(Int, c[3])
+        ymdhms = DateTime(y, m, d, hr, min, sec)
+    else
+        error("Unable to parse date string $s.")
+    end
+    return t .>= ymdhms
+end
+function thisdt(s::AbstractString, t::Vector{DateTime})
+    n = length(s)
+    if n == 4  # yyyy given
+        y = parse(Int, s)
+        return year(t) .== y
+    elseif n == 7  # yyyy-mm given
+        a = split(s, '-')
+        y = parse(Int, a[1])
+        m = parse(Int, a[2])
+        return (year(t) .== y) .* (month(t) .== m)
+    elseif n == 10  # yyyy-mm-dd given
+        a = split(s, '-')
+        y = parse(Int, a[1])
+        m = parse(Int, a[2])
+        d = parse(Int, a[3])
+        return (year(t) .== y) .* (month(t) .== m) .* (day(t) .== d)
+    elseif n == 13  # yyyy-mm-ddTHH given
+        a = split(s, 'T')
+        b = split(a[1], '-')
+        c = split(a[2], ':')
+        y = parse(Int, b[1])
+        m = parse(Int, b[2])
+        d = parse(Int, b[3])
+        hr = parse(Int, c[1])
+        return (year(t) .== y) .* (month(t) .== m) .* (day(t) .== d) .* (hour(t) .== hr)
+    elseif n == 16  # yyyy-mm-ddTHH:MM given
+        a = split(s, 'T')
+        b = split(a[1], '-')
+        c = split(a[2], ':')
+        y = parse(Int, b[1])
+        m = parse(Int, b[2])
+        d = parse(Int, b[3])
+        hr = parse(Int, c[1])
+        min = parse(Int, c[2])
+        return (year(t) .== y) .* (month(t) .== m) .* (day(t) .== d) .* (hour(t) .== hr) .* (minute(t) .== min)
+    elseif n == 19  # yyyy-mm-ddTHH:MM:SS given
+        a = split(s, 'T')
+        b = split(a[1], '-')
+        c = split(a[2], ':')
+        y = parse(Int, b[1])
+        m = parse(Int, b[2])
+        d = parse(Int, b[3])
+        hr = parse(Int, c[1])
+        min = parse(Int, c[2])
+        sec = parse(Int, c[3])
+        return (year(t) .== y) .* (month(t) .== m) .* (day(t) .== d) .* (hour(t) .== hr) .* (minute(t) .== min) .* (second(t) .== sec)
+    else
+        error("Unable to parse date string $s.")
+    end
+end
+function fromthru(from::AbstractString, thru::AbstractString, t::Vector{DateTime})
+    fromidx = fromdt(from, t)
+    thruidx = thrudt(thru, t)
+    return fromidx .* thruidx
+end
+
+function dtidx(s::AbstractString, t::Vector{Date})
     @assert !in('T', s) "Cannot index Date type with sub-daily frequency."
     bds = split(s, "::")
     if length(bds) == 1  # single date
-        return thisdate(s, t)
+        return thisdt(s, t)
     elseif length(bds) == 2  # date range
         n1 = length(bds[1])
         n2 = length(bds[2])
         if n1 == 0 && n2 != 0  # thru date given
-            return thrudate(bds[2], t)
+            return thrudt(bds[2], t)
         elseif n1 != 0 && n2 == 0  # from date given
-            return fromdate(bds[1], t)
+            return fromdt(bds[1], t)
+        elseif n1 != 0 && n2 != 0  # from and thru date given
+            return fromthru(bds[1], bds[2], t)
+        else
+            error("Invalid indexing string: Unable to parse $s")
+        end
+    else
+        error("Invalid indexing string: Unable to parse $s")
+    end
+end
+function dtidx(s::AbstractString, t::Vector{DateTime})
+    @assert !in('T', s) "Cannot index Date type with sub-daily frequency."
+    bds = split(s, "::")
+    if length(bds) == 1  # single date
+        return thisdt(s, t)
+    elseif length(bds) == 2  # date range
+        n1 = length(bds[1])
+        n2 = length(bds[2])
+        if n1 == 0 && n2 != 0  # thru date given
+            return thrudt(bds[2], t)
+        elseif n1 != 0 && n2 == 0  # from date given
+            return fromdt(bds[1], t)
         elseif n1 != 0 && n2 != 0  # from and thru date given
             return fromthru(bds[1], bds[2], t)
         else
@@ -223,14 +388,14 @@ function dateidx(s::AbstractString, t::Vector{Date})
     end
 end
 
-getindex(x::TS, r::AbstractString) = x[dateidx(r, x.index)]
-getindex(x::TS, r::AbstractString, ::Colon) = x[dateidx(r, x.index)]
-getindex(x::TS, r::AbstractString, c::Int) = x[dateidx(r, x.index)]
-getindex(x::TS, r::AbstractString, c::AbstractArray{Int,1}) = x[dateidx(r, x.index)]
-getindex(x::TS, r::AbstractString, c::BitArray{1}) = x[dateidx(r, x.index)]
-getindex(x::TS, r::AbstractString, c::ByteString) = x[dateidx(r, x.index)]
-getindex(x::TS, r::AbstractString, c::ASCIIString) = x[dateidx(r, x.index)]
-getindex(x::TS, r::AbstractString, c::UTF8String) = x[dateidx(r, x.index)]
-getindex(x::TS, r::AbstractString, c::Vector{ByteString}) = x[dateidx(r, x.index)]
-getindex(x::TS, r::AbstractString, c::Vector{ASCIIString}) = x[dateidx(r, x.index)]
-getindex(x::TS, r::AbstractString, c::Vector{UTF8String}) = x[dateidx(r, x.index)]
+getindex(x::TS, r::AbstractString) = x[dtidx(r, x.index)]
+getindex(x::TS, r::AbstractString, ::Colon) = x[dtidx(r, x.index)]
+getindex(x::TS, r::AbstractString, c::Int) = x[dtidx(r, x.index), c]
+getindex(x::TS, r::AbstractString, c::AbstractArray{Int,1}) = x[dtidx(r, x.index), c]
+getindex(x::TS, r::AbstractString, c::BitArray{1}) = x[dtidx(r, x.index), c]
+getindex(x::TS, r::AbstractString, c::ByteString) = x[dtidx(r, x.index), c]
+getindex(x::TS, r::AbstractString, c::ASCIIString) = x[dtidx(r, x.index), c]
+getindex(x::TS, r::AbstractString, c::UTF8String) = x[dtidx(r, x.index), c]
+getindex(x::TS, r::AbstractString, c::Vector{ByteString}) = x[dtidx(r, x.index), c]
+getindex(x::TS, r::AbstractString, c::Vector{ASCIIString}) = x[dtidx(r, x.index), c]
+getindex(x::TS, r::AbstractString, c::Vector{UTF8String}) = x[dtidx(r, x.index), c]
