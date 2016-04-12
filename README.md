@@ -1,78 +1,84 @@
 # Temporal
-This package provides a flexible & efficient time series class, `TS`, for the Julia programming language. While still early in development, the overarching goal is for the class to be able to slice & dice data with the rapid prototyping speed of R's `xts` and Python's `pandas` packages, while retaining the performance one expects from Julia.
+This package provides a flexible & efficient time series class, `TS`, for the (Julia)[http://julialang.org/] programming language. While still early in development, the overarching goal is for the class to be able to slice & dice data with the rapid prototyping speed of (R)[https://www.r-project.org/]'s (`xts`)[https://github.com/joshuaulrich/xts] and (Python)[https://www.python.org/]'s (`pandas`)[http://pandas.pydata.org/] packages, while retaining the performance one expects from Julia.
 
 ## Example
 
 ```julia
-vector = 50.0 + cumsum(randn(100))
-stamps = collect(today():today()+Day(99))
-matrix = [vector vector+rand(100) vector-rand(100)]
-fields = ["A", "B", "C"]
-A = ts(matrix, stamps)  # no fields specified
-B = ts(matrix, stamps, fields)  # field names A, B, and C
-```
+julia> using Temporal
 
-Now that we have a couple time series toy datasets to play with...
+julia> corn = tsread("$(Pkg.dir("Temporal"))/data/corn.csv")
+14272x8 Temporal.TS{Float64,Date} 1959-07-01 to 2016-03-04
 
-```
-julia> A
-100x3 Temporal.TS{Float64,Date,ByteString} 2016-02-25 to 2016-06-03
-
-Index        V1       V2       V3       
-2016-02-25 | 47.21    47.31    47.1125  
-2016-02-26 | 46.4354  47.0957  45.6798  
-2016-02-27 | 46.3384  46.6943  45.6611  
-2016-02-28 | 47.0028  47.7949  46.4863  
+Index        Open      High      Low       Last      Change   Settle    Volume       Open Interest
+1959-07-01 | 120.2     120.3     119.6     119.7     NaN      119.7     3952         13997
+1959-07-02 | 119.6     120.0     119.2     119.6     NaN      119.6     2223         14047
+1959-07-06 | 119.4     119.5     117.7     118.0     NaN      118.0     3121         14206
+1959-07-07 | 118.1     118.5     118.0     118.3     NaN      118.3     3540         14142
 ...
-2016-05-31 | 45.7467  46.5664  45.2914  
-2016-06-01 | 47.4027  47.6903  47.2117  
-2016-06-02 | 47.7593  48.4525  47.6897  
-2016-06-03 | 46.3225  47.1005  46.2786  
+2016-03-01 | 353.5     355.0     353.0     353.5     0.25     353.75    10558        16103
+2016-03-02 | 353.75    355.5     352.5     354.25    0.75     354.5     2201         11204
+2016-03-03 | 354.0     355.5     351.75    354.0     0.75     353.75    4021         9878
+2016-03-04 | 354.0     357.75    353.5     355.0     0.75     354.5     2248         7846
 
 
-julia> B
-100x3 Temporal.TS{Float64,Date,ASCIIString} 2016-02-25 to 2016-06-03
+julia> corn[end-100:end,1:4]
+101x4 Temporal.TS{Float64,Date} 2015-10-09 to 2016-03-04
 
-Index        A        B        C        
-2016-02-25 | 47.21    47.31    47.1125  
-2016-02-26 | 46.4354  47.0957  45.6798  
-2016-02-27 | 46.3384  46.6943  45.6611  
-2016-02-28 | 47.0028  47.7949  46.4863  
+Index        Open      High      Low       Last
+2015-10-09 | 391.0     394.25    381.5     382.25
+2015-10-12 | 381.5     385.25    380.25    380.75
+2015-10-13 | 381.0     384.75    379.0     384.25
+2015-10-14 | 384.5     386.75    378.5     378.5
 ...
-2016-05-31 | 45.7467  46.5664  45.2914  
-2016-06-01 | 47.4027  47.6903  47.2117  
-2016-06-02 | 47.7593  48.4525  47.6897  
-2016-06-03 | 46.3225  47.1005  46.2786  
+2016-03-01 | 353.5     355.0     353.0     353.5
+2016-03-02 | 353.75    355.5     352.5     354.25
+2016-03-03 | 354.0     355.5     351.75    354.0
+2016-03-04 | 354.0     357.75    353.5     355.0
 
 
-julia> A[1:10]
-10x3 Temporal.TS{Float64,Date,ByteString} 2016-02-25 to 2016-03-05
+julia> corn["2015",6]
+253x1 Temporal.TS{Float64,Date} 2015-01-02 to 2015-12-31
 
-Index        V1       V2       V3       
-2016-02-25 | 47.21    47.31    47.1125  
-2016-02-26 | 46.4354  47.0957  45.6798  
-2016-02-27 | 46.3384  46.6943  45.6611  
-2016-02-28 | 47.0028  47.7949  46.4863  
+Index        Settle
+2015-01-02 | 395.5
+2015-01-05 | 406.0
+2015-01-06 | 405.0
+2015-01-07 | 396.5
 ...
-2016-03-02 | 47.2807  47.4007  46.6933  
-2016-03-03 | 48.3931  48.948   48.0837  
-2016-03-04 | 51.0334  51.1678  50.9864  
-2016-03-05 | 50.8235  51.5169  49.8334  
+2015-12-28 | 361.0
+2015-12-29 | 362.5
+2015-12-30 | 359.0
+2015-12-31 | 358.75
 
 
-julia> B[2:10,2]
-9x1 Temporal.TS{Float64,Date,ASCIIString} 2016-02-26 to 2016-03-05
+julia> corn["2014::","Open Interest"]
+548x1 Temporal.TS{Float64,Date} 2014-01-02 to 2016-03-04
 
-Index        B        
-2016-02-26 | 47.0957  
-2016-02-27 | 46.6943  
-2016-02-28 | 47.7949  
-2016-02-29 | 45.7368  
+Index        Open Interest
+2014-01-02 | 644246
+2014-01-03 | 643481
+2014-01-06 | 646371
+2014-01-07 | 642168
 ...
-2016-03-02 | 47.4007  
-2016-03-03 | 48.948   
-2016-03-04 | 51.1678  
-2016-03-05 | 51.5169 
+2016-03-01 | 16103
+2016-03-02 | 11204
+2016-03-03 | 9878
+2016-03-04 | 7846
+
+
+julia> corn["2010-06::2016-01-01",["Settle","Volume"]]
+14272x2 Temporal.TS{Float64,Date} 1959-07-01 to 2016-03-04
+
+Index        Settle    Volume
+1959-07-01 | 119.7     3952
+1959-07-02 | 119.6     2223
+1959-07-06 | 118.0     3121
+1959-07-07 | 118.3     3540
+...
+2016-03-01 | 353.75    10558
+2016-03-02 | 354.5     2201
+2016-03-03 | 353.75    4021
+2016-03-04 | 354.5     2248
 ```
 
 # TODO

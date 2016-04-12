@@ -1,4 +1,4 @@
-import Base: size, length, show, getindex, start, next, done, endof, isempty, convert
+import Base: size, length, show, getindex, start, next, done, endof, isempty, convert, ndims
 using Base.Dates
 
 
@@ -15,21 +15,14 @@ type TS{V<:Number, T<:TimeType} <: AbstractTS
     index::Vector{T}
     fields::Vector{ByteString}
     function TS(values, index, fields)
-		@assert size(values,1) == length(index) "Length of index not equal to number of value rows."
-		@assert size(values,2) == length(fields) "Length of fields not equal to number of columns in values."
+        @assert size(values,1) == length(index) "Length of index not equal to number of value rows."
+        @assert size(values,2) == length(fields) "Length of fields not equal to number of columns in values."
         if size(values,2) == 1
             values = hcat(values)  # ensure 2-dimensional array
-		end
+        end
         order = sortperm(index)
         index = index[order]
-        if size(values,2) > 1
-            for j = 1:size(values,2)
-                values[:,j] = values[order,j]
-            end
-        else
-            values = values[order]
-        end
-        new(values, index, fields)
+        new(values[order,:], index, fields)
     end
 end
 
@@ -74,11 +67,11 @@ start(x::TS) = 1
 next(x::TS, i::Int) = ((x.index[i], x.values[i,:]), i+1)
 done(x::TS, i::Int) = (i > size(x,1))
 isempty(x::TS) = (isempty(x.index) && isempty(x.values))
-endof(x::TS) = size(x,1)
 length(x::TS) = prod(size(x))::Int
 first(x::TS) = x[1]
 last(x::TS) = x[end]
 endof(x::TS) = endof(x.values)
+ndims(::TS) = 2
 
 ################################################################################
 # SHOW / PRINT METHOD ##########################################################
