@@ -71,9 +71,9 @@ getindex(x::TS, t::AbstractArray{DateTime,1}, c::BitArray{1}) = x[overlaps(x.ind
 #===============================================================================
 							TEXTUAL INDEXING
 ===============================================================================#
-getindex(x::TS, ::Colon, c::ByteString) = x[r, find(x.fields .== c)]
-getindex(x::TS, ::Colon, c::ASCIIString) = x[r, find(x.fields .== c)]
-getindex(x::TS, ::Colon, c::UTF8String) = x[r, find(x.fields .== c)]
+getindex(x::TS, ::Colon, c::ByteString) = x[:, find(x.fields .== c)]
+getindex(x::TS, ::Colon, c::ASCIIString) = x[:, find(x.fields .== c)]
+getindex(x::TS, ::Colon, c::UTF8String) = x[:, find(x.fields .== c)]
 getindex(x::TS, ::Colon, c::Vector{ByteString}) = x[:, find(overlaps(x.fields, c))]
 getindex(x::TS, ::Colon, c::Vector{ASCIIString}) = x[:, find(overlaps(x.fields, c))]
 getindex(x::TS, ::Colon, c::Vector{UTF8String}) = x[:, find(overlaps(x.fields, c))]
