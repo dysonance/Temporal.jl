@@ -8,6 +8,7 @@ This package provides a flexible & efficient time series class, `TS`, for the [J
 ```julia
 julia> using Temporal
 
+# Read in a csv of historical data on CBOT corn futures
 julia> corn = tsread("$(Pkg.dir("Temporal"))/data/corn.csv")
 14272x8 Temporal.TS{Float64,Date} 1959-07-01 to 2016-03-04
 
