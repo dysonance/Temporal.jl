@@ -9,12 +9,14 @@ export
     dropnan, dropnil,
     ones, zeros, trues, falses,
     mondays, tuesdays, wednesdays, thursdays, fridays, saturdays, sundays, 
-    iseom, isweekday, monthends,
+    bow, eow, bom, eom, boq, eoq, boy, eoy,
+    toweekly, tomonthly, toquarterly, toyearly, aggregate,
     tsread, tswrite
 
 include("ts.jl")
 include("indexing.jl")
 include("combine.jl")
+include("collapse.jl")
 include("operations.jl")
 include("slice.jl")
 include("io.jl")
