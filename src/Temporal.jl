@@ -6,8 +6,10 @@ module Temporal
 export
     TS, ts, size, overlaps,
     ojoin, ijoin, ljoin, rjoin, merge,
-    dropnan, dropnil,
+    nanrows, nancols, dropnan,
+    numfun, arrfun, op,
     ones, zeros, trues, falses,
+    sum, mean, maximum, minimum, prod, cumsum, cumprod, diff, lag, roc,
     mondays, tuesdays, wednesdays, thursdays, fridays, saturdays, sundays, 
     bow, eow, bom, eom, boq, eoq, boy, eoy,
     toweekly, tomonthly, toquarterly, toyearly, aggregate,
