@@ -41,7 +41,7 @@ function bom(t::Vector{Date}; cal::Bool=false)
         return BitArray{1}([0;diff(month(t)).!=0])
     end
 end
-function eom(t::Vector{Date}, cal::Bool=false)
+function eom(t::Vector{Date}; cal::Bool=false)
     if cal
         return BitArray{1}(t .== lastdayofmonth(t))
     else
@@ -55,7 +55,7 @@ function boq(t::Vector{Date}; cal::Bool=false)
         return BitArray{1}([0;diff(quarterofyear(t)).!=0])
     end
 end
-function eoq(t::Vector{Date}, cal::Bool=false)
+function eoq(t::Vector{Date}; cal::Bool=false)
     if cal
         return BitArray{1}(t .== lastdayofquarter(t))
     else
@@ -69,7 +69,7 @@ function boy(t::Vector{Date}; cal::Bool=false)
         return BitArray{1}([0;diff(year(t)).!=0])
     end
 end
-function eoy(t::Vector{Date}, cal::Bool=false)
+function eoy(t::Vector{Date}; cal::Bool=false)
     if cal
         return BitArray{1}(t .== lastdayofyear(t))
     else
@@ -97,7 +97,7 @@ function bom(t::Vector{DateTime}; cal::Bool=false)
         return BitArray{1}([0;diff(month(t)).!=0])
     end
 end
-function eom(t::Vector{DateTime}, cal::Bool=false)
+function eom(t::Vector{DateTime}; cal::Bool=false)
     if cal
         return BitArray{1}(t .== lastdayofmonth(t))
     else
@@ -111,7 +111,7 @@ function boq(t::Vector{DateTime}; cal::Bool=false)
         return BitArray{1}([0;diff(quarterofyear(t)).!=0])
     end
 end
-function eoq(t::Vector{DateTime}, cal::Bool=false)
+function eoq(t::Vector{DateTime}; cal::Bool=false)
     if cal
         return BitArray{1}(t .== lastdayofquarter(t))
     else
@@ -125,7 +125,7 @@ function boy(t::Vector{DateTime}; cal::Bool=false)
         return BitArray{1}([0;diff(year(t)).!=0])
     end
 end
-function eoy(t::Vector{DateTime}, cal::Bool=false)
+function eoy(t::Vector{DateTime}; cal::Bool=false)
     if cal
         return BitArray{1}(t .== lastdayofyear(t))
     else

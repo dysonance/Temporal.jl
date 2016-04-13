@@ -111,7 +111,7 @@ function show{V,T}(io::IO, x::TS{V,T})
         end
     end
     spacetime = nrow > 0 ? strwidth(string(x.index[1])) + 3 : 3
-    firstcolwidth = strwidth(fields[1])
+    firstcolwidth = strwidth(string(fields[1]))
     colwidth = Int[]
     for j = 1:ncol
         if T == Bool || nrow == 0
