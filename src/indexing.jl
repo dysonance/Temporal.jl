@@ -1,3 +1,24 @@
+function overlaps(x::AbstractArray, y::AbstractArray, n::Int=1)
+    if n == 1
+        xx = falses(x)
+        @inbounds for i = 1:size(x,1), j = 1:size(y,1)
+            if x[i] == y[j]
+                xx[i] = true
+            end
+        end
+        return xx
+    elseif n == 2
+        yy = falses(y)
+        @inbounds for i = 1:size(x,1), j = 1:size(y,1)
+            if x[i] == y[j]
+                yy[i] = true
+            end
+        end
+        return yy
+    else
+        error("Argument `n` must be either 1 (x) or 2 (y).")
+    end
+end
 #===============================================================================
 							NUMERICAL INDEXING
 ===============================================================================#
@@ -61,7 +82,6 @@ getindex(x::TS, r::AbstractArray{DateTime,1}, c::BitArray{1}) = x[overlaps(x.ind
 #===============================================================================
 							TEXTUAL INDEXING
 ===============================================================================#
-getindex(x::TS, c::Symbol) = x[:, x.fields.==c]
 getindex(x::TS, ::Colon, c::Symbol) = x[:, x.fields.==c]
 getindex(x::TS, r::Int, c::Symbol) = x[r, x.fields.==c]
 getindex(x::TS, r::AbstractArray{Int,1}, c::Symbol) = x[r, x.fields.==c]
@@ -71,7 +91,6 @@ getindex(x::TS, r::TimeType, c::Symbol) = x[r, x.fields.==c]
 getindex(x::TS, r::AbstractArray{Date,1}, c::Symbol) = x[r, x.fields.==c]
 getindex(x::TS, r::AbstractArray{DateTime,1}, c::Symbol) = x[r, x.fields.==c]
 
-getindex(x::TS, c::Vector{Symbol}) = x[:, overlaps(x.fields, c)]
 getindex(x::TS, ::Colon, c::Vector{Symbol}) = x[r, overlaps(x.fields, c)]
 getindex(x::TS, r::Int, c::Vector{Symbol}) = x[r, overlaps(x.fields, c)]
 getindex(x::TS, r::AbstractArray{Int,1}, c::Vector{Symbol}) = x[r, overlaps(x.fields, c)]
