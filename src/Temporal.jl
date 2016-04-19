@@ -5,10 +5,10 @@ module Temporal
 
 export
     TS, ts, size, overlaps,
-    ojoin, ijoin, ljoin, rjoin, merge,
+    ojoin, ijoin, ljoin, rjoin, merge, hcat, vcat,
     nanrows, nancols, dropnan,
     numfun, arrfun, op,
-    ones, zeros, trues, falses,
+    ones, zeros, trues, falses, isnan,
     sum, mean, maximum, minimum, prod, cumsum, cumprod, diff, lag, nans,
     mondays, tuesdays, wednesdays, thursdays, fridays, saturdays, sundays, 
     bow, eow, bom, eom, boq, eoq, boy, eoy,

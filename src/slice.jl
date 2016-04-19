@@ -2,12 +2,6 @@
 Methods for slicing and dicing TS objects
 =#
 
-function partner{V,T}(x::TS{V,T}, y::TS{V,T})
-    yy = !overlaps(x.index, y.index) .* NaN
-    yy[!isnan(yy),:] = y.values
-    return ts(yy, x.index, y.fields)
-end
-
 function nanrows(x::Array{Float64}; fun::Function=any)
 	@assert fun == any || fun == all "Argument `fun` must be either `any` or `all`"
 	cutrows = falses(size(x,1))
