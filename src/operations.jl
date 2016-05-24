@@ -2,7 +2,8 @@
 Operations on TS objects
 =#
 
-import Base: ones, zeros, trues, falses, isnan, sum, mean, maximum, minimum, prod, cumsum, cumprod, diff
+# TODO: increase efficiency running these operations
+import Base: ones, zeros, trues, falses, isnan, sum, mean, maximum, minimum, prod, cumsum, cumprod, diff, all, any
 importall Base.Operators
 
 
@@ -13,7 +14,7 @@ falses(x::TS) = ts(falses(x.values), x.index, x.fields)
 isnan(x::TS) = ts(isnan(x.values), x.index, x.fields)
 
 # Function to pass Array operators through to underlying TS values
-function op{V,T}(x::TS{V,T}, y::TS{V,T}, fun::Function; args...)
+function  op{V,T}(x::TS{V,T}, y::TS{V,T}, fun::Function; args...)
     idx = intersect(x.index, y.index)
     return ts(fun(x[idx].values, y[idx].values; args...), idx, x.fields)
 end
@@ -152,3 +153,29 @@ end
 
 +(y::AbstractArray, x::TS) = x + y
 +(y::Number, x::TS) = x + y
+
+# Logical operators
+all(x::TS) = all(x.values)
+any(x::TS) = any(x.values)
+==(x::TS, y::TS) = op(x, y, ==)
+
+.==(x::TS, y::TS) = op(x, y, .==)
+.>(x::TS, y::TS) = op(x, y, .>)
+.<(x::TS, y::TS) = op(x, y, .<)
+.!=(x::TS, y::TS) = op(x, y, .!=)
+.<=(x::TS, y::TS) = op(x, y, .<=)
+.>=(x::TS, y::TS) = op(x, y, .>=)
+
+.==(x::TS, y::Number) = ts(x.values .== y, x.index, x.fields)
+.>(x::TS, y::Number) = ts(x.values .> y, x.index, x.fields)
+.<(x::TS, y::Number) = ts(x.values .< y, x.index, x.fields)
+.!=(x::TS, y::Number) = ts(x.values .!= y, x.index, x.fields)
+.<=(x::TS, y::Number) = ts(x.values .<= y, x.index, x.fields)
+.>=(x::TS, y::Number) = ts(x.values .>= y, x.index, x.fields)
+
+.==(x::TS, y::AbstractArray) = ts(x.values .== y, x.index, x.fields)
+.>(x::TS, y::AbstractArray) = ts(x.values .> y, x.index, x.fields)
+.<(x::TS, y::AbstractArray) = ts(x.values .< y, x.index, x.fields)
+.!=(x::TS, y::AbstractArray) = ts(x.values .!= y, x.index, x.fields)
+.<=(x::TS, y::AbstractArray) = ts(x.values .<= y, x.index, x.fields)
+.>=(x::TS, y::AbstractArray) = ts(x.values .>= y, x.index, x.fields)

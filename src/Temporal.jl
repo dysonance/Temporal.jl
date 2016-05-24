@@ -5,8 +5,8 @@ using Base.Dates
 
 export
     TS, ts, size, overlaps,
-    ojoin, ijoin, ljoin, rjoin, merge, hcat, vcat,
-    nanrows, nancols, dropnan,
+    ojoin, ijoin, ljoin, rjoin, merge, hcat, vcat, head, tail,
+    nanrows, nancols, dropnan, fillnan, fillnan, ffill!, bfill!, linterp!,
     numfun, arrfun, op,
     ones, zeros, trues, falses, isnan,
     sum, mean, maximum, minimum, prod, cumsum, cumprod, diff, lag, nans,
