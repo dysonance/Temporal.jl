@@ -4,6 +4,20 @@ module Temporal
 using Base.Dates
 using Plots
 
+pkglist(dir::AbstractString=Pkg.dir()) = setdiff(readdir(dir), [".cache","METADATA","META_BRANCH","REQUIRE"])
+isinstalled(pkg::AbstractString; dir::AbstractString=Pkg.dir()) = pkg in pkglist(dir)
+if isinstalled("PyPlot")
+    pyplot(reuse=true)
+elseif isinstalled("Gadfly")
+    gadfly()
+elseif isinstalled("Plotly")
+    plotly()
+elseif isinstalled("GR")
+    gr()
+else
+    error("No valid backend packages installed.")
+end
+
 export
     TS, ts, size, overlaps,
     ojoin, ijoin, ljoin, rjoin, merge, hcat, vcat, head, tail,
