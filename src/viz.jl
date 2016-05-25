@@ -4,16 +4,12 @@ isinstalled(pkg::AbstractString; dir::AbstractString=Pkg.dir()) = pkg in pkglist
 
 importall Plots
 if isinstalled("PyPlot")
-    using PyPlot
     pyplot(reuse=true)
 elseif isinstalled("Gadfly")
-    using Gadfly
     gadfly()
 elseif isinstalled("Plotly")
-    using Plotly
     plotly()
 elseif isinstalled("GR")
-    using GR
     gr()
 else
     error("No valid backend packages installed.")
