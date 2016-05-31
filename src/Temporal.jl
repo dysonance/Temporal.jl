@@ -38,6 +38,5 @@ include("collapse.jl")
 include("operations.jl")
 include("slice.jl")
 include("io.jl")
-include("viz.jl")
 
 end # module
