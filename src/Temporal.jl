@@ -2,7 +2,6 @@ VERSION >= v"0.4.0" && __precompile__(true)
 
 module Temporal
 using Base.Dates
-using Plots
 
 # pkglist(dir::AbstractString=Pkg.dir()) = setdiff(readdir(dir), [".cache","METADATA","META_BRANCH","REQUIRE"])
 # isinstalled(pkg::AbstractString; dir::AbstractString=Pkg.dir()) = pkg in pkglist(dir)
@@ -38,5 +37,6 @@ include("collapse.jl")
 include("operations.jl")
 include("slice.jl")
 include("io.jl")
+# include("viz.jl")
 
 end # module
