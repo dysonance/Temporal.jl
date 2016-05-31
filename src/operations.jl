@@ -13,11 +13,12 @@ trues(x::TS) = ts(trues(x.values), x.index, x.fields)
 falses(x::TS) = ts(falses(x.values), x.index, x.fields)
 isnan(x::TS) = ts(isnan(x.values), x.index, x.fields)
 
-# Function to pass Array operators through to underlying TS values
+# Pass Array operators through to underlying TS values
 function  op{V,T}(x::TS{V,T}, y::TS{V,T}, fun::Function; args...)
     idx = intersect(x.index, y.index)
     return ts(fun(x[idx].values, y[idx].values; args...), idx, x.fields)
 end
+op{V,T}(x::TS{V,T}, fun::Function; args...) = ts(fun(x.values), x.index, x.fields; args...)
 
 # Number functions
 sum(x::TS) = sum(x.values)
