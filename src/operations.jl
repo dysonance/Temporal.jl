@@ -66,8 +66,10 @@ function diffn{T<:Number,N}(x::Array{T,N}, dim::Int=1, n::Int=1)
     end
     return dx
 end
-function diff{V,T}(x::TS{V,T}; dim::Int=1, n::Int=1, pad::Bool=true, padval::V=zero(V))
-    r, c = size(x)
+function diff{V,T}(x::TS{V,T}, n::Int=1; dim::Int=1, pad::Bool=true, padval::V=zero(V))
+    @assert dim == 1 || dim == 2 "Argument dim must be either 1 (rows) or 2 (columns)."
+    r = size(x, 1)
+    c = size(x, 2)
     dx = diffn(x.values, dim, n)
     if dim == 1
         if pad
@@ -100,7 +102,8 @@ function lag{V,T}(x::TS{V,T}, n::Int=1; pad::Bool=true, padval::V=zero(V))
 		out = zeros(x.values)
 		out[1:end+n,:] = x.values[1-n:end,:]
 	end
-    r, c = size(x)
+    r = size(x, 1)
+    c = size(x, 2)
     if pad
         idx = n>0 ? (1:n) : (r+n+1:r)
         out[idx,:] = padval
