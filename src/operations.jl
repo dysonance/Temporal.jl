@@ -15,11 +15,12 @@ falses(x::TS) = ts(falses(x.values), x.index, x.fields)
 isnan(x::TS) = ts(isnan(x.values), x.index, x.fields)
 countnz(x::TS) = countnz(x.values)
 
-# Function to pass Array operators through to underlying TS values
+# Pass Array operators through to underlying TS values
 function  op{V,T}(x::TS{V,T}, y::TS{V,T}, fun::Function; args...)
     idx = intersect(x.index, y.index)
     return ts(fun(x[idx].values, y[idx].values; args...), idx, x.fields)
 end
+op{V,T}(x::TS{V,T}, fun::Function; args...) = ts(fun(x.values), x.index, x.fields; args...)
 
 # Number functions
 sum(x::TS) = sum(x.values)
@@ -68,8 +69,10 @@ function diffn{T<:Number,N}(x::Array{T,N}, dim::Int=1, n::Int=1)
     end
     return dx
 end
-function diff{V,T}(x::TS{V,T}; dim::Int=1, n::Int=1, pad::Bool=true, padval::V=zero(V))
-    r, c = size(x)
+function diff{V,T}(x::TS{V,T}, n::Int=1; dim::Int=1, pad::Bool=true, padval::V=zero(V))
+    @assert dim == 1 || dim == 2 "Argument dim must be either 1 (rows) or 2 (columns)."
+    r = size(x, 1)
+    c = size(x, 2)
     dx = diffn(x.values, dim, n)
     if dim == 1
         if pad
@@ -102,7 +105,8 @@ function lag{V,T}(x::TS{V,T}, n::Int=1; pad::Bool=true, padval::V=zero(V))
 		out = zeros(x.values)
 		out[1:end+n,:] = x.values[1-n:end,:]
 	end
-    r, c = size(x)
+    r = size(x, 1)
+    c = size(x, 2)
     if pad
         idx = n>0 ? (1:n) : (r+n+1:r)
         out[idx,:] = padval
@@ -159,7 +163,8 @@ end
 # Logical operators
 all(x::TS) = all(x.values)
 any(x::TS) = any(x.values)
-==(x::TS, y::TS) = op(x, y, ==)
+==(x::TS, y::TS) = x.values == y.values && x.index == y.index
+!=(x::TS, y::TS) = !(x == y)
 
 .==(x::TS, y::TS) = op(x, y, .==)
 .>(x::TS, y::TS) = op(x, y, .>)
@@ -181,3 +186,9 @@ any(x::TS) = any(x.values)
 .!=(x::TS, y::AbstractArray) = ts(x.values .!= y, x.index, x.fields)
 .<=(x::TS, y::AbstractArray) = ts(x.values .<= y, x.index, x.fields)
 .>=(x::TS, y::AbstractArray) = ts(x.values .>= y, x.index, x.fields)
+
+# ==(x::TS, y::TS) = x .== y
+>(x::TS, y::TS) = x .> y
+<(x::TS, y::TS) = x .< y
+<=(x::TS, y::TS) = x .<= y
+>=(x::TS, y::TS) = x .>= y

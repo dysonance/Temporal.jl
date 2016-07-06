@@ -156,3 +156,24 @@ function fillnan{V,T}(x::TS{V,T}, method::Symbol=:ffill)
 	end
 	return ts(v, x.index, x.fields)
 end
+
+@doc """
+Replace missing (NaN) values from a TS object with filled values.
+""" ->
+function fillnan!{V,T}(x::TS{V,T}, method::Symbol=:ffill)
+    c = nancols(x.values)
+    if !any(c)
+        return x
+    end
+    v = x.values
+    if method == :ffill
+        ffill!(v)
+    elseif method == :bfill
+        bfill!(v)
+    elseif method == :linear
+        linterp!(v)
+    # elseif method == :spline
+    end
+    return ts(v, x.index, x.fields)
+end
+

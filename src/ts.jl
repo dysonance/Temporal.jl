@@ -1,4 +1,4 @@
-import Base: size, length, show, getindex, start, next, done, endof, isempty, convert, ndims
+import Base: size, length, show, getindex, start, next, done, endof, isempty, convert, ndims, float, int, round
 using Base.Dates
 
 ################################################################################
@@ -79,6 +79,9 @@ first(x::TS) = x[1]
 last(x::TS) = x[end]
 endof(x::TS) = endof(x.values)
 ndims(::TS) = 2
+float(x::TS) = ts(float(x.values), x.index, x.fields)
+int(x::TS) = ts(round(Int64,x.values), x.index, x.fields)
+round(x::TS) = ts(round(x.values), x.index, x.fields)
 
 ################################################################################
 # SHOW / PRINT METHOD ##########################################################
