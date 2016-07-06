@@ -3,7 +3,8 @@ Operations on TS objects
 =#
 
 # TODO: increase efficiency running these operations
-import Base: ones, zeros, trues, falses, isnan, sum, mean, maximum, minimum, prod, cumsum, cumprod, diff, all, any
+import Base: ones, zeros, trues, falses, isnan, sum, mean, maximum, minimum,
+prod, cumsum, cumprod, diff, all, any, countnz
 importall Base.Operators
 
 
@@ -12,6 +13,7 @@ zeros(x::TS) = ts(zeros(x.values), x.index, x.fields)
 trues(x::TS) = ts(trues(x.values), x.index, x.fields)
 falses(x::TS) = ts(falses(x.values), x.index, x.fields)
 isnan(x::TS) = ts(isnan(x.values), x.index, x.fields)
+countnz(x::TS) = countnz(x.values)
 
 # Function to pass Array operators through to underlying TS values
 function  op{V,T}(x::TS{V,T}, y::TS{V,T}, fun::Function; args...)

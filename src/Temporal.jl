@@ -8,11 +8,11 @@ export
     ojoin, ijoin, ljoin, rjoin, merge, hcat, vcat, head, tail,
     nanrows, nancols, dropnan, fillnan, fillnan, ffill!, bfill!, linterp!,
     numfun, arrfun, op,
-    ones, zeros, trues, falses, isnan,
+    ones, zeros, trues, falses, isnan, countnz,
     sum, mean, maximum, minimum, prod, cumsum, cumprod, diff, lag, nans,
     mondays, tuesdays, wednesdays, thursdays, fridays, saturdays, sundays, 
     bow, eow, bom, eom, boq, eoq, boy, eoy,
-    toweekly, tomonthly, toquarterly, toyearly, aggregate,
+    toweekly, tomonthly, toquarterly, toyearly, collapse,
     tsread, tswrite
 
 include("ts.jl")
