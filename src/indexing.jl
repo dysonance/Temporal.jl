@@ -39,12 +39,14 @@ getindex(x::TS, r::Int, c::Vector{Bool}) = TS(x.values[r,c], x.index[r], x.field
 getindex(x::TS, ::Colon, c::BitArray{1}) = TS(x.values[:,c], x.index[:], x.fields[c])
 getindex(x::TS, ::Colon, c::Vector{Bool}) = TS(x.values[:,c], x.index[:], x.fields[c])
 # Row indexing with boolean TS types
-getindex(x::TS, r::TS{Bool}) = x[overlaps(x.index,r.index).*r.values]
-getindex(x::TS, r::TS{Bool}, ::Colon) = x[overlaps(x.index,r.index).*r.values]
-getindex(x::TS, r::TS{Bool}, c::Int) = x[overlaps(x.index,r.index).*r.values,c]
-getindex(x::TS, r::TS{Bool}, c::AbstractArray{Int,1}) = x[overlaps(x.index,r.index).*r.values,c]
-getindex(x::TS, r::TS{Bool}, c::Vector{Bool}) = x[overlaps(x.index,r.index).*r.values,c]
-getindex(x::TS, r::TS{Bool}, c::BitArray{1}) = x[overlaps(x.index,r.index).*r.values,c]
+getindex(x::TS, r::TS{Bool}) = x[r.index[overlaps(r.index,x.index).*r.values]]
+getindex(x::TS, r::TS{Bool}, ::Colon) = x[r.index[overlaps(r.index,x.index).*r.values]]
+getindex(x::TS, r::TS{Bool}, c::Int) = x[r.index[overlaps(r.index,x.index).*r.values],c]
+getindex(x::TS, r::TS{Bool}, c::AbstractArray{Int,1}) = x[r.index[overlaps(r.index,x.index).*r.values],c]
+getindex(x::TS, r::TS{Bool}, c::Vector{Bool}) = x[r.index[overlaps(r.index,x.index).*r.values],c]
+getindex(x::TS, r::TS{Bool}, c::BitArray{1}) = x[r.index[overlaps(r.index,x.index).*r.values],c]
+getindex(x::TS, r::TS{Bool}, c::Symbol) = x[r.index[overlaps(r.index,x.index).*r.values],c]
+getindex(x::TS, r::TS{Bool}, c::Vector{Symbol}) = x[r.index[overlaps(r.index,x.index).*r.values],c]
 
 #===============================================================================
 							TEMPORAL INDEXING
