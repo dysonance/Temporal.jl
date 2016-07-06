@@ -11,11 +11,8 @@ export
     ones, zeros, trues, falses, isnan, countnz,
     sum, mean, maximum, minimum, prod, cumsum, cumprod, diff, lag, nans,
     mondays, tuesdays, wednesdays, thursdays, fridays, saturdays, sundays, 
-    bow, eow, bom, eom, boq, eoq, boy, eoy,
-    toweekly, tomonthly, toquarterly, toyearly, collapse,
+    bow, eow, bom, eom, boq, eoq, boy, eoy, collapse,
     tsread, tswrite
-    toweekly, tomonthly, toquarterly, toyearly, aggregate,
-    tsread, tswrite,
 
 include("ts.jl")
 include("indexing.jl")
