@@ -26,13 +26,13 @@ function overlaps(x::AbstractArray, y::AbstractArray, n::Int=1)
     end
 end
 
-function partner{V,T}(x::TS{V,T}, y::TS{V,T})
+function partner(x::TS, y::TS)
     yy = !overlaps(x.index, y.index) .* NaN
     yy[!isnan(yy),:] = y.values
     return ts(yy, x.index, y.fields)
 end
 
-function ojoin{V,T}(x::TS{V,T}, y::TS{V,T})
+function ojoin(x::TS, y::TS)
     idx = union(x.index, y.index)
     xna = setdiff(idx, x.index)
     yna = setdiff(idx, y.index)
@@ -43,34 +43,35 @@ function ojoin{V,T}(x::TS{V,T}, y::TS{V,T})
     return ts([xvals yvals], idx, [x.fields; y.fields])
 end
 
-function ijoin{V,T}(x::TS{V,T}, y::TS{V,T})
+function ijoin(x::TS, y::TS)
     idx = intersect(x.index, y.index)
     return ts([x[idx].values y[idx].values], idx, [x.fields; y.fields])
 end
 
-ljoin{V,T}(x::TS{V,T}, y::TS{V,T}) = ts([x.values partner(x,y).values], x.index, [x.fields; y.fields])
-rjoin{V,T}(x::TS{V,T}, y::TS{V,T}) = ts([partner(y,x).values y.values], y.index, [x.fields; y.fields])
-hcat{V,T}(x::TS{V,T}, y::TS{V,T}) = ojoin(x, y)
-function hcat{V,T}(series::TS{V,T}...)
+ljoin(x::TS, y::TS) = ts([x.values partner(x,y).values], x.index, [x.fields; y.fields])
+rjoin(x::TS, y::TS) = ts([partner(y,x).values y.values], y.index, [x.fields; y.fields])
+hcat(x::TS, y::TS) = ojoin(x, y)
+hcat(x::TS) = x
+function hcat(series::TS...)
     out = series[1]
-    for j = 2:length(series)
-        out = ojoin(out, series[j])
+    @inbounds for j = 2:length(series)
+        out = [out series[j]]
     end
     return out
 end
-function vcat{V,T}(x::TS{V,T}, y::TS{V,T})
+function vcat(x::TS, y::TS)
     @assert size(x,2) == size(y,2) "Dimension mismatch: Number of columns must be equal."
-    return TS{V,T}([x.values;y.values], [x.index;y.index], x.fields)
+    return TS([x.values;y.values], [x.index;y.index], x.fields)
 end
-function vcat{V,T}(series::TS{V,T}...)
+function vcat(series::TS...)
     out = series[1]
-    for j = 2:length(series)
+    @inbounds for j = 2:length(series)
         out = vcat(out, series[j])
     end
     return out
 end
 
-function merge{V,T}(x::TS{V,T}, y::TS{V,T}; join::Char='o')
+function merge(x::TS, y::TS; join::Char='o')
     @assert join == 'o' || join == 'i' || join == 'l' || join == 'r' "`join` must be 'o', 'i', 'l', or 'r'."
     if join == 'o'
         return ojoin(x, y)
@@ -83,3 +84,28 @@ function merge{V,T}(x::TS{V,T}, y::TS{V,T}; join::Char='o')
     end
 end
 
+#===============================================================================
+                COMBINING/MERGING WITH OTHER TYPES
+===============================================================================#
+hcat(x::TS, y::AbstractArray) = ojoin(x, ts(y, x.index))
+hcat(y::AbstractArray, x::TS) = ojoin(ts(y, x.index), x)
+hcat(x::TS, y::Number) = ojoin(x, ts(fill(y,size(x,1)), x.index))
+hcat(y::Number, x::TS) = ojoin(ts(fill(y,size(x,1)), x.index), x)
+function hcat{V}(series::TS, arrs::AbstractArray{V}...)
+    n = size(series,1)
+    k = length(arrs)
+    out = zeros(V, (n,k))
+    @inbounds for j = 1:k
+        out[:,j] = arrs[j]
+    end
+    return [series out]
+end
+function hcat{V<:Number}(series::TS, nums::V...)
+    n = size(series,1)
+    k = length(nums)
+    out = zeros(V, (n,k))
+    @inbounds for j = 1:k
+        out[:,j] = fill(n, nums[j])
+    end
+    return [series out]
+end

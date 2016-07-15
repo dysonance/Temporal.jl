@@ -1,4 +1,4 @@
-import Base: size, length, show, getindex, start, next, done, endof, isempty, convert, ndims, float, int, round
+import Base: size, length, show, getindex, start, next, done, endof, isempty, convert, ndims, float, int, round, setindex!
 using Base.Dates
 
 ################################################################################
