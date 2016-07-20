@@ -4,10 +4,12 @@ Operations on TS objects
 
 # TODO: increase efficiency running these operations
 import Base: ones, zeros, trues, falses, isnan, sum, mean, maximum, minimum,
-prod, cumsum, cumprod, diff, all, any, countnz, sign
+prod, cumsum, cumprod, diff, all, any, countnz, sign, find, findfirst
 importall Base.Operators
 
 
+find(x:TS) = find(x.values)
+findfirst(x::TS) = findfirst(x.values)
 ones(x::TS) = ts(ones(x.values), x.index, x.fields)
 zeros(x::TS) = ts(zeros(x.values), x.index, x.fields)
 trues(x::TS) = ts(trues(x.values), x.index, x.fields)
