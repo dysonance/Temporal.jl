@@ -181,6 +181,7 @@ end
 # Logical operators
 all(x::TS) = all(x.values)
 any(x::TS) = any(x.values)
+!(x::TS) = ts(!x.values, x.index, x.fields)
 ==(x::TS, y::TS) = x.values == y.values && x.index == y.index
 !=(x::TS, y::TS) = !(x == y)
 
