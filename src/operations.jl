@@ -8,7 +8,7 @@ prod, cumsum, cumprod, diff, all, any, countnz, sign, find, findfirst
 importall Base.Operators
 
 
-find(x:TS) = find(x.values)
+find(x::TS) = find(x.values)
 findfirst(x::TS) = findfirst(x.values)
 ones(x::TS) = ts(ones(x.values), x.index, x.fields)
 zeros(x::TS) = ts(zeros(x.values), x.index, x.fields)
