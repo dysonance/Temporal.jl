@@ -3,12 +3,13 @@ language: julia
 os:
   - linux
 julia:
-  - 0.4
+  - release
+  - nightly
+matrix:
+    allow_failures:
+        - julia: nightly
 notifications:
   email: false
-# uncomment the following lines to override the default test script
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - julia -e 'Pkg.clone(pwd()); Pkg.build("Temporal"); Pkg.test("Temporal"; coverage=true)'
-# after_succes:
-#   - julia -e 'cd(Pkg.dir("Temporal"); Pkg.add("Coverage"); using Coverage; Coveralls.submit(process_folder())'
