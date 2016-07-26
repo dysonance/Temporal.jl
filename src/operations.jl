@@ -7,6 +7,16 @@ import Base: ones, zeros, trues, falses, isnan, sum, mean, maximum, minimum,
 prod, cumsum, cumprod, diff, all, any, countnz, sign, find, findfirst
 importall Base.Operators
 
+# titlecase(str::AbstractString) = join([ucfirst(word) for word in split(str, ' ')], ' ')
+# titlecase(arr::AbstractArray{AbstractString}) = map(titlecase, arr)
+islogical(fun::Function) = fun in (<, .<, <=, .<=, .>, >, >=, .>=, ==, .==, !=, .!=, !)
+isarithmetic(fun::Function) = fun in (+, .+, -, .-, *, .*, /, ./, %, .%, ^, .^, \, .\)
+const logicals = Dict("<" => "LessThan", ".<" => "LessThan", "<=" => "LessThanEqual", ".<=" => "LessThanEqual",
+                      ">" => "GreaterThan", ".>" => "GreaterThan", ">=" => "GreaterThanEqual", ".>=" => "GreaterThanEqual",
+                      "==" => "Equal", ".==" => "Equal", "!=" => "NotEqual", ".!=" => "NotEqual", "!" => "Not")
+const arithmetics = Dict("+" => "Plus", ".+" => "Plus", "-" => "Minus", ".-" => "Minus",
+                         "*" => "Times", ".*" => "Times", "/" => "Over", "./" => "Over",
+                         "%" => "Mod", ".%" => "Mod", "^" => "Power", ".^" => "Power", "\\" => "Inverse", ".\\" => "Under")
 
 find(x::TS) = find(x.values)
 findfirst(x::TS) = findfirst(x.values)
@@ -20,8 +30,19 @@ sign(x::TS) = ts(sign(x.values), x.index, x.fields)
 
 # Pass Array operators through to underlying TS values
 function  op{V,T}(x::TS{V,T}, y::TS{V,T}, fun::Function; args...)
+    if islogical(fun)
+        fldstr = "$(string(x.fields[1]))$(logicals[string(fun)])$(string(y.fields[1]))"
+    elseif isarithmetic(fun)
+        fldstr = "$(string(x.fields[1]))$(arithmetics[string(fun)])$(string(y.fields[1]))"
+    else
+        fldstr = ucfirst(string(fun))
+    end
+    fldsym = symbol(fldstr)
+    if x.index == y.index
+        return ts(fun(x.values, y.values; args...), x.index, fldsym)
+    end
     idx = intersect(x.index, y.index)
-    return ts(fun(x[idx].values, y[idx].values; args...), idx, x.fields)
+    return ts(fun(x[idx].values, y[idx].values; args...), idx, fldsym)
 end
 op{V,T}(x::TS{V,T}, fun::Function; args...) = ts(fun(x.values), x.index, x.fields; args...)
 
