@@ -172,3 +172,22 @@ function collapse{V,T}(x::TS{V,T}, at::Function; fun::Function=last, args...)
     return collapse(x, at(x.index), fun=fun; args...)
 end
 
+function apply{V}(x::TS{V}, dim::Int=1; fun=sum)
+    if dim == 1
+        n = size(x,1)
+        out = zeros(V, n)
+        @inbounds for i in 1:n
+            out[i] = fun(x.values[i,:])
+        end
+        return ts(out, x.index, symbol(ucfirst(string(fun))))
+    elseif dim == 2
+        k = size(x,2)
+        out = zeros(V, k)
+        @inbounds for j in 1:k
+            out[j] = fun(x.values[:,j])
+        end
+        return out'
+    else
+        error("Argument `dim` must be either 1 (rows) or 2 (columns).")
+    end
+end
