@@ -23,7 +23,11 @@ function checkdims(x::TS, v; r=1:size(x,1), c=1:size(x,2))
     @assert size(v,1) == length(r)
     @assert size(x,1) >= length(r)
     @assert size(x,2) >= length(c)
-    size(x,2)==1 ? @assert length(c)==1 : @assert size(x,2)>=length(c)
+    if size(x,2)==1
+        @assert length(c)==1
+    else
+        @assert size(x,2)>=length(c)
+    end
 end
 
 # All rows + all columns
@@ -32,7 +36,7 @@ setindex!{V,T}(x::TS{V,T}, v, ::Colon, ::Colon)                                 
 # Row subset + all columns
 setindex!{V,T}(x::TS{V,T}, v, r::Int, ::Colon)                                  = (checkdims(x,v,r=r); x.values[getrows(x,r),:]=v)
 setindex!{V,T}(x::TS{V,T}, v, r::T, ::Colon)                                    = (checkdims(x,v,r=r); x.values[getrows(x,r),:]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::AbstractArray{Int,1}, ::Colon                  = (checkdims(x,v,r=r); x.values[getrows(x,r),:]=v)
+setindex!{V,T}(x::TS{V,T}, v, r::AbstractArray{Int,1}, ::Colon)                 = (checkdims(x,v,r=r); x.values[getrows(x,r),:]=v)
 setindex!{V,T}(x::TS{V,T}, v, r::Vector{Bool}, ::Colon)                         = (checkdims(x,v,r=r); x.values[getrows(x,r),:]=v)
 setindex!{V,T}(x::TS{V,T}, v, r::Vector{T}, ::Colon)                            = (checkdims(x,v,r=r); x.values[getrows(x,r),:]=v)
 setindex!{V,T}(x::TS{V,T}, v, r::Int)                                           = (checkdims(x,v,r=r); x.values[getrows(x,r),:]=v)
@@ -75,7 +79,7 @@ setindex!{V,T}(x::TS{V,T}, v, r::T, c::Int)                                     
 setindex!{V,T}(x::TS{V,T}, v, r::T, c::Symbol)                                  = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
 setindex!{V,T}(x::TS{V,T}, v, r::T, c::AbstractArray{Int,1})                    = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
 setindex!{V,T}(x::TS{V,T}, v, r::T, c::Vector{Bool})                            = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::T, c::Vector{Symbol}                           = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
+setindex!{V,T}(x::TS{V,T}, v, r::T, c::Vector{Symbol})                          = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
 
 #===============================================================================
 							NUMERICAL INDEXING
@@ -92,7 +96,7 @@ getindex(x::TS, r::Int, ::Colon)                    = ts(x.values[r,:], [x.index
 getindex(x::TS, r::Int, c::Int)                     = ts([x.values[r,c]], [x.index[r]], [x.fields[c]])
 getindex(x::TS, r::Int, c::AbstractArray{Int,1})    = ts(x.values[r,c], [x.index[r]], x.fields[c])
 
-getindex(x::TS, r::AbstractArray{Int,1)                             = ts(x.values[r,:], x.index[r], x.fields)
+getindex(x::TS, r::AbstractArray{Int,1})                            = ts(x.values[r,:], x.index[r], x.fields)
 getindex(x::TS, r::AbstractArray{Int,1}, ::Colon)                   = ts(x.values[r,:], x.index[r], x.fields)
 getindex(x::TS, r::AbstractArray{Int,1}, c::Int)                    = ts(x.values[r,c], x.index[r], [x.fields[c]])
 getindex(x::TS, r::AbstractArray{Int,1}, c::AbstractArray{Int,1})   = ts(x.values[r, c], x.index[r], x.fields[c])
