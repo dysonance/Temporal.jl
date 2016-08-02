@@ -166,20 +166,6 @@ Index        Volume
 2015-12-31 | 32270808
 ```
 
-# TODO
-- Add more methods for managing & cleaning data (`merge`, `dropnan`, `dropnil`, etc.)
-- Allow non-numeric values in the array
-- Add more operators and basic functions
-- Temporal aggregation/collapsing
-- ~~Add indexing functionality~~
-    - ~~Index by row and column numbers/ranges~~
-    - ~~Index rows by Date and DateTime types~~
-    - ~~Index columns by field names~~
-    - ~~Index rows by date strings (similar to R's `xts` class)~~
-        - ~~`X["2012"]` should give all values in the year 2012~~
-        - ~~`X["2012-06"]` should give all values in June 2012~~
-        - ~~`X["2012::"]` should give all values from 2012 onwards~~
-
 # Acknowledgements
 This package is inspired mostly by R's [xts](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&uact=8&ved=0ahUKEwi0yPm9yN3KAhXBfyYKHSACCzMQFggdMAA&url=https%3A%2F%2Fcran.r-project.org%2Fweb%2Fpackages%2Fxts%2Fxts.pdf&usg=AFQjCNHpel8f8UzrzErz6U1SOfNnnSg6_g&sig2=K_omBmBbNMtjUfJ8mt-eOQ) package and Python's [pandas](http://pandas.pydata.org/) package. Both packages expedite the often tedious process of acquiring & munging data and provide impressively well-developed and feature-rick toolkits for analysis.
 
