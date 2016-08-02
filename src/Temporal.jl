@@ -12,6 +12,7 @@ export
     sum, mean, maximum, minimum, prod, cumsum, cumprod, diff, lag, nans,
     mondays, tuesdays, wednesdays, thursdays, fridays, saturdays, sundays, 
     bow, eow, bom, eom, boq, eoq, boy, eoy, collapse, apply,
+    acf,
     tsread, tswrite
 
 include("ts.jl")
@@ -19,6 +20,7 @@ include("indexing.jl")
 include("combine.jl")
 include("collapse.jl")
 include("operations.jl")
+include("models.jl")
 include("slice.jl")
 include("io.jl")
 

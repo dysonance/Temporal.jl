@@ -1,4 +1,4 @@
-import Base: size, length, show, getindex, start, next, done, endof, isempty, convert, ndims, float, int, round, setindex!
+import Base: size, length, show, start, next, done, endof, isempty, convert, ndims, float, int, round, eltype
 using Base.Dates
 
 ################################################################################
@@ -70,11 +70,11 @@ typealias ts TS
 ################################################################################
 size(x::TS) = size(x.values)
 size(x::TS, dim::Int) = size(x.values, dim)
+length(x::TS) = prod(size(x))::Int
 start(x::TS) = 1
 next(x::TS, i::Int) = ((x.index[i], x.values[i,:]), i+1)
 done(x::TS, i::Int) = (i > size(x,1))
 isempty(x::TS) = (isempty(x.index) && isempty(x.values))
-length(x::TS) = prod(size(x))::Int
 first(x::TS) = x[1]
 last(x::TS) = x[end]
 endof(x::TS) = endof(x.values)
@@ -82,12 +82,14 @@ ndims(::TS) = 2
 float(x::TS) = ts(float(x.values), x.index, x.fields)
 int(x::TS) = ts(round(Int64,x.values), x.index, x.fields)
 round(x::TS) = ts(round(x.values), x.index, x.fields)
+eltype(x::TS) = eltype(x.values)
 
 ################################################################################
 # SHOW / PRINT METHOD ##########################################################
 ################################################################################
 const DECIMALS = 4
 const SHOWINT = true
+
 function show{V,T}(io::IO, x::TS{V,T})
     nrow = size(x,1)
     ncol = size(x,2)
