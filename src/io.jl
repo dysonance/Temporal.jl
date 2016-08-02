@@ -1,4 +1,6 @@
 using Temporal
+const YAHOO_URL = "http://real-chart.finance.yahoo.com/table.csv"
+const QUANDL_URL = "https://www.quandl.com/api/v3/datasets"
 
 function matchcount(s::ASCIIString, c::Char=',')
     x = 0
@@ -49,4 +51,158 @@ function tswrite(x::TS, file::AbstractString; dlm::Char=',', header::Bool=true, 
         write(outfile, "$(idx[i])$(dlm)$(join(arr[i,:],dlm))$(eol)")
     end
     close(outfile)
+end
+
+# ==============================================================================
+# WEB INTERFACE ================================================================
+# ==============================================================================
+
+function dateconv(s::AbstractString)
+    Dates.datetime2unix(Dates.DateTime(s))
+end
+
+function isdate(t::Vector{DateTime})
+    h = Dates.hour(t)
+    m = Dates.minute(t)
+    s = Dates.second(t)
+    ms = Dates.millisecond(t)
+    return all(h.==h[1]) && all(m.==m[1]) && all(s.==s[1]) && all(ms.==ms[1])
+end
+
+function csvresp(resp; sort::AbstractString="des")
+    @assert resp.status == 200 "Error in download request."
+    rowdata = Vector{ASCIIString}(split(readall(resp), '\n'))
+    header = Vector{ASCIIString}(split(shift!(rowdata), ','))
+    pop!(rowdata)
+    if sort == "des"
+        reverse!(rowdata)
+    end
+    N = length(rowdata)
+    k = length(header)
+    data = zeros(Float64, (N,k-1))
+    v = map(s -> Array{ASCIIString}(split(s, ',')), rowdata)
+    t = map(s -> Dates.DateTime(s[1]), v)
+    isdate(t) ? t = Date(t) : nothing
+    @inbounds for i = 1:N
+        j = (v[i] .== "")
+        v[i][find(j)] = "NaN"
+        data[i,:] = float(v[i][2:k])
+    end
+    return (data, t, header)
+end
+
+# ==============================================================================
+# QUANDL INTERFACE =============================================================
+# ==============================================================================
+
+function quandl_auth{T<:AbstractString}(key::T="")
+    authfile = "$(Pkg.dir())/quandl-auth"
+    if key == ""
+        if isfile(authfile)
+            key = open(readall, authfile)
+        end
+    else
+        f = open(authfile, "w")
+        write(f, key)
+        close(f)
+    end
+    return key
+end
+
+"""
+`quandl(code::AbstractString;
+        from::AbstractString="",
+        thru::AbstractString="",
+        freq::AbstractString="daily",
+        calc::AbstractString="none",
+        sort::AbstractString="asc",
+        rows::Int=0,
+        auth::AbstractString=quandl_auth())`
+
+Quandl data download
+"""
+function quandl(code::AbstractString;
+                from::AbstractString="",
+                thru::AbstractString="",
+                freq::AbstractString="daily",
+                calc::AbstractString="none",
+                sort::AbstractString="asc",
+                rows::Int=0,
+                auth::AbstractString=quandl_auth())
+    # Check arguments =========================================================
+    @assert from=="" || (from[5]=='-' && from[8]=='-') "Argument `from` has invlalid format."
+    @assert thru=="" || (thru[5]=='-' && thru[8]=='-') "Argument `thru` has invlalid format."
+    @assert freq in ["daily","weekly","monthyl","quarterly","annual"] "Invalid `freq` argument."
+    @assert calc in ["none","diff","rdiff","cumul","normalize"] "Invalid `calc` argument."
+    @assert sort  == "asc" || sort == "des" "Argument `sort` must be either \"asc\" or \"des\"."
+    if rows != 0 && (from != "" || thru != "")
+        error("Cannot specify `rows` and date range (`from` or `thru`).")
+    end
+    # Format URL ===============================================================
+    if rows == 0
+        fromstr = from == "" ? "" : "&start_date=$from"
+        thrustr = thru == "" ? "" : "&end_date=$thru"
+        url = "$QUANDL_URL/$code.csv?$(fromstr)$(thrustr)&order=$sort&collapse=$freq&transform=$calc&api_key=$auth"
+    else
+        url = "$QUANDL_URL/$code.csv?&rows=$rows&order=$sort&collapse=$freq&transform=$calc&api_key=$auth"
+    end
+    indata = csvresp(get(url), sort=sort)
+    return ts(indata[1], indata[2], indata[3][2:end])
+end
+
+"""
+quandl_meta(database::AbstractString, dataset::AbstractString)
+Quandl dataset metadata downloaded into a Julia Dict
+"""
+function quandl_meta(database::AbstractString, dataset::AbstractString)
+    resp = get("$QUANDL_URL/$database/$dataset/metadata.json")
+    @assert resp.status == 200 "Error downloading metadata from Quandl."
+    return parse(readall(resp))["dataset"]
+end
+
+"""
+quandl_search(;db::AbstractString="", qry::AbstractString="", perpage::Int=1, pagenum::Int=1)
+Search Quandl for data in a given database, `db`, or matching a given query, `qry`.
+"""
+function quandl_search(;db::AbstractString="", qry::AbstractString="", perpage::Int=1, pagenum::Int=1)
+    @assert db!="" || qry!="" "Must enter a database or a search query."
+    dbstr = db   == "" ? "" : "database_code=$db&"
+    qrystr = qry  == "" ? "" : "query=$(replace(qry, ' ', '+'))&"
+    resp = get("$QUANDL_URL.json?$(dbstr)$(qrystr)per_page=$perpage&page=$pagenum")
+    @assert resp.status == 200 "Error retrieving search results from Quandl"
+    return parse(readall(resp))
+end
+
+# ==============================================================================
+# YAHOO INTERFACE ==============================================================
+# ==============================================================================
+
+function yahoo(symb::AbstractString;
+               from::AbstractString="1900-01-01",
+               thru::AbstractString=string(Dates.today()),
+               freq::Char='d')
+    @assert freq in ['d','w','m','v'] "Argument `freq` must be in ['d','w','m','v']"
+    @assert from[5] == '-' && from[8] == '-' "Argument `from` has invalid date format."
+    @assert thru[5] == '-' && thru[8] == '-' "Argument `thru` has invalid date format."
+    m = Base.parse(Int, from[6:7]) - 1
+    a = m<10 ? string("0",m) : string(m)
+    b = from[9:10]
+    c = from[1:4]
+    m = Base.parse(Int, thru[6:7]) - 1
+    d = m<10 ? string("0",m) : string(m)
+    e = thru[9:10]
+    f = thru[1:4]
+    indata = csvresp(get("$YAHOO_URL?s=$symb&a=$a&b=$b&c=$c&d=$d&e=$e&f=$f&g=$freq&ignore=.csv"))
+    return ts(indata[1], indata[2], indata[3][2:end])
+end
+
+function yahoo(syms::Vector{AbstractString};
+               from::AbstractString="1900-01-01",
+               thru::AbstractString=string(Dates.today()),
+               freq::Char='d')
+    out = Dict()
+    for s = syms
+        out[s] = yahoo(s, from=from, thru=thru, freq=freq)
+    end
+    return out
 end

@@ -2,6 +2,7 @@ VERSION >= v"0.4.0" && __precompile__(true)
 
 module Temporal
 using Base.Dates
+using Requests
 
 export
     TS, ts, size, overlaps,
@@ -12,8 +13,8 @@ export
     sum, mean, maximum, minimum, prod, cumsum, cumprod, diff, lag, nans,
     mondays, tuesdays, wednesdays, thursdays, fridays, saturdays, sundays, 
     bow, eow, bom, eom, boq, eoq, boy, eoy, collapse, apply,
-    acf,
-    tsread, tswrite
+    tsread, tswrite, yahoo, quandl, quandl_auth, quandl_meta, quandl_search,
+    acf
 
 include("ts.jl")
 include("indexing.jl")
