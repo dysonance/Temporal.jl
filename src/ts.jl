@@ -4,7 +4,7 @@ using Base.Dates
 ################################################################################
 # TYPE DEFINITION ##############################################################
 ################################################################################
-namefix(s::AbstractString) = s[map(isalpha, split(s, ""))]
+namefix(s::AbstractString) = s[find(map(isalpha, split(s, "")))]
 namefix(s::Symbol) = Symbol(namefix(string(s)))
 namefix(s::Vector{AbstractString}) = map(namefix, s)
 namefix(s::Vector{Symbol}) = map(namefix, s)
