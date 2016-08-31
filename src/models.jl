@@ -1,3 +1,8 @@
+@doc """
+acf{T<:Number}(x::AbstractArray{T,1}, n::Int=1)
+
+Compute the autocorrelation function of a univariate time series
+""" ->
 function acf{T<:Number}(x::AbstractArray{T,1}, n::Int=1)
     if n == 0
         return 1.0

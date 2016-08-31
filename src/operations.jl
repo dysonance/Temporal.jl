@@ -7,8 +7,8 @@ import Base: ones, zeros, trues, falses, isnan, sum, mean, maximum, minimum,
 prod, cumsum, cumprod, diff, all, any, countnz, sign, find, findfirst
 importall Base.Operators
 
-# titlecase(str::AbstractString) = join([ucfirst(word) for word in split(str, ' ')], ' ')
-# titlecase(arr::AbstractArray{AbstractString}) = map(titlecase, arr)
+# titlecase(str::String) = join([ucfirst(word) for word in split(str, ' ')], ' ')
+# titlecase(arr::AbstractArray{String}) = map(titlecase, arr)
 islogical(fun::Function) = fun in (<, .<, <=, .<=, .>, >, >=, .>=, ==, .==, !=, .!=, !)
 isarithmetic(fun::Function) = fun in (+, .+, -, .-, *, .*, /, ./, %, .%, ^, .^, \, .\)
 const logicals = Dict("<" => "LessThan", ".<" => "LessThan", "<=" => "LessThanEqual", ".<=" => "LessThanEqual",
@@ -37,7 +37,7 @@ function  op{V,T}(x::TS{V,T}, y::TS{V,T}, fun::Function; args...)
     else
         fldstr = ucfirst(string(fun))
     end
-    fldsym = symbol(fldstr)
+    fldsym = Symbol(fldstr)
     if x.index == y.index
         return ts(fun(x.values, y.values; args...), x.index, fldsym)
     end
@@ -177,7 +177,6 @@ end
 ./(y::AbstractArray, x::TS) = x ./ y
 .%(y::AbstractArray, x::TS) = x .% y
 
-+(x::TS, y::Number) = ts(x.values + y, x.index, x.fields)
 +(x::TS, y::Number) = ts(x.values + y, x.index, x.fields)
 -(x::TS, y::Number) = ts(x.values - y, x.index, x.fields)
 *(x::TS, y::Number) = ts(x.values * y, x.index, x.fields)

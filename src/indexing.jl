@@ -185,7 +185,7 @@ getindex(x::TS, r::AbstractArray{DateTime,1}, c::Symbol)            = x[r, x.fie
 getindex(x::TS, r::AbstractArray{DateTime,1}, c::Vector{Symbol})    = x[r, overlaps(x.fields, c)]
 
 
-function thrudt(s::AbstractString, t::Vector{Date})
+function thrudt(s::String, t::Vector{Date})
     n = length(s)
     if n == 4  # yyyy given
         y = parse(Int, s)
@@ -206,7 +206,7 @@ function thrudt(s::AbstractString, t::Vector{Date})
     end
     return t .<= ymd
 end
-function fromdt(s::AbstractString, t::Vector{Date})
+function fromdt(s::String, t::Vector{Date})
     n = length(s)
     if n == 4  # yyyy given
         y = parse(Int, s)
@@ -227,7 +227,7 @@ function fromdt(s::AbstractString, t::Vector{Date})
     end
     return t .>= ymd
 end
-function thisdt(s::AbstractString, t::Vector{Date})
+function thisdt(s::String, t::Vector{Date})
     n = length(s)
     if n == 4  # yyyy given
         y = parse(Int, s)
@@ -247,12 +247,12 @@ function thisdt(s::AbstractString, t::Vector{Date})
         error("Unable to parse date string $s.")
     end
 end
-function fromthru(from::AbstractString, thru::AbstractString, t::Vector{Date})
+function fromthru(from::String, thru::String, t::Vector{Date})
     fromidx = fromdt(from, t)
     thruidx = thrudt(thru, t)
     return fromidx .* thruidx
 end
-function thrudt(s::AbstractString, t::Vector{DateTime})
+function thrudt(s::String, t::Vector{DateTime})
     n = length(s)
     if n == 4  # yyyy given
         y = parse(Int, s)
@@ -306,7 +306,7 @@ function thrudt(s::AbstractString, t::Vector{DateTime})
     end
     return t .<= ymdhms
 end
-function fromdt(s::AbstractString, t::Vector{DateTime})
+function fromdt(s::String, t::Vector{DateTime})
     n = length(s)
     if n == 4  # yyyy given
         y = parse(Int, s)
@@ -357,7 +357,7 @@ function fromdt(s::AbstractString, t::Vector{DateTime})
     end
     return t .>= ymdhms
 end
-function thisdt(s::AbstractString, t::Vector{DateTime})
+function thisdt(s::String, t::Vector{DateTime})
     n = length(s)
     if n == 4  # yyyy given
         y = parse(Int, s)
@@ -407,7 +407,7 @@ function thisdt(s::AbstractString, t::Vector{DateTime})
         error("Unable to parse date string $s.")
     end
 end
-function fromthru(from::AbstractString, thru::AbstractString, t::Vector{DateTime})
+function fromthru(from::String, thru::String, t::Vector{DateTime})
     fromidx = fromdt(from, t)
     thruidx = thrudt(thru, t)
     return fromidx .* thruidx
@@ -415,7 +415,7 @@ end
 
 const RNG_DLM = '/'
 
-function dtidx(s::AbstractString, t::Vector{Date})
+function dtidx(s::String, t::Vector{Date})
     @assert !in('T', s) "Cannot index Date type with sub-daily frequency."
     bds = split(s, RNG_DLM)
     if length(bds) == 1  # single date
@@ -436,7 +436,7 @@ function dtidx(s::AbstractString, t::Vector{Date})
         error("Invalid indexing string: Unable to parse $s")
     end
 end
-function dtidx(s::AbstractString, t::Vector{DateTime})
+function dtidx(s::String, t::Vector{DateTime})
     @assert !in('T', s) "Cannot index Date type with sub-daily frequency."
     bds = split(s, RNG_DLM)
     if length(bds) == 1  # single date
@@ -458,11 +458,10 @@ function dtidx(s::AbstractString, t::Vector{DateTime})
     end
 end
 
-getindex(x::TS, r::AbstractString)                          = x[dtidx(r, x.index)]
-getindex(x::TS, r::AbstractString, ::Colon)                 = x[dtidx(r, x.index)]
-getindex(x::TS, r::AbstractString, c::Int)                  = x[dtidx(r, x.index), c]
-getindex(x::TS, r::AbstractString, c::AbstractArray{Int,1}) = x[dtidx(r, x.index), c]
-getindex(x::TS, r::AbstractString, c::BitArray{1})          = x[dtidx(r, x.index), c]
-getindex(x::TS, r::AbstractString, c::Symbol)               = x[dtidx(r, x.index), c]
-getindex(x::TS, r::AbstractString, c::Vector{Symbol})       = x[dtidx(r, x.index), c]
-
+getindex(x::TS, r::String)                          = x[dtidx(r, x.index)]
+getindex(x::TS, r::String, ::Colon)                 = x[dtidx(r, x.index)]
+getindex(x::TS, r::String, c::Int)                  = x[dtidx(r, x.index), c]
+getindex(x::TS, r::String, c::AbstractArray{Int,1}) = x[dtidx(r, x.index), c]
+getindex(x::TS, r::String, c::BitArray{1})          = x[dtidx(r, x.index), c]
+getindex(x::TS, r::String, c::Symbol)               = x[dtidx(r, x.index), c]
+getindex(x::TS, r::String, c::Vector{Symbol})       = x[dtidx(r, x.index), c]

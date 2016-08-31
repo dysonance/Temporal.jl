@@ -2,7 +2,7 @@ using Temporal
 const YAHOO_URL = "http://real-chart.finance.yahoo.com/table.csv"
 const QUANDL_URL = "https://www.quandl.com/api/v3/datasets"
 
-function matchcount(s::ASCIIString, c::Char=',')
+function matchcount(s::String, c::Char=',')
     x = 0
     @inbounds for i = 1:length(s)
         if s[i] == c
@@ -12,15 +12,15 @@ function matchcount(s::ASCIIString, c::Char=',')
     return x
 end
 
-function tsread(file::AbstractString; dlm::Char=',', header::Bool=true, eol::Char='\n',
-                indextype::Type=Date, format::ByteString="yyyy-mm-dd")
+function tsread(file::String; dlm::Char=',', header::Bool=true, eol::Char='\n',
+                indextype::Type=Date, format::String="yyyy-mm-dd")
     @assert indextype == Date || indextype == DateTime "Argument `indextype` must be either `Date` or `DateTime`."
-    csv = Vector{ASCIIString}(split(readall(file), eol))
+    csv = Vector{String}(split(readstring(file), eol))
     if csv[end] == ""
         pop!(csv)  # remove final blank line
     end
     if header
-        fields = Vector{ASCIIString}(split(shift!(csv), dlm)[2:end])
+        fields = Vector{String}(split(shift!(csv), dlm)[2:end])
         k = length(fields)
         n = length(csv)
     else
@@ -30,9 +30,9 @@ function tsread(file::AbstractString; dlm::Char=',', header::Bool=true, eol::Cha
     end
     # Fill data
     arr = zeros(Float64, (n,k))
-    idx = fill("", n)::Vector{ASCIIString}
+    idx = fill("", n)::Vector{String}
     for i = 1:n
-        s = Vector{ASCIIString}(split(csv[i], dlm))
+        s = Vector{String}(split(csv[i], dlm))
         idx[i] = shift!(s)
         s[s.==""] = "NaN"
         arr[i,:] = float(s)
@@ -40,7 +40,7 @@ function tsread(file::AbstractString; dlm::Char=',', header::Bool=true, eol::Cha
     return ts(arr, indextype(idx), fields)
 end
 
-function tswrite(x::TS, file::AbstractString; dlm::Char=',', header::Bool=true, eol::Char='\n')
+function tswrite(x::TS, file::String; dlm::Char=',', header::Bool=true, eol::Char='\n')
     outfile = open(file, "w")
     if header
         write(outfile, "Index$(dlm)$(join(x.fields, dlm))$(eol)")
@@ -57,7 +57,7 @@ end
 # WEB INTERFACE ================================================================
 # ==============================================================================
 
-function dateconv(s::AbstractString)
+function dateconv(s::String)
     Dates.datetime2unix(Dates.DateTime(s))
 end
 
@@ -69,10 +69,10 @@ function isdate(t::Vector{DateTime})
     return all(h.==h[1]) && all(m.==m[1]) && all(s.==s[1]) && all(ms.==ms[1])
 end
 
-function csvresp(resp; sort::AbstractString="des")
+function csvresp(resp; sort::String="des")
     @assert resp.status == 200 "Error in download request."
-    rowdata = Vector{ASCIIString}(split(readall(resp), '\n'))
-    header = Vector{ASCIIString}(split(shift!(rowdata), ','))
+    rowdata = Vector{String}(split(readstring(resp), '\n'))
+    header = Vector{String}(split(shift!(rowdata), ','))
     pop!(rowdata)
     if sort == "des"
         reverse!(rowdata)
@@ -80,7 +80,7 @@ function csvresp(resp; sort::AbstractString="des")
     N = length(rowdata)
     k = length(header)
     data = zeros(Float64, (N,k-1))
-    v = map(s -> Array{ASCIIString}(split(s, ',')), rowdata)
+    v = map(s -> Array{String}(split(s, ',')), rowdata)
     t = map(s -> Dates.DateTime(s[1]), v)
     isdate(t) ? t = Date(t) : nothing
     @inbounds for i = 1:N
@@ -95,11 +95,11 @@ end
 # QUANDL INTERFACE =============================================================
 # ==============================================================================
 
-function quandl_auth{T<:AbstractString}(key::T="")
+function quandl_auth{T<:String}(key::T="")
     authfile = "$(Pkg.dir())/quandl-auth"
     if key == ""
         if isfile(authfile)
-            key = open(readall, authfile)
+            key = open(readstring, authfile)
         end
     else
         f = open(authfile, "w")
@@ -110,25 +110,25 @@ function quandl_auth{T<:AbstractString}(key::T="")
 end
 
 """
-`quandl(code::AbstractString;
-        from::AbstractString="",
-        thru::AbstractString="",
-        freq::AbstractString="daily",
-        calc::AbstractString="none",
-        sort::AbstractString="asc",
+`quandl(code::String;
+        from::String="",
+        thru::String="",
+        freq::String="daily",
+        calc::String="none",
+        sort::String="asc",
         rows::Int=0,
-        auth::AbstractString=quandl_auth())`
+        auth::String=quandl_auth())`
 
 Quandl data download
 """
-function quandl(code::AbstractString;
-                from::AbstractString="",
-                thru::AbstractString="",
-                freq::AbstractString="daily",
-                calc::AbstractString="none",
-                sort::AbstractString="asc",
+function quandl(code::String;
+                from::String="",
+                thru::String="",
+                freq::String="daily",
+                calc::String="none",
+                sort::String="asc",
                 rows::Int=0,
-                auth::AbstractString=quandl_auth())
+                auth::String=quandl_auth())
     # Check arguments =========================================================
     @assert from=="" || (from[5]=='-' && from[8]=='-') "Argument `from` has invlalid format."
     @assert thru=="" || (thru[5]=='-' && thru[8]=='-') "Argument `thru` has invlalid format."
@@ -151,35 +151,35 @@ function quandl(code::AbstractString;
 end
 
 """
-quandl_meta(database::AbstractString, dataset::AbstractString)
+quandl_meta(database::String, dataset::String)
 Quandl dataset metadata downloaded into a Julia Dict
 """
-function quandl_meta(database::AbstractString, dataset::AbstractString)
+function quandl_meta(database::String, dataset::String)
     resp = get("$QUANDL_URL/$database/$dataset/metadata.json")
     @assert resp.status == 200 "Error downloading metadata from Quandl."
-    return parse(readall(resp))["dataset"]
+    return parse(readstring(resp))["dataset"]
 end
 
 """
-quandl_search(;db::AbstractString="", qry::AbstractString="", perpage::Int=1, pagenum::Int=1)
+quandl_search(;db::String="", qry::String="", perpage::Int=1, pagenum::Int=1)
 Search Quandl for data in a given database, `db`, or matching a given query, `qry`.
 """
-function quandl_search(;db::AbstractString="", qry::AbstractString="", perpage::Int=1, pagenum::Int=1)
+function quandl_search(;db::String="", qry::String="", perpage::Int=1, pagenum::Int=1)
     @assert db!="" || qry!="" "Must enter a database or a search query."
     dbstr = db   == "" ? "" : "database_code=$db&"
     qrystr = qry  == "" ? "" : "query=$(replace(qry, ' ', '+'))&"
     resp = get("$QUANDL_URL.json?$(dbstr)$(qrystr)per_page=$perpage&page=$pagenum")
     @assert resp.status == 200 "Error retrieving search results from Quandl"
-    return parse(readall(resp))
+    return parse(readstring(resp))
 end
 
 # ==============================================================================
 # YAHOO INTERFACE ==============================================================
 # ==============================================================================
 
-function yahoo(symb::AbstractString;
-               from::AbstractString="1900-01-01",
-               thru::AbstractString=string(Dates.today()),
+function yahoo(symb::String;
+               from::String="1900-01-01",
+               thru::String=string(Dates.today()),
                freq::Char='d')
     @assert freq in ['d','w','m','v'] "Argument `freq` must be in ['d','w','m','v']"
     @assert from[5] == '-' && from[8] == '-' "Argument `from` has invalid date format."
@@ -196,9 +196,9 @@ function yahoo(symb::AbstractString;
     return ts(indata[1], indata[2], indata[3][2:end])
 end
 
-function yahoo(syms::Vector{AbstractString};
-               from::AbstractString="1900-01-01",
-               thru::AbstractString=string(Dates.today()),
+function yahoo(syms::Vector{String};
+               from::String="1900-01-01",
+               thru::String=string(Dates.today()),
                freq::Char='d')
     out = Dict()
     for s = syms

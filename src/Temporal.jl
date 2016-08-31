@@ -1,4 +1,4 @@
-VERSION >= v"0.4.0" && __precompile__(true)
+VERSION >= v"0.5-" && __precompile__(true)
 
 module Temporal
 using Base.Dates
@@ -11,7 +11,7 @@ export
     numfun, arrfun, op,
     ones, zeros, trues, falses, isnan, countnz, sign,
     sum, mean, maximum, minimum, prod, cumsum, cumprod, diff, lag, nans,
-    mondays, tuesdays, wednesdays, thursdays, fridays, saturdays, sundays, 
+    mondays, tuesdays, wednesdays, thursdays, fridays, saturdays, sundays,
     bow, eow, bom, eom, boq, eoq, boy, eoy, collapse, apply,
     tsread, tswrite, yahoo, quandl, quandl_auth, quandl_meta, quandl_search,
     acf

@@ -1,12 +1,12 @@
-import Base: size, length, show, start, next, done, endof, isempty, convert, ndims, float, int, round, eltype
+import Base: size, length, show, start, next, done, endof, isempty, convert, ndims, float, round, eltype
 using Base.Dates
 
 ################################################################################
 # TYPE DEFINITION ##############################################################
 ################################################################################
-namefix(s::AbstractString) = s[find(map(isalpha, split(s, "")))]
+namefix(s::String) = s[find(map(isalpha, split(s, "")))]
 namefix(s::Symbol) = Symbol(namefix(string(s)))
-namefix(s::Vector{AbstractString}) = map(namefix, s)
+namefix(s::Vector{String}) = map(namefix, s)
 namefix(s::Vector{Symbol}) = map(namefix, s)
 
 abstract AbstractTS
@@ -33,7 +33,7 @@ end
 function autocol(col::Int)
     @assert col >= 1 "Invalid column number $col - cannot generate column name"
     if col <= 26
-        return symbol(Char(64 + col))
+        return Symbol(Char(64 + col))
     end
     colname = ""
     modulo = 0
@@ -43,7 +43,7 @@ function autocol(col::Int)
         colname = string(Char(65 + modulo)) * colname
         dividend = Int(round((dividend - modulo) / 26))
     end
-    return symbol(colname)
+    return Symbol(colname)
 end
 autocol(cols::AbstractArray{Int,1}) = map(autocol, cols)
 autoidx(n::Int; dt::Period=Day(1), from::Date=today()-(n-1)*dt, thru::Date=from+(n-1)*dt) = collect(from:dt:thru)
@@ -51,13 +51,9 @@ autoidx(n::Int; dt::Period=Day(1), from::Date=today()-(n-1)*dt, thru::Date=from+
 TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Symbol) = TS{V,T}(v, t, [f])
 TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{Symbol}) = TS{V,T}(v, t, f)
 TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Char) = TS{V,T}(v, t, Symbol[f])
-TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::ByteString) = TS{V,T}(v, t, Symbol[f])
-TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::ASCIIString) = TS{V,T}(v, t, Symbol[f])
-TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::UTF8String) = TS{V,T}(v, t, Symbol[f])
-TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{ByteString}) = TS{V,T}(v, t, map(symbol, f))
-TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{ASCIIString}) = TS{V,T}(v, t, map(symbol, f))
-TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{UTF8String}) = TS{V,T}(v, t, map(symbol, f))
-TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{Char}) = TS{V,T}(v, t, map(symbol, f))
+TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::String) = TS{V,T}(v, t, Symbol[f])
+TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{Char}) = TS{V,T}(v, t, map(Symbol, f))
+TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{String}) = TS{V,T}(v, t, map(Symbol, f))
 TS{V,T}(v::AbstractArray{V}, t::Vector{T}) = TS{V,T}(v, t, autocol(1:size(v,2)))
 
 # Conversions ------------------------------------------------------------------
@@ -80,9 +76,9 @@ last(x::TS) = x[end]
 endof(x::TS) = endof(x.values)
 ndims(::TS) = 2
 float(x::TS) = ts(float(x.values), x.index, x.fields)
-int(x::TS) = ts(round(Int64,x.values), x.index, x.fields)
-round(x::TS) = ts(round(x.values), x.index, x.fields)
 eltype(x::TS) = eltype(x.values)
+round(x::TS) = ts(round(x.values), x.index, x.fields)
+# int(x::TS) = ts(round(Int64,x.values), x.index, x.fields)
 
 ################################################################################
 # SHOW / PRINT METHOD ##########################################################
@@ -190,4 +186,3 @@ function show{V,T}(io::IO, x::TS{V,T})
         end
     end
 end
-
