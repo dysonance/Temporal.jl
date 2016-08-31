@@ -9,7 +9,7 @@ dates = collect(today()-Week(n-1):Week(1):today())      # range of Date
 times = collect(now():Hour(1):now()+Hour(n-1))          # range of DateTime
 fields = ["Field $i" for i=1:k]                         # array of String field names
 X = ts(data, dates)                                     # auto-generate field names
-Y = ts(data, times, fields)                             # specify field names 
+Y = ts(data, times, fields)                             # specify field names
 
 # Basic functionality
 @test isa(X, TS)
@@ -24,23 +24,23 @@ a = collect(r)
 dsr = dates[1]:Week(1):dates[2]
 tsr = times[1]:Hour(1):times[2]
 # Single row
-@test X[i].values == data[i,:]
-@test Y[i].values == data[i,:]
+@test X[i].values == data[i,:]'
+@test Y[i].values == data[i,:]'
 @test X[i,i].values == [data[i,i]]
 @test Y[i,i].values == [data[i,i]]
-@test X[i,r].values == data[i,r]
-@test Y[i,r].values == data[i,r]
-@test X[i,a].values == data[i,r]
-@test Y[i,a].values == data[i,r]
+@test X[i,r].values == data[i,r]'
+@test Y[i,r].values == data[i,r]'
+@test X[i,a].values == data[i,r]'
+@test Y[i,a].values == data[i,r]'
 # Single date/time
-@test X[dates[i]].values == data[i,:]
-@test Y[times[i]].values == data[i,:]
+@test X[dates[i]].values == data[i,:]'
+@test Y[times[i]].values == data[i,:]'
 @test X[dates[i],i].values == [data[i,i]]
 @test Y[times[i],i].values == [data[i,i]]
-@test X[dates[i],r].values == data[i,r]
-@test Y[times[i],r].values == data[i,r]
-@test X[dates[i],a].values == data[i,r]
-@test Y[times[i],a].values == data[i,r]
+@test X[dates[i],r].values == data[i,r]'
+@test Y[times[i],r].values == data[i,r]'
+@test X[dates[i],a].values == data[i,r]'
+@test Y[times[i],a].values == data[i,r]'
 # Range of rows
 @test X[r].values == data[r,:]
 @test Y[r].values == data[r,:]
