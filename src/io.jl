@@ -2,6 +2,8 @@ using Temporal
 const YAHOO_URL = "http://real-chart.finance.yahoo.com/table.csv"
 const QUANDL_URL = "https://www.quandl.com/api/v3/datasets"
 
+# haspkg(pkg::String)::Bool = isdir("$(Pkg.dir())/$pkg")
+
 function matchcount(s::String, c::Char=',')
     x = 0
     @inbounds for i = 1:length(s)
@@ -71,7 +73,7 @@ end
 
 function csvresp(resp; sort::String="des")
     @assert resp.status == 200 "Error in download request."
-    rowdata = Vector{String}(split(readstring(resp), '\n'))
+    rowdata = Vector{String}(split(readall(resp), '\n'))
     header = Vector{String}(split(shift!(rowdata), ','))
     pop!(rowdata)
     if sort == "des"
@@ -157,7 +159,7 @@ Quandl dataset metadata downloaded into a Julia Dict
 function quandl_meta(database::String, dataset::String)
     resp = get("$QUANDL_URL/$database/$dataset/metadata.json")
     @assert resp.status == 200 "Error downloading metadata from Quandl."
-    return parse(readstring(resp))["dataset"]
+    return JSON.parse(readall(resp))["dataset"]
 end
 
 """
@@ -170,7 +172,7 @@ function quandl_search(;db::String="", qry::String="", perpage::Int=1, pagenum::
     qrystr = qry  == "" ? "" : "query=$(replace(qry, ' ', '+'))&"
     resp = get("$QUANDL_URL.json?$(dbstr)$(qrystr)per_page=$perpage&page=$pagenum")
     @assert resp.status == 200 "Error retrieving search results from Quandl"
-    return parse(readstring(resp))
+    return JSON.parse(readall(resp))
 end
 
 # ==============================================================================
