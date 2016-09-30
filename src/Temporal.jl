@@ -34,5 +34,6 @@ include("operations.jl")
 include("models.jl")
 include("slice.jl")
 include("io.jl")
+include("ohlc.jl")
 
 end # module
