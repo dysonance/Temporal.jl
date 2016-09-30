@@ -1,4 +1,5 @@
 # Methods to more easily handle financial data
+import Base.close
 
 # Check for various key financial field names
 has_open(x::TS)::Bool = any(x.fields .== :Open)
