@@ -22,7 +22,7 @@ export
     tsread, tswrite, yahoo, quandl, quandl_auth, quandl_meta, quandl_search,
     # Financial
     has_open, has_high, has_low, has_close, has_volume, is_ohlc, is_ohlcv,
-    open, high, low, close, volume, ohlc, ohlcv, hlc, hl
+    open, high, low, close, volume, ohlc, ohlcv, hlc, hl,
     # Modeling
     acf
 
