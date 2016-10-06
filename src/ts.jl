@@ -20,7 +20,7 @@ type TS{V<:Number, T<:TimeType} <: AbstractTS
     fields::Vector{Symbol}
     function TS(values, index, fields)
         @assert size(values,1) == length(index) "Length of index not equal to number of value rows."
-        @assert size(values,2) == length(fields) "Length of fields not equal to number of columns in values."
+        @assert (isempty(values) && isempty(fields)) || (size(values,2) == length(fields)) "Length of fields not equal to number of columns in values."
         order = sortperm(index)
         if size(values,2) == 1
             new(values[order], index[order], namefix(fields))
@@ -55,6 +55,7 @@ TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::String) = TS{V,T}(v, t, Symbol[f])
 TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{Char}) = TS{V,T}(v, t, map(Symbol, f))
 TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{String}) = TS{V,T}(v, t, map(Symbol, f))
 TS{V,T}(v::AbstractArray{V}, t::Vector{T}) = TS{V,T}(v, t, autocol(1:size(v,2)))
+TS() = TS(Vector{Float64}(), Vector{Date}(), Vector{Symbol}())
 
 # Conversions ------------------------------------------------------------------
 convert(::Type{TS{Float64}}, x::TS{Bool}) = TS{Float64}(map(Float64, x.values), x.index, x.fields)

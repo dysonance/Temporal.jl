@@ -33,6 +33,13 @@ function partner(x::TS, y::TS)
 end
 
 function ojoin(x::TS, y::TS)
+    if isempty(x) && !isempty(y)
+        return y
+    elseif isempty(y) && !isempty(x)
+        return x
+    elseif isempty(x) && isempty(y)
+        return ts()
+    end
     idx = union(x.index, y.index)
     xna = setdiff(idx, x.index)
     yna = setdiff(idx, y.index)
@@ -44,6 +51,13 @@ function ojoin(x::TS, y::TS)
 end
 
 function ijoin(x::TS, y::TS)
+    if isempty(x) && !isempty(y)
+        return y
+    elseif isempty(y) && !isempty(x)
+        return x
+    elseif isempty(x) && isempty(y)
+        return ts()
+    end
     idx = intersect(x.index, y.index)
     return ts([x[idx].values y[idx].values], idx, [x.fields; y.fields])
 end
