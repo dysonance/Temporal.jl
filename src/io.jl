@@ -101,7 +101,7 @@ function quandl_auth{T<:String}(key::T="")
     authfile = "$(Pkg.dir())/quandl-auth"
     if key == ""
         if isfile(authfile)
-            key = open(readstring, authfile)
+            key = readstring(authfile)
         end
     else
         f = open(authfile, "w")
