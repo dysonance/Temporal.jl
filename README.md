@@ -3,9 +3,9 @@
 # Temporal
 This package provides a flexible & efficient time series class, `TS`, for the [Julia](http://julialang.org/) programming language. While still early in development, the overarching goal is for the class to be able to slice & dice data with the rapid prototyping speed of [R](https://www.r-project.org/)'s [`xts`](https://github.com/joshuaulrich/xts) and [Python](https://www.python.org/)'s [`pandas`](http://pandas.pydata.org/) packages, while retaining the performance one expects from Julia.
 
-## Example
+# Example
 
-### Indexing functionality
+## Indexing functionality
 
 ```julia
 julia> using Temporal
@@ -155,7 +155,7 @@ Index       Settle  Volume
 2015-12-31  37.04   279553
 ```
 
-# Aggregation/collapsing functionality
+## Aggregation/collapsing functionality
 
 ```julia
 # Get the last values observed at the end of each month
