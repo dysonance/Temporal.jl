@@ -1,64 +1,46 @@
-################################################################################
-# SHOW / PRINT METHOD ##########################################################
-################################################################################
 const DECIMALS = 4
 const SHOWINT = true
 
 function show{V,T}(io::IO, x::TS{V,T})
+    if isempty(x)
+        @printf(io, "Empty %s", typeof(x))
+        return
+    end
     nrow = size(x,1)
     ncol = size(x,2)
     intcatcher = falses(ncol)
-    if isempty(x.values)
-        @printf(io, "%dx%d %s", nrow, ncol, typeof(x))
-        if !isempty(x.index)
-            @printf(io, " %s to %s", string(x.index[1]), string(x.index[end]))
-        end
-        return
+    fields = String[string(x.fields[j]) for j=1:ncol]
+    index = String[string(x.index[i]) for i=1:nrow]
+    @inbounds for j = 1:ncol
+        intcatcher[j] = all(trunc(x.values[:,j]) - x.values[:,j] .== 0.0) ? true : false
     end
-    if isempty(x.index)
-        x.index = [Date(0) for i=1:nrow]
-    end
-    if eltype(x.fields) <: Number
-        fields = [string(x.fields[j]) for j=1:ncol]
-    else
-        fields = x.fields
-    end
-    for j = 1:ncol
-        rowcheck = trunc(x.values[:,j]) - x.values[:,j] .== 0.0
-        if all(rowcheck)
-            intcatcher[j] = true
-        end
-    end
-    spacetime = nrow > 0 ? strwidth(string(x.index[1])) + 3 : 3
+    spacetime = strwidth(string(x.index[1])) + 2
     firstcolwidth = strwidth(string(fields[1]))
-    colwidth = Int[]
-    for j = 1:ncol
-        if T == Bool || nrow == 0
-            push!(colwidth, max(strwidth(string(fields[j])), 5))
-        else
-            push!(colwidth, max(strwidth(string(fields[j])), strwidth(@sprintf("%.2f", maximum(x.values[:,j]))) + DECIMALS - 2))
+    colwidth = zeros(Int, ncol)
+    if V == Bool
+        colwidth += 6
+    else
+        @inbounds for j = 1:ncol
+            colwidth[j] = max(strwidth(fields[j]), strwidth(@sprintf("%.2f", maximum(x.values[:,j]))))
         end
     end
 
     # Summary line
-    @printf(io, "%dx%d %s", nrow, ncol, typeof(x))
-    nrow > 0 && @printf(io, " %s to %s", string(x.index[1]), string(x.index[end]))
-    println(io, "")
-    println(io, "")
+    @printf(io, "%dx%d %s: %s to %s\n\n", nrow, ncol, typeof(x), index[1], index[end])
 
     # Field names line
     print(io, "Index ", ^(" ", spacetime-6), fields[1], ^(" ", colwidth[1] + 2 - firstcolwidth))
-    for j = 2:length(colwidth)
-        print(io, fields[j], ^(" ", colwidth[j] - strwidth(string(fields[j])) + 2))
+    @inbounds for j = 2:length(colwidth)
+        print(io, fields[j], ^(" ", colwidth[j] - strwidth(fields[j]) + 2))
     end
     println(io, "")
 
     # Time index & values line
-    if nrow > 7
-        for i = 1:4
-            print(io, x.index[i], " | ")
-            for j = 1:ncol
-                if T == Bool
+    if nrow > 9
+        @inbounds for i = 1:5
+            print(io, x.index[i], "  ")
+            @inbounds for j = 1:ncol
+                if V == Bool
                     print(io, rpad(x.values[i,j], colwidth[j]+2, " "))
                 else
                     if intcatcher[j] & SHOWINT
@@ -71,10 +53,10 @@ function show{V,T}(io::IO, x::TS{V,T})
             println(io, "")
         end
         println(io, "...")
-        for i = nrow-3:nrow
-            print(io, x.index[i], " | ")
-            for j = 1:ncol
-                if T == Bool
+        @inbounds for i = nrow-4:nrow
+            print(io, x.index[i], "  ")
+            @inbounds for j = 1:ncol
+                if V == Bool
                     print(io, rpad(x.values[i,j], colwidth[j]+2, " "))
                 else
                     if intcatcher[j] & SHOWINT
@@ -86,12 +68,12 @@ function show{V,T}(io::IO, x::TS{V,T})
             end
             println(io, "")
         end
-    elseif nrow > 0
-        for i = 1:nrow
-            print(io, x.index[i], " | ")
-            for j = 1:ncol
-                if T == Bool
-                    print(io, x.index[i], " | ")
+    else
+        @inbounds for i = 1:nrow
+            print(io, x.index[i], "  ")
+            @inbounds for j = 1:ncol
+                if V == Bool
+                    print(io, x.index[i], "  ")
                 else
                     if intcatcher[j] & SHOWINT
                         print(io, rpad(round(Integer, x.values[i,j]), colwidth[j]+2, " "))

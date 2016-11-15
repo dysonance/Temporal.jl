@@ -57,7 +57,7 @@ TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{String}) = TS{V,T}(v, t, ma
 TS{V,T}(v::AbstractArray{V}, t::Vector{T}) = TS{V,T}(v, t, autocol(1:size(v,2)))
 TS{V,T}(v::V, t::T, f::Symbol) = TS{V,T}([v], [t], f)
 TS{V,T}(v::V, t::T) = TS{V,T}([v], [t], :A)
-TS() = TS([], Vector{Date}(), Vector{Symbol}())
+TS() = TS(Real[], Date[], Symbol[])
 
 # Conversions ------------------------------------------------------------------
 convert(::Type{TS{Float64}}, x::TS{Bool}) = TS{Float64}(map(Float64, x.values), x.index, x.fields)

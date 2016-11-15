@@ -1,5 +1,4 @@
 # Methods to more easily handle financial data
-import Base.close
 
 # Check for various key financial field names
 has_open(x::TS)::Bool = any(x.fields .== :Open)
@@ -24,11 +23,11 @@ is_ohlc(x::TS)::Bool = has_open(x) && has_high(x) && has_low(x) && has_close(x)
 is_ohlcv(x::TS)::Bool = is_ohlc(x) && has_volume(x)
 
 # Extractor functions
-open(x::TS)::TS = x[:,:Open]
-high(x::TS)::TS = x[:,:High]
-low(x::TS)::TS = x[:,:Low]
-volume(x::TS)::TS = x[:,:Volume]
-function close(x::TS; use_adj::Bool=true, allow_settle::Bool=true, allow_last::Bool=true)::TS
+op(x::TS)::TS = x[:,:Open]
+hi(x::TS)::TS = x[:,:High]
+lo(x::TS)::TS = x[:,:Low]
+vo(x::TS)::TS = x[:,:Volume]
+function cl(x::TS; use_adj::Bool=true, allow_settle::Bool=true, allow_last::Bool=true)::TS
     if use_adj
         out = x[:AdjClose]
     end
@@ -52,7 +51,7 @@ function close(x::TS; use_adj::Bool=true, allow_settle::Bool=true, allow_last::B
     end
     return out
 end
-ohlc(x::TS)::TS = [open(x) high(x) low(x) close(x)]
-ohlcv(x::TS)::TS = [open(x) high(x) low(x) close(x) volume(x)]
-hlc(x::TS)::TS = [high(x) low(x) close(x)]
-hl(x::TS)::TS = [high(x) low(x)]
+ohlc(x::TS)::TS = [op(x) hi(x) lo(x) cl(x)]
+ohlcv(x::TS)::TS = [op(x) hi(x) lo(x) cl(x) vo(x)]
+hlc(x::TS)::TS = [hi(x) lo(x) cl(x)]
+hl(x::TS)::TS = [hi(x) lo(x)]

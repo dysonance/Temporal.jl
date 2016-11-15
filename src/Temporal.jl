@@ -12,7 +12,7 @@ export
     # Missing Data
     nanrows, nancols, dropnan, fillnan, fillnan!, ffill!, bfill!, linterp!,
     # Operations
-    numfun, arrfun, op,
+    numfun, arrfun, operation,
     ones, zeros, trues, falses, isnan, countnz, sign,
     sum, mean, maximum, minimum, prod, cumsum, cumprod, diff, lag, nans,
     # Aggregation
@@ -22,7 +22,7 @@ export
     tsread, tswrite, yahoo, quandl, quandl_auth, quandl_meta, quandl_search,
     # Financial
     has_open, has_high, has_low, has_close, has_volume, is_ohlc, is_ohlcv,
-    open, high, low, close, volume, ohlc, ohlcv, hlc, hl,
+    op, hi, lo, cl, vo, ohlc, ohlcv, hlc, hl,
     # Modeling
     acf
 
