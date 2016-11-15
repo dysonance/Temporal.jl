@@ -27,6 +27,7 @@ export
     acf
 
 include("ts.jl")
+include("show.jl")
 include("indexing.jl")
 include("combine.jl")
 include("collapse.jl")
