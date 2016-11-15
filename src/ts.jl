@@ -62,8 +62,8 @@ TS() = TS(Real[], Date[], Symbol[])
 # Conversions ------------------------------------------------------------------
 convert(::Type{TS{Float64}}, x::TS{Bool}) = TS{Float64}(map(Float64, x.values), x.index, x.fields)
 convert(::Type{TS{Int}}, x::TS{Bool}) = TS{Int}(map(Int, x.values), x.index, x.fields)
-convert(x::TS{Bool}) = convert(TS{Float64}, x::TS{Bool})
 convert(x::TS{Bool}) = convert(TS{Int}, x::TS{Bool})
+#convert(x::TS{Bool}) = convert(TS{Float64}, x::TS{Bool})
 typealias ts TS
 
 ################################################################################
