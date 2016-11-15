@@ -3,12 +3,10 @@ Operations on TS objects
 =#
 
 # TODO: increase efficiency running these operations
-import Base: ones, zeros, trues, falses, isnan, sum, mean, maximum, minimum,
+import Base: ones, zeros, trues, falses, isnan, sum, mean, maximum, minimum, round,
 prod, cumsum, cumprod, diff, all, any, countnz, sign, find, findfirst
 importall Base.Operators
 
-# titlecase(str::String) = join([ucfirst(word) for word in split(str, ' ')], ' ')
-# titlecase(arr::AbstractArray{String}) = map(titlecase, arr)
 islogical(fun::Function) = fun in (<, .<, <=, .<=, .>, >, >=, .>=, ==, .==, !=, .!=, !)
 isarithmetic(fun::Function) = fun in (+, .+, -, .-, *, .*, /, ./, %, .%, ^, .^, \, .\)
 const logicals = Dict("<" => "LessThan", ".<" => "LessThan", "<=" => "LessThanEqual", ".<=" => "LessThanEqual",
@@ -47,17 +45,20 @@ end
 operation{V,T}(x::TS{V,T}, fun::Function; args...) = ts(fun(x.values), x.index, x.fields; args...)
 
 # Number functions
-sum(x::TS) = sum(x.values)
-sum(x::TS, dim::Int) = sum(x.values, dim)
-sum(f::Function, x::TS) = sum(f, x.values)
-mean(x::TS) = mean(x.values)
-mean(x::TS, dim::Int) = mean(x, dim)
-prod(x::TS) = prod(x.values)
-prod(x::TS, dim::Int) = prod(x.values, dim)
-maximum(x::TS) = maximum(x.values)
-maximum(x::TS, dim::Int) = maximum(x.values, dim)
-minimum(x::TS) = minimum(x.values)
-minimum(x::TS, dim::Int) = minimum(x.values, dim)
+round(x::TS, n::Int=0) = ts(round(x.values,n), x.index, x.fields)
+round{T}(::Type{T}, x::TS) = ts(round(T, x.values), x.index, x.fields)
+sum{V}(x::TS{V})::V = sum(x.values)
+sum{V}(x::TS{V}, dim::Int)::Array{V} = sum(x.values, dim)
+sum{V}(f::Function, x::TS{V})::V = sum(f, x.values)
+mean{V}(x::TS{V}) = mean(x.values)
+mean{V}(x::TS{V}, dim::Int)::Array{V} = mean(x, dim)
+mean{V}(f::Function, x::TS{V})::V = mean(f, x.values)
+prod{V}(x::TS{V})::V = prod(x.values)
+prod{V}(x::TS, dim::Int)::Array{V} = prod(x.values, dim)
+maximum{V}(x::TS{V})::V = maximum(x.values)
+maximum{V}(x::TS{V}, dim::Int)Array{V} = maximum(x.values, dim)
+minimum{V}(x::TS{V})::V = minimum(x.values)
+minimum{V}(x::TS{V}, dim::Int)::Array{V} = minimum(x.values, dim)
 cumsum(x::TS, dim::Int=1) = ts(cumsum(x.values, dim), x.index, x.fields)
 cummin(x::TS, dim::Int=1) = ts(cummin(x.values, dim), x.index, x.fields)
 cummax(x::TS, dim::Int=1) = ts(cummax(x.values, dim), x.index, x.fields)
@@ -93,7 +94,7 @@ function diffn{T<:Number,N}(x::Array{T,N}, dim::Int=1, n::Int=1)
     end
     return dx
 end
-function diff{V,T}(x::TS{V,T}, n::Int=1; dim::Int=1, pad::Bool=true, padval::V=zero(V))
+function diff{V,T}(x::TS{V,T}, n::Int=1; dim::Int=1, pad::Bool=false, padval::V=zero(V))
     @assert dim == 1 || dim == 2 "Argument dim must be either 1 (rows) or 2 (columns)."
     r = size(x, 1)
     c = size(x, 2)
@@ -118,7 +119,7 @@ function diff{V,T}(x::TS{V,T}, n::Int=1; dim::Int=1, pad::Bool=true, padval::V=z
         end
     end
 end
-function lag{V,T}(x::TS{V,T}, n::Int=1; pad::Bool=true, padval::V=zero(V))
+function lag{V,T}(x::TS{V,T}, n::Int=1; pad::Bool=false, padval::V=zero(V))
 	@assert abs(n) < size(x,1) "Argument `n` out of bounds."
 	if n == 0
 		return x

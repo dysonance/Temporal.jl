@@ -13,7 +13,7 @@ export
     nanrows, nancols, dropnan, fillnan, fillnan!, ffill!, bfill!, linterp!,
     # Operations
     numfun, arrfun, operation,
-    ones, zeros, trues, falses, isnan, countnz, sign,
+    ones, zeros, trues, falses, isnan, countnz, sign, round,
     sum, mean, maximum, minimum, prod, cumsum, cumprod, diff, lag, nans,
     # Aggregation
     mondays, tuesdays, wednesdays, thursdays, fridays, saturdays, sundays,
