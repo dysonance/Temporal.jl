@@ -14,7 +14,7 @@ abstract AbstractTS
 Time series type aimed at efficiency and simplicity.
 Motivated by the `xts` package in R and the `pandas` package in Python.
 """ ->
-type TS{V<:Real, T<:TimeType} <: AbstractTS
+type TS{V<:Any, T<:TimeType} <: AbstractTS
     values::AbstractArray{V}
     index::Vector{T}
     fields::Vector{Symbol}
@@ -57,13 +57,15 @@ TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{String}) = TS{V,T}(v, t, ma
 TS{V,T}(v::AbstractArray{V}, t::Vector{T}) = TS{V,T}(v, t, autocol(1:size(v,2)))
 TS{V,T}(v::V, t::T, f::Symbol) = TS{V,T}([v], [t], f)
 TS{V,T}(v::V, t::T) = TS{V,T}([v], [t], :A)
-TS() = TS(Real[], Date[], Symbol[])
+TS() = TS([], Date[], Symbol[])
+TS(v::AbstractArray) = TS(v, [Dates.Date() for i in 1:size(v,1)])
 
 # Conversions ------------------------------------------------------------------
 convert(::Type{TS{Float64}}, x::TS{Bool}) = TS{Float64}(map(Float64, x.values), x.index, x.fields)
 convert(::Type{TS{Int}}, x::TS{Bool}) = TS{Int}(map(Int, x.values), x.index, x.fields)
 convert(x::TS{Bool}) = convert(TS{Int}, x::TS{Bool})
-#convert(x::TS{Bool}) = convert(TS{Float64}, x::TS{Bool})
+# convert{V}(::Type{TS}, x::Array{V}) = TS{V,Date}(x, [Dates.Date() for i in 1:size(x,1)])
+# convert(x::TS{Bool}) = convert(TS{Float64}, x::TS{Bool})
 typealias ts TS
 
 ################################################################################
