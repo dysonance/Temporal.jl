@@ -47,7 +47,7 @@ function ojoin(x::TS, y::TS)
     yi = sortperm([y.index; yna])
     xvals = [x.values; fill(NaN, (length(xna), size(x,2)))][xi,:]
     yvals = [y.values; fill(NaN, (length(yna), size(y,2)))][yi,:]
-    return ts([xvals yvals], idx, [x.fields; y.fields])
+    return ts([xvals yvals], sort(idx), [x.fields; y.fields])
 end
 
 function ijoin(x::TS, y::TS)

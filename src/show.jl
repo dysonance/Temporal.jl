@@ -70,10 +70,12 @@ function printrows(io::IO, x::TS)::Void
     nrow = size(x,1)
     widths = getwidths(io,x) .+ PADDING
     toprows, botrows = getshowrows(io,x)
-    @inbounds for row in toprows
-        printrow(io, x, row, widths)
+    if nrow > 1
+        @inbounds for row in toprows
+            printrow(io, x, row, widths)
+        end
+        toprows[end] < botrows[1]-1 ? println(io, "...") : nothing
     end
-    toprows[end] < botrows[1]-1 ? println(io, "...") : nothing
     @inbounds for row in botrows
         printrow(io, x, row, widths)
     end
