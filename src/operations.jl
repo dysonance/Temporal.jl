@@ -4,7 +4,7 @@ Operations on TS objects
 
 # TODO: increase efficiency running these operations
 import Base: ones, zeros, trues, falses, isnan, sum, mean, maximum, minimum, round,
-prod, cumsum, cumprod, diff, all, any, countnz, sign, find, findfirst
+prod, cumsum, cumprod, diff, all, any, countnz, sign, find, findfirst, log
 importall Base.Operators
 
 islogical(fun::Function) = fun in (<, .<, <=, .<=, .>, >, >=, .>=, ==, .==, !=, .!=, !)
@@ -25,6 +25,8 @@ falses(x::TS) = ts(falses(x.values), x.index, x.fields)
 isnan(x::TS) = ts(isnan(x.values), x.index, x.fields)
 countnz(x::TS) = countnz(x.values)
 sign(x::TS) = ts(sign(x.values), x.index, x.fields)
+log(x::TS) = ts(log(x.values), x.index, x.fields)
+log(b::Number, x::TS) = ts(log(b, x.values), x.index, x.fields)
 
 # Pass Array operators through to underlying TS values
 function  operation{V,T}(x::TS{V,T}, y::TS{V,T}, fun::Function; args...)
