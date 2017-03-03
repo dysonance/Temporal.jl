@@ -66,15 +66,27 @@ function printrow{V,T}(io::IO, x::TS{V,T}, row::Int, widths::Vector{Int}=getwidt
     nothing
 end
 
+function print_dots(io::IO, x::TS, widths::Vector{Int}=getwidths(io,x))::Void
+    padfix = Int.(iseven.(widths))
+    @inbounds for j in 1:length(widths)
+        print(io, lpad(rpad("⋮", fld(widths[j],2)+padfix[j]), widths[j]))
+    end
+    println(io)
+    nothing
+end
+
 function printrows(io::IO, x::TS)::Void
     nrow = size(x,1)
+    ncol = size(x,2)
     widths = getwidths(io,x) .+ PADDING
     toprows, botrows = getshowrows(io,x)
     if nrow > 1
         @inbounds for row in toprows
             printrow(io, x, row, widths)
         end
-        toprows[end] < botrows[1]-1 ? println(io, "...") : nothing
+        if toprows[end] < botrows[1] - 1
+            print_dots(io, x, widths.-[zeros(Int,size(x,2));2])
+        end
     end
     @inbounds for row in botrows
         printrow(io, x, row, widths)
