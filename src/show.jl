@@ -85,7 +85,8 @@ function printrows(io::IO, x::TS)::Void
             printrow(io, x, row, widths)
         end
         if toprows[end] < botrows[1] - 1
-            print_dots(io, x, widths.-[zeros(Int,size(x,2));2])
+            # print_dots(io, x, widths.-[zeros(Int,size(x,2));2])
+            println(io, "⋮")
         end
     end
     @inbounds for row in botrows
