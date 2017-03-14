@@ -17,11 +17,11 @@ strwidth(f::Function)::Int = strwidth(string(f))
 strwidth(b::Bool)::Int = b ? 4 : 5
 strwidth(c::Char)::Int = 1
 
-function summary{V,T}(x::TS{V,T})::String
+function print_summary{V,T}(io::IO, x::TS{V,T})::Void
     if isempty(x)
-        return @sprintf("Empty %s", typeof(x))
+        println(@sprintf("Empty %s", typeof(x)))
     else
-        return @sprintf("%ix%i %s: %s to %s", size(x,1), size(x,2), typeof(x), x.index[1], x.index[end])
+        println(@sprintf("%ix%i %s: %s to %s", size(x,1), size(x,2), typeof(x), x.index[1], x.index[end]))
     end
 end
 
@@ -52,52 +52,64 @@ function getwidths{V,T}(io::IO, x::TS{V,T})::Vector{Int}
     return widths
 end
 
-function printheader(io::IO, x::TS, widths::Vector{Int}=getwidths(io,x).+PADDING)::Void
+hasnegs{T}(v::Vector{T})::Bool = T<:Number ? any(v.<zero(T)) : false
+
+function getnegs(io::IO, x::TS)::Vector{Bool}
+    toprows, botrows = getshowrows(io, x)
+    idx = [toprows; botrows]
+    return [hasnegs(x.values[:,j]) for j in 1:size(x,2)]
+end
+
+function print_header(io::IO, x::TS, widths::Vector{Int}=getwidths(io,x).+PADDING, negs::Vector{Bool}=getnegs(io,x))::Void
     println(io, prod(rpad.(["Index"; string.(x.fields)], widths)))
     nothing
 end
 
-function printrow{V,T}(io::IO, x::TS{V,T}, row::Int, widths::Vector{Int}=getwidths(io,x).+PADDING)::Void
+function print_row{V,T}(io::IO, x::TS{V,T}, row::Int,
+                        widths::Vector{Int}=getwidths(io,x).+PADDING, negs::Vector{Bool}=getnegs(io,x))::Void
     if V <: Number
-        println(io, prod(rpad.([string(x.index[row]); string.(round.(x.values[row,:],DECIMALS))], widths)))
+        println(io, prod(rpad.([string(x.index[row]); [" "].^(negs.*x.values[row,:].>=0.0) .* string.(round.(x.values[row,:],DECIMALS))], widths)))
     else
         println(io, prod(rpad.([string(x.index[row]); string.(x.values[row,:])], widths)))
     end
     nothing
 end
 
-function print_dots(io::IO, x::TS, widths::Vector{Int}=getwidths(io,x))::Void
-    padfix = Int.(iseven.(widths))
-    @inbounds for j in 1:length(widths)
-        print(io, lpad(rpad("⋮", fld(widths[j],2)+padfix[j]), widths[j]))
-    end
-    println(io)
-    nothing
-end
+# function print_dots(io::IO, x::TS, widths::Vector{Int}=getwidths(io,x))::Void
+#     padfix = Int.(iseven.(widths))
+#     @inbounds for j in 1:length(widths)
+#         print(io, lpad(rpad("⋮", fld(widths[j],2)+padfix[j]), widths[j]))
+#     end
+#     println(io)
+#     nothing
+# end
 
-function printrows(io::IO, x::TS)::Void
+function print_rows(io::IO, x::TS)::Void
     nrow = size(x,1)
     ncol = size(x,2)
+    negs = getnegs(io,x)
     widths = getwidths(io,x) .+ PADDING
     toprows, botrows = getshowrows(io,x)
     if nrow > 1
         @inbounds for row in toprows
-            printrow(io, x, row, widths)
+            print_row(io, x, row, widths, negs)
         end
         if toprows[end] < botrows[1] - 1
-            # print_dots(io, x, widths.-[zeros(Int,size(x,2));2])
+            # print__dots(io, x, widths.-[zeros(Int,size(x,2));2])
             println(io, "⋮")
         end
     end
     @inbounds for row in botrows
-        printrow(io, x, row, widths)
+        print_row(io, x, row, widths, negs)
     end
     nothing
 end
 
 function show{V,T}(io::IO, x::TS{V,T})::Void
-    println(io, summary(x))
-    printheader(io, x)
-    printrows(io, x)
+    # println(io, summary(x))
+    print_summary(io, x)
+    println()  # print whitespace before actualy data starts to improve readability
+    print_header(io, x)
+    print_rows(io, x)
     nothing
 end
