@@ -1,15 +1,20 @@
-import Base: size, length, show, start, next, done, endof, isempty, convert, ndims, float, round, eltype
+import Base: size, length, show, start, next, done, endof, isempty, convert, ndims, float, eltype
 using Base.Dates
 
 ################################################################################
 # TYPE DEFINITION ##############################################################
 ################################################################################
+# namefix(s::String) = s[find(map(isalpha, split(s, "")))]
 namefix(s::String) = s[find(map(isalpha, split(s, "")))]
 namefix(s::Symbol) = Symbol(namefix(string(s)))
-namefix(s::Vector{String}) = map(namefix, s)
-namefix(s::Vector{Symbol}) = map(namefix, s)
+# namefix(s::Vector{String}) = map(namefix, s)
+# namefix(s::Vector{Symbol}) = map(namefix, s)
 
-abstract AbstractTS
+if VERSION >= v"0.6-"
+    abstract type AbstractTS end
+else
+    abstract AbstractTS
+end
 @doc doc"""
 Time series type aimed at efficiency and simplicity.
 Motivated by the `xts` package in R and the `pandas` package in Python.
@@ -25,10 +30,11 @@ type TS{V<:Any, T<:TimeType} <: AbstractTS
         if size(values,2) == 1
             new(values[order], index[order], namefix(fields))
         else
-            new(values[order,:], index[order], namefix(fields))
+            new(values[order,:], index[order], namefix.(fields))
         end
     end
 end
+
 
 function autocol(col::Int)
     @assert col >= 1 "Invalid column number $col - cannot generate column name"
@@ -52,8 +58,8 @@ TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Symbol) = TS{V,T}(v, t, [f])
 TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{Symbol}) = TS{V,T}(v, t, f)
 TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Char) = TS{V,T}(v, t, Symbol[f])
 TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::String) = TS{V,T}(v, t, Symbol[f])
-TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{Char}) = TS{V,T}(v, t, map(Symbol, f))
-TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{String}) = TS{V,T}(v, t, map(Symbol, f))
+TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{Char}) = TS{V,T}(v, t, Symbol.(f))
+TS{V,T}(v::AbstractArray{V}, t::Vector{T}, f::Vector{String}) = TS{V,T}(v, t, Symbol.(f))
 TS{V,T}(v::AbstractArray{V}, t::Vector{T}) = TS{V,T}(v, t, autocol(1:size(v,2)))
 TS{V,T}(v::V, t::T, f::Symbol) = TS{V,T}([v], [t], f)
 TS{V,T}(v::V, t::T) = TS{V,T}([v], [t], :A)
@@ -66,7 +72,7 @@ convert(::Type{TS{Int}}, x::TS{Bool}) = TS{Int}(map(Int, x.values), x.index, x.f
 convert(x::TS{Bool}) = convert(TS{Int}, x::TS{Bool})
 # convert{V}(::Type{TS}, x::Array{V}) = TS{V,Date}(x, [Dates.Date() for i in 1:size(x,1)])
 # convert(x::TS{Bool}) = convert(TS{Float64}, x::TS{Bool})
-typealias ts TS
+const ts = TS
 
 ################################################################################
 # BASIC UTILITIES ##############################################################
@@ -84,5 +90,5 @@ endof(x::TS) = endof(x.values)
 ndims(::TS) = 2
 float(x::TS) = ts(float(x.values), x.index, x.fields)
 eltype(x::TS) = eltype(x.values)
-round(x::TS) = ts(round(x.values), x.index, x.fields)
+# round(x::TS) = ts(round(x.values), x.index, x.fields)
 # int(x::TS) = ts(round(Int64,x.values), x.index, x.fields)

@@ -7,8 +7,8 @@ import Base: ones, zeros, trues, falses, isnan, sum, mean, maximum, minimum, rou
 prod, cumsum, cumprod, diff, all, any, countnz, sign, find, findfirst, log
 importall Base.Operators
 
-islogical(fun::Function) = fun in (<, .<, <=, .<=, .>, >, >=, .>=, ==, .==, !=, .!=, !)
-isarithmetic(fun::Function) = fun in (+, .+, -, .-, *, .*, /, ./, %, .%, ^, .^, \, .\)
+islogical(fun::Function) = fun in (<, <=, >, >=, ==, !=, !)
+isarithmetic(fun::Function) = fun in (+, -, *, /, %, ^, \)
 const logicals = Dict("<" => "LessThan", ".<" => "LessThan", "<=" => "LessThanEqual", ".<=" => "LessThanEqual",
                       ">" => "GreaterThan", ".>" => "GreaterThan", ">=" => "GreaterThanEqual", ".>=" => "GreaterThanEqual",
                       "==" => "Equal", ".==" => "Equal", "!=" => "NotEqual", ".!=" => "NotEqual", "!" => "Not")
@@ -151,55 +151,55 @@ end
 -(x::TS, y::TS) = operation(x, y, -)
 *(x::TS, y::TS) = operation(x, y, *)
 /(x::TS, y::TS) = operation(x, y, /)
-.+(x::TS, y::TS) = operation(x, y, .+)
-.-(x::TS, y::TS) = operation(x, y, .-)
-.*(x::TS, y::TS) = operation(x, y, .*)
-./(x::TS, y::TS) = operation(x, y, ./)
-.\(x::TS, y::TS) = operation(x, y, .\)
-.^(x::TS, y::TS) = operation(x, y, .^)
-.%(x::TS, y::TS) = operation(x, y, .%)
+# .+(x::TS, y::TS) = operation(x, y, .+)
+# .-(x::TS, y::TS) = operation(x, y, .-)
+# .*(x::TS, y::TS) = operation(x, y, .*)
+# ./(x::TS, y::TS) = operation(x, y, ./)
+# .\(x::TS, y::TS) = operation(x, y, .\)
+# .^(x::TS, y::TS) = operation(x, y, .^)
+# .%(x::TS, y::TS) = operation(x, y, .%)
 
 +(x::TS, y::AbstractArray) = ts(x.values + y, x.index, x.fields)
 -(x::TS, y::AbstractArray) = ts(x.values - y, x.index, x.fields)
 *(x::TS, y::AbstractArray) = ts(x.values * y, x.index, x.fields)
 /(x::TS, y::AbstractArray) = ts(x.values / y, x.index, x.fields)
-.+(x::TS, y::AbstractArray) = ts(x.values .+ y, x.index, x.fields)
-.-(x::TS, y::AbstractArray) = ts(x.values .- y, x.index, x.fields)
-.*(x::TS, y::AbstractArray) = ts(x.values .* y, x.index, x.fields)
-./(x::TS, y::AbstractArray) = ts(x.values ./ y, x.index, x.fields)
-.\(x::TS, y::AbstractArray) = ts(x.values .\ y, x.index, x.fields)
-.^(x::TS, y::AbstractArray) = ts(x.values .^ y, x.index, x.fields)
-.%(x::TS, y::AbstractArray) = ts(x.values .% y, x.index, x.fields)
+# .+(x::TS, y::AbstractArray) = ts(x.values .+ y, x.index, x.fields)
+# .-(x::TS, y::AbstractArray) = ts(x.values .- y, x.index, x.fields)
+# .*(x::TS, y::AbstractArray) = ts(x.values .* y, x.index, x.fields)
+# ./(x::TS, y::AbstractArray) = ts(x.values ./ y, x.index, x.fields)
+# .\(x::TS, y::AbstractArray) = ts(x.values .\ y, x.index, x.fields)
+# .^(x::TS, y::AbstractArray) = ts(x.values .^ y, x.index, x.fields)
+# .%(x::TS, y::AbstractArray) = ts(x.values .% y, x.index, x.fields)
 +(y::AbstractArray, x::TS) = x + y
 -(y::AbstractArray, x::TS) = x - y
 *(y::AbstractArray, x::TS) = x * y
-.+(y::AbstractArray, x::TS) = x .+ y
 /(y::AbstractArray, x::TS) = x / y
-.-(y::AbstractArray, x::TS) = x .- y
-.*(y::AbstractArray, x::TS) = x .* y
-./(y::AbstractArray, x::TS) = x ./ y
-.%(y::AbstractArray, x::TS) = x .% y
+# .+(y::AbstractArray, x::TS) = x .+ y
+# .-(y::AbstractArray, x::TS) = x .- y
+# .*(y::AbstractArray, x::TS) = x .* y
+# ./(y::AbstractArray, x::TS) = x ./ y
+# .%(y::AbstractArray, x::TS) = x .% y
 
 +(x::TS, y::Number) = ts(x.values + y, x.index, x.fields)
 -(x::TS, y::Number) = ts(x.values - y, x.index, x.fields)
 *(x::TS, y::Number) = ts(x.values * y, x.index, x.fields)
 /(x::TS, y::Number) = ts(x.values / y, x.index, x.fields)
-.+(x::TS, y::Number) = ts(x.values .+ y, x.index, x.fields)
-.-(x::TS, y::Number) = ts(x.values .- y, x.index, x.fields)
-.*(x::TS, y::Number) = ts(x.values .* y, x.index, x.fields)
-./(x::TS, y::Number) = ts(x.values ./ y, x.index, x.fields)
-.\(x::TS, y::Number) = ts(x.values .\ y, x.index, x.fields)
-.^(x::TS, y::Number) = ts(x.values .^ y, x.index, x.fields)
-.%(x::TS, y::Number) = ts(x.values .% y, x.index, x.fields)
+# .+(x::TS, y::Number) = ts(x.values .+ y, x.index, x.fields)
+# .-(x::TS, y::Number) = ts(x.values .- y, x.index, x.fields)
+# .*(x::TS, y::Number) = ts(x.values .* y, x.index, x.fields)
+# ./(x::TS, y::Number) = ts(x.values ./ y, x.index, x.fields)
+# .\(x::TS, y::Number) = ts(x.values .\ y, x.index, x.fields)
+# .^(x::TS, y::Number) = ts(x.values .^ y, x.index, x.fields)
+# .%(x::TS, y::Number) = ts(x.values .% y, x.index, x.fields)
 +(y::Number, x::TS) = x + y
 -(y::Number, x::TS) = x - y
 *(y::Number, x::TS) = x * y
 /(y::Number, x::TS) = x / y
-.+(y::Number, x::TS) = x .+ y
-.-(y::Number, x::TS) = x .- y
-.*(y::Number, x::TS) = x .* y
-./(y::Number, x::TS) = x ./ y
-.%(y::Number, x::TS) = x .% y
+# .+(y::Number, x::TS) = x .+ y
+# .-(y::Number, x::TS) = x .- y
+# .*(y::Number, x::TS) = x .* y
+# ./(y::Number, x::TS) = x ./ y
+# .%(y::Number, x::TS) = x .% y
 
 # Logical operators
 all(x::TS) = all(x.values)
@@ -208,38 +208,38 @@ any(x::TS) = any(x.values)
 ==(x::TS, y::TS) = x.values == y.values && x.index == y.index
 !=(x::TS, y::TS) = !(x == y)
 
-.==(x::TS, y::TS) = operation(x, y, .==)
-.>(x::TS, y::TS) = operation(x, y, .>)
-.<(x::TS, y::TS) = operation(x, y, .<)
-.!=(x::TS, y::TS) = operation(x, y, .!=)
-.<=(x::TS, y::TS) = operation(x, y, .<=)
-.>=(x::TS, y::TS) = operation(x, y, .>=)
-
-.==(x::TS, y::Number) = ts(x.values .== y, x.index, x.fields)
-.>(x::TS, y::Number) = ts(x.values .> y, x.index, x.fields)
-.<(x::TS, y::Number) = ts(x.values .< y, x.index, x.fields)
-.!=(x::TS, y::Number) = ts(x.values .!= y, x.index, x.fields)
-.<=(x::TS, y::Number) = ts(x.values .<= y, x.index, x.fields)
-.>=(x::TS, y::Number) = ts(x.values .>= y, x.index, x.fields)
-.==(y::Number, x::TS) = ts(x.values .== y, x.index, x.fields)
-.>(y::Number, x::TS) = ts(x.values .> y, x.index, x.fields)
-.<(y::Number, x::TS) = ts(x.values .< y, x.index, x.fields)
-.!=(y::Number, x::TS) = ts(x.values .!= y, x.index, x.fields)
-.<=(y::Number, x::TS) = ts(x.values .<= y, x.index, x.fields)
-.>=(y::Number, x::TS) = ts(x.values .>= y, x.index, x.fields)
-
-.==(x::TS, y::AbstractArray) = ts(x.values .== y, x.index, x.fields)
-.>(x::TS, y::AbstractArray) = ts(x.values .> y, x.index, x.fields)
-.<(x::TS, y::AbstractArray) = ts(x.values .< y, x.index, x.fields)
-.!=(x::TS, y::AbstractArray) = ts(x.values .!= y, x.index, x.fields)
-.<=(x::TS, y::AbstractArray) = ts(x.values .<= y, x.index, x.fields)
-.>=(x::TS, y::AbstractArray) = ts(x.values .>= y, x.index, x.fields)
-.==(y::AbstractArray, x::TS) = ts(x.values .== y, x.index, x.fields)
-.>(y::AbstractArray, x::TS) = ts(x.values .> y, x.index, x.fields)
-.<(y::AbstractArray, x::TS) = ts(x.values .< y, x.index, x.fields)
-.!=(y::AbstractArray, x::TS) = ts(x.values .!= y, x.index, x.fields)
-.<=(y::AbstractArray, x::TS) = ts(x.values .<= y, x.index, x.fields)
-.>=(y::AbstractArray, x::TS) = ts(x.values .>= y, x.index, x.fields)
+# .==(x::TS, y::TS) = operation(x, y, .==)
+# .>(x::TS, y::TS) = operation(x, y, .>)
+# .<(x::TS, y::TS) = operation(x, y, .<)
+# .!=(x::TS, y::TS) = operation(x, y, .!=)
+# .<=(x::TS, y::TS) = operation(x, y, .<=)
+# .>=(x::TS, y::TS) = operation(x, y, .>=)
+# 
+# .==(x::TS, y::Number) = ts(x.values .== y, x.index, x.fields)
+# .>(x::TS, y::Number) = ts(x.values .> y, x.index, x.fields)
+# .<(x::TS, y::Number) = ts(x.values .< y, x.index, x.fields)
+# .!=(x::TS, y::Number) = ts(x.values .!= y, x.index, x.fields)
+# .<=(x::TS, y::Number) = ts(x.values .<= y, x.index, x.fields)
+# .>=(x::TS, y::Number) = ts(x.values .>= y, x.index, x.fields)
+# .==(y::Number, x::TS) = ts(x.values .== y, x.index, x.fields)
+# .>(y::Number, x::TS) = ts(x.values .> y, x.index, x.fields)
+# .<(y::Number, x::TS) = ts(x.values .< y, x.index, x.fields)
+# .!=(y::Number, x::TS) = ts(x.values .!= y, x.index, x.fields)
+# .<=(y::Number, x::TS) = ts(x.values .<= y, x.index, x.fields)
+# .>=(y::Number, x::TS) = ts(x.values .>= y, x.index, x.fields)
+# 
+# .==(x::TS, y::AbstractArray) = ts(x.values .== y, x.index, x.fields)
+# .>(x::TS, y::AbstractArray) = ts(x.values .> y, x.index, x.fields)
+# .<(x::TS, y::AbstractArray) = ts(x.values .< y, x.index, x.fields)
+# .!=(x::TS, y::AbstractArray) = ts(x.values .!= y, x.index, x.fields)
+# .<=(x::TS, y::AbstractArray) = ts(x.values .<= y, x.index, x.fields)
+# .>=(x::TS, y::AbstractArray) = ts(x.values .>= y, x.index, x.fields)
+# .==(y::AbstractArray, x::TS) = ts(x.values .== y, x.index, x.fields)
+# .>(y::AbstractArray, x::TS) = ts(x.values .> y, x.index, x.fields)
+# .<(y::AbstractArray, x::TS) = ts(x.values .< y, x.index, x.fields)
+# .!=(y::AbstractArray, x::TS) = ts(x.values .!= y, x.index, x.fields)
+# .<=(y::AbstractArray, x::TS) = ts(x.values .<= y, x.index, x.fields)
+# .>=(y::AbstractArray, x::TS) = ts(x.values .>= y, x.index, x.fields)
 
 >(x::TS, y::TS) = x .> y
 <(x::TS, y::TS) = x .< y

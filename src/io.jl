@@ -64,10 +64,10 @@ function dateconv(s::String)
 end
 
 function isdate(t::Vector{DateTime})
-    h = Dates.hour(t)
-    m = Dates.minute(t)
-    s = Dates.second(t)
-    ms = Dates.millisecond(t)
+    h = Dates.hour.(t)
+    m = Dates.minute.(t)
+    s = Dates.second.(t)
+    ms = Dates.millisecond.(t)
     return all(h.==h[1]) && all(m.==m[1]) && all(s.==s[1]) && all(ms.==ms[1])
 end
 
@@ -84,7 +84,7 @@ function csvresp(resp; sort::String="des")
     data = zeros(Float64, (N,k-1))
     v = map(s -> Array{String}(split(s, ',')), rowdata)
     t = map(s -> Dates.DateTime(s[1]), v)
-    isdate(t) ? t = Date(t) : nothing
+    isdate(t) ? t = Date.(t) : nothing
     @inbounds for i = 1:N
         j = (v[i] .== "")
         v[i][find(j)] = "NaN"
