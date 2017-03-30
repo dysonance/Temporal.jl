@@ -141,7 +141,7 @@ Set up Quandl user account authorization. Run once passing your Quandl API key, 
 julia> quandl_auth("Your_API_Key")
 "Your_API_Key"
 
-quandl_auth()
+julia> quandl_auth()
 "Your_API_Key"
 ```
 """ ->

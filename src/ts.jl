@@ -4,17 +4,9 @@ using Base.Dates
 ################################################################################
 # TYPE DEFINITION ##############################################################
 ################################################################################
-import Base: getindex
-getindex(s::String, b::BitArray{1})::String = s[find(b)]
-getindex(s::String, b::Vector{Bool})::String = s[find(b)]
-namefix(s::String)::String = s[isalpha.(split(s, ""))]
+namefix(s::String)::String = s[find(isalpha.(split(s, "")))]
 namefix(s::Symbol)::Symbol = Symbol(namefix(string(s)))
 
-# if VERSION >= v"0.6-"
-#     abstract type AbstractTS end
-# else
-#     abstract AbstractTS
-# end
 abstract AbstractTS
 @doc doc"""
 Time series type aimed at efficiency and simplicity.
