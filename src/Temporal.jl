@@ -3,6 +3,7 @@ VERSION >= v"0.5-" && __precompile__(true)
 module Temporal
 using Base.Dates
 using Requests
+using JSON
 
 export
     # Foundational
