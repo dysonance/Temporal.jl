@@ -9,11 +9,12 @@ getindex(s::String, b::BitArray{1})::String = s[find(b)]
 namefix(s::String)::String = s[isalpha.(split(s, ""))]
 namefix(s::Symbol)::Symbol = Symbol(namefix(string(s)))
 
-if VERSION >= v"0.6-"
-    abstract type AbstractTS end
-else
-    abstract AbstractTS
-end
+# if VERSION >= v"0.6-"
+#     abstract type AbstractTS end
+# else
+#     abstract AbstractTS
+# end
+abstract AbstractTS
 @doc doc"""
 Time series type aimed at efficiency and simplicity.
 Motivated by the `xts` package in R and the `pandas` package in Python.
