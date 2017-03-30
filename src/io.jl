@@ -165,7 +165,7 @@ Download time series data from Quandl as a TS object.
 quandl(code::String;
        from::String="",
        thru::String="",
-       freq::String='d',
+       freq::Char='d',
        calc::String="none",
        sort::Char='a',
        rows::Int=0,
@@ -176,7 +176,7 @@ quandl(code::String;
 *Example*
 
 ```
-julia> quandl("CHRIS/CME_CL1", from="2010-01-01", thru=string(Dates.today()), freq="annual")
+julia> quandl("CHRIS/CME_CL1", from="2010-01-01", thru=string(Dates.today()), freq='a')
 8x8 Temporal.TS{Float64,Date}: 2010-12-31 to 2017-12-31
 Index       Open   High    Low    Last   Change  Settle  Volume    PreviousDayOpenInterest  
 2010-12-31  89.67  92.06   89.05  91.38  NaN     91.38   171010.0  311738.0                 
@@ -200,7 +200,6 @@ function quandl(code::String;
     # Check arguments =========================================================
     @assert from=="" || (from[5]=='-' && from[8]=='-') "Argument `from` has invlalid format."
     @assert thru=="" || (thru[5]=='-' && thru[8]=='-') "Argument `thru` has invlalid format."
-    @assert freq in ["daily","weekly","monthly","quarterly","annual"] "Invalid `freq` argument."
     @assert freq in ['d', 'w', 'm', 'q', 'a'] "Invalid `freq` argument (must be in ['d', 'w', 'm', 'q', 'a'])."
     @assert calc in ["none","diff","rdiff","cumul","normalize"] "Invalid `calc` argument."
     @assert sort  == 'a' || sort == 'd' "Argument `sort` must be either \'a\' or \'d\'."
