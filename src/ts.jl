@@ -6,6 +6,7 @@ using Base.Dates
 ################################################################################
 import Base: getindex
 getindex(s::String, b::BitArray{1})::String = s[find(b)]
+getindex(s::String, b::Vector{Bool})::String = s[find(b)]
 namefix(s::String)::String = s[isalpha.(split(s, ""))]
 namefix(s::Symbol)::Symbol = Symbol(namefix(string(s)))
 

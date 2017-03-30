@@ -90,9 +90,9 @@ end
 # WEB INTERFACE ================================================================
 # ==============================================================================
 
-function dateconv(s::String)
-    Dates.datetime2unix(Dates.DateTime(s))
-end
+# function dateconv(s::String)
+#     Dates.datetime2unix(Dates.DateTime(s))
+# end
 
 function isdate(t::Vector{DateTime})
     h = Dates.hour.(t)
@@ -143,6 +143,7 @@ julia> quandl_auth("Your_API_Key")
 
 quandl_auth()
 "Your_API_Key"
+```
 """ ->
 function quandl_auth{T<:String}(key::T="")::String
     authfile = "$(Pkg.dir())/quandl-auth"
@@ -293,8 +294,6 @@ function yahoo(symb::String;
 end
 
 @doc doc"""
-Download stock price data from Yahoo! Finance into a TS object.
-
 `yahoo(syms::Vector{String}; from::String="1900-01-01", thru::String=string(Dates.today()), freq::Char='d')::Dict{String,TS}`
 """ ->
 function yahoo(syms::Vector{String};
