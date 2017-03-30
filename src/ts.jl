@@ -4,11 +4,10 @@ using Base.Dates
 ################################################################################
 # TYPE DEFINITION ##############################################################
 ################################################################################
-# namefix(s::String) = s[find(map(isalpha, split(s, "")))]
-namefix(s::String) = s[find(map(isalpha, split(s, "")))]
-namefix(s::Symbol) = Symbol(namefix(string(s)))
-# namefix(s::Vector{String}) = map(namefix, s)
-# namefix(s::Vector{Symbol}) = map(namefix, s)
+import Base: getindex
+getindex(s::String, b::BitArray{1})::String = s[find(b)]
+namefix(s::String)::String = s[isalpha.(split(s, ""))]
+namefix(s::Symbol)::Symbol = Symbol(namefix(string(s)))
 
 if VERSION >= v"0.6-"
     abstract type AbstractTS end
@@ -28,7 +27,7 @@ type TS{V<:Any, T<:TimeType} <: AbstractTS
         @assert (isempty(values) && isempty(fields)) || (size(values,2) == length(fields)) "Length of fields not equal to number of columns in values."
         order = sortperm(index)
         if size(values,2) == 1
-            new(values[order], index[order], namefix(fields))
+            new(values[order], index[order], namefix.(fields))
         else
             new(values[order,:], index[order], namefix.(fields))
         end
