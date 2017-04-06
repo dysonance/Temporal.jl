@@ -27,7 +27,8 @@ export
     # Visualization
     # plot, plot!, scatter, scatter!, histogram, histogram!, bar, bar!,
     # Modeling
-    acf
+    acf, fit, fitted_values, resid, indvar, depvar,
+    AR_Model
 
 include("ts.jl")
 include("show.jl")
