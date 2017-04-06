@@ -24,6 +24,8 @@ export
     # Financial
     has_open, has_high, has_low, has_close, has_volume, is_ohlc, is_ohlcv,
     op, hi, lo, cl, vo, ohlc, ohlcv, hlc, hl,
+    # Visualization
+    # plot, plot!, scatter, scatter!, histogram, histogram!, bar, bar!,
     # Modeling
     acf
 
@@ -37,5 +39,6 @@ include("models.jl")
 include("slice.jl")
 include("io.jl")
 include("ohlc.jl")
+# include("viz.jl")
 
 end # module
