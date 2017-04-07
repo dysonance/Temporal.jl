@@ -4,7 +4,8 @@ using Base.Dates
 ################################################################################
 # TYPE DEFINITION ##############################################################
 ################################################################################
-namefix(s::String)::String = s[find(isalpha.(split(s, "")))]
+findalphanum(s::String)::Vector{Int} = find(isalpha.(split(s,"")).+isnumber.(split(s,"")))
+namefix(s::String)::String = s[findalphanum(s)]
 namefix(s::Symbol)::Symbol = Symbol(namefix(string(s)))
 
 abstract AbstractTS
