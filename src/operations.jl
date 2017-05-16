@@ -205,8 +205,12 @@ end
 all(x::TS) = all(x.values)
 any(x::TS) = any(x.values)
 !(x::TS) = ts(!x.values, x.index, x.fields)
-==(x::TS, y::TS) = x.values == y.values && x.index == y.index
-!=(x::TS, y::TS) = !(x == y)
+==(x::TS, y::TS) = (m=[x y]; return ts(m[:,1].values.==m[:,2].values, m.index))
+!=(x::TS, y::TS) = (m=[x y]; return ts(m[:,1].values!=m[:,2].values, m.index))
+>(x::TS, y::TS) = (m=[x y]; return ts(m[:,1].values.>m[:,2].values, m.index))
+<(x::TS, y::TS) = (m=[x y]; return ts(m[:,1].values.<m[:,2].values, m.index))
+<=(x::TS, y::TS) = (m=[x y]; return ts(m[:,1].values.<=m[:,2].values, m.index))
+>=(x::TS, y::TS) = (m=[x y]; return ts(m[:,1].values.>=m[:,2].values, m.index))
 
 # .==(x::TS, y::TS) = operation(x, y, .==)
 # .>(x::TS, y::TS) = operation(x, y, .>)
@@ -241,7 +245,3 @@ any(x::TS) = any(x.values)
 # .<=(y::AbstractArray, x::TS) = ts(x.values .<= y, x.index, x.fields)
 # .>=(y::AbstractArray, x::TS) = ts(x.values .>= y, x.index, x.fields)
 
->(x::TS, y::TS) = x .> y
-<(x::TS, y::TS) = x .< y
-<=(x::TS, y::TS) = x .<= y
->=(x::TS, y::TS) = x .>= y
