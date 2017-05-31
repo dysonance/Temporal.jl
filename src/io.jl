@@ -1,18 +1,9 @@
 using Temporal
 using JSON
 using Base.Dates
-const YAHOO_URL = "http://real-chart.finance.yahoo.com/table.csv"
-const QUANDL_URL = "https://www.quandl.com/api/v3/datasets"
-
-# function matchcount(s::String, c::Char=',')
-#     x = 0
-#     @inbounds for i = 1:length(s)
-#         if s[i] == c
-#             x += 1
-#         end
-#     end
-#     return x
-# end
+const YAHOO_URL = "https://query1.finance.yahoo.com/v7/finance/download"  # for querying yahoo's servers
+const YAHOO_TMP = "https://ca.finance.yahoo.com/quote/^GSPC/history?p=^GSPC"  # for getting the cookies and crumbs
+const QUANDL_URL = "https://www.quandl.com/api/v3/datasets"  # for querying quandl's servers
 
 @doc """
 Read contents from a text file into a TS object.
@@ -114,14 +105,26 @@ function csvresp(resp; sort::Char='d')
     end
     N = length(rowdata)
     k = length(header)
-    data = zeros(Float64, (N,k-1))
     v = map(s -> Array{String}(split(s, ',')), rowdata)
     t = map(s -> Dates.DateTime(s[1]), v)
     isdate(t) ? t = Date.(t) : nothing
-    @inbounds for i = 1:N
-        j = (v[i] .== "")
-        v[i][find(j)] = "NaN"
-        data[i,:] = float(v[i][2:k])
+    data = zeros(Float64, (N,k-1))
+    if length(header) == 2 && header[2] == "Stock Splits"
+        # Logic to be applied for stock splits for Yahoo Finance downloads
+        @inbounds for i in 1:N
+            stock_split_string = split(v[i][2], '/')
+            split_a = float(stock_split_string[1])
+            split_b = float(stock_split_string[2])
+            is_rev_split = split_a < split_b
+            data[i,1] = split_b / split_a
+        end
+    else
+        # Standard logic
+        @inbounds for i in 1:N
+            j = (v[i] .== "")
+            v[i][find(j)] = "NaN"
+            data[i,:] = float(v[i][2:k])
+        end
     end
     return (data, t, header)
 end
@@ -248,16 +251,29 @@ end
 # ==============================================================================
 # YAHOO INTERFACE ==============================================================
 # ==============================================================================
+function yahoo_get_crumb()::Tuple{SubString{String}, Dict{String, Requests.HttpCommon.Cookie}}
+    response = Requests.get(YAHOO_TMP)
+    m = match(r"\"user\":{\"crumb\":\"(.*?)\"", readstring(response))
+    return (m[1], Requests.cookies(response))
+end
+
 @doc doc"""
 Download stock price data from Yahoo! Finance into a TS object.
 
-`yahoo(symb::String; from::String="1900-01-01", thru::String=string(Dates.today()), freq::Char='d')::TS`
+`yahoo(symb::String; from::String="1900-01-01", thru::String=string(Dates.today()), freq::String="d", event::String="history", crumb_tuple::Tuple{SubString{String}, Dict{String, Requests.HttpCommon.Cookie}}=yahoo_get_crumb())::TS`
 
+# Arguments
+- `symb` ticker symbol of the stock
+- `from` starting date of the historical data request (string formatted as yyyy-mm-dd)
+- `thru` ending date of the historical data request (string formatted as yyyy-mm-dd)
+- `freq` frequency interval of the requested dowload (valid options are \"d\" for daily, \"wk\" for weekly, and \"mo\" for monthly)
+- `event` type of data download to request (valid options are \"history\" for standard historical price data, \"div\" for dividend payments, and \"split\" for stock splits)
+- `crumb_tuple` workaround to provide crumbs/cookies for the new Yahoo Finance portal (which requires such data to fulfill the requests)
 
-*Example*
+# Example
 
 ```
-julia> yahoo("AAPL", from="2010-06-09", thru=string(Dates.today()), freq='w')
+julia> yahoo("AAPL", from="2010-06-09", thru=string(Dates.today()), freq="wk")
 356x6 Temporal.TS{Float64,Date}: 2010-06-09 to 2017-03-27
 Index       Open    High    Low     Close   Volume      AdjClose  
 2010-06-09  251.47  253.86  242.2   253.51  1.813954e8  32.8446   
@@ -276,32 +292,30 @@ Index       Open    High    Low     Close   Volume      AdjClose
 function yahoo(symb::String;
                from::String="1900-01-01",
                thru::String=string(Dates.today()),
-               freq::Char='d')::TS
-    @assert freq in ['d','w','m','v'] "Argument `freq` must be in ['d','w','m','v']"
+               freq::String="d",
+               event::String="history",
+               crumb_tuple::Tuple{SubString{String}, Dict{String, Requests.HttpCommon.Cookie}}=yahoo_get_crumb())::TS
+    @assert freq in ["d","wk","mo"] "Argument `freq` must be either \"d\" (daily), \"wk\" (weekly), or \"mo\" (monthly)."
+    @assert event in ["history","div","split"] "Argument `event` must be either \"history\", \"div\", or \"split\"."
     @assert from[5] == '-' && from[8] == '-' "Argument `from` has invalid date format."
     @assert thru[5] == '-' && thru[8] == '-' "Argument `thru` has invalid date format."
-    m = Base.parse(Int, from[6:7]) - 1
-    a = m<10 ? string("0",m) : string(m)
-    b = from[9:10]
-    c = from[1:4]
-    m = Base.parse(Int, thru[6:7]) - 1
-    d = m<10 ? string("0",m) : string(m)
-    e = thru[9:10]
-    f = thru[1:4]
-    indata = csvresp(get("$YAHOO_URL?s=$symb&a=$a&b=$b&c=$c&d=$d&e=$e&f=$f&g=$freq&ignore=.csv"))
+    period1 = Int(floor(Dates.datetime2unix(Dates.DateTime(from))))
+    period2 = Int(floor(Dates.datetime2unix(Dates.DateTime(thru))))
+    urlstr = "$(YAHOO_URL)/$(symb)?period1=$(period1)&period2=$(period2)&interval=1$(freq)&events=$(event)&crumb=$(crumb_tuple[1])"
+    response = Requests.get(urlstr, cookies=crumb_tuple[2])
+    indata = Temporal.csvresp(response)
     return ts(indata[1], indata[2], indata[3][2:end])
 end
 
-@doc doc"""
-`yahoo(syms::Vector{String}; from::String="1900-01-01", thru::String=string(Dates.today()), freq::Char='d')::Dict{String,TS}`
-""" ->
 function yahoo(syms::Vector{String};
                from::String="1900-01-01",
                thru::String=string(Dates.today()),
-               freq::Char='d')::Dict{String,TS}
+               freq::String="d",
+               event::String="history",
+               crumb_tuple::Tuple{SubString{String}, Dict{String, Requests.HttpCommon.Cookie}}=yahoo_get_crumb())::Dict{String,TS}
     out = Dict()
     for s = syms
-        out[s] = yahoo(s, from=from, thru=thru, freq=freq)
+        out[s] = yahoo(s, from=from, thru=thru, freq=freq, event=event, crumb_tuple=crumb_tuple)
     end
     return out
 end

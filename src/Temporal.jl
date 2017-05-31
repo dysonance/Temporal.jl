@@ -20,7 +20,7 @@ export
     mondays, tuesdays, wednesdays, thursdays, fridays, saturdays, sundays,
     bow, eow, bom, eom, boq, eoq, boy, eoy, collapse, apply,
     # IO
-    tsread, tswrite, yahoo, quandl, quandl_auth, quandl_meta, quandl_search,
+    tsread, tswrite, yahoo_get_crumb, yahoo, quandl, quandl_auth, quandl_meta, quandl_search,
     # Financial
     has_open, has_high, has_low, has_close, has_volume, is_ohlc, is_ohlcv,
     op, hi, lo, cl, vo, ohlc, ohlcv, hlc, hl,
