@@ -26,8 +26,8 @@ tsr = times[1]:Hour(1):times[2]
 # Single row
 @test X[i].values == data[i,:]'
 @test Y[i].values == data[i,:]'
-@test X[i,i].values == [data[i,i]]
-@test Y[i,i].values == [data[i,i]]
+@test X[i,i].values == [data[i,i]][:,:]
+@test Y[i,i].values == [data[i,i]][:,:]
 @test X[i,r].values == data[i,r]'
 @test Y[i,r].values == data[i,r]'
 @test X[i,a].values == data[i,r]'
@@ -35,8 +35,8 @@ tsr = times[1]:Hour(1):times[2]
 # Single date/time
 @test X[dates[i]].values == data[i,:]'
 @test Y[times[i]].values == data[i,:]'
-@test X[dates[i],i].values == [data[i,i]]
-@test Y[times[i],i].values == [data[i,i]]
+@test X[dates[i],i].values == [data[i,i]][:,:]
+@test Y[times[i],i].values == [data[i,i]][:,:]
 @test X[dates[i],r].values == data[i,r]'
 @test Y[times[i],r].values == data[i,r]'
 @test X[dates[i],a].values == data[i,r]'
@@ -44,8 +44,8 @@ tsr = times[1]:Hour(1):times[2]
 # Range of rows
 @test X[r].values == data[r,:]
 @test Y[r].values == data[r,:]
-@test X[r,i].values == data[r,i]
-@test Y[r,i].values == data[r,i]
+@test X[r,i].values == data[r,i][:,:]
+@test Y[r,i].values == data[r,i][:,:]
 @test X[r,r].values == data[r,r]
 @test Y[r,r].values == data[r,r]
 @test X[r,a].values == data[r,r]
@@ -53,8 +53,8 @@ tsr = times[1]:Hour(1):times[2]
 # Range of dates/times
 @test X[dates[r]].values == data[r,:]
 @test Y[times[r]].values == data[r,:]
-@test X[dates[r],i].values == data[r,i]
-@test Y[times[r],i].values == data[r,i]
+@test X[dates[r],i].values == data[r,i][:,:]
+@test Y[times[r],i].values == data[r,i][:,:]
 @test X[dates[r],r].values == data[r,r]
 @test Y[times[r],r].values == data[r,r]
 @test X[dates[r],a].values == data[r,r]
@@ -62,8 +62,8 @@ tsr = times[1]:Hour(1):times[2]
 # Array of rows
 @test X[a].values == data[r,:]
 @test Y[a].values == data[r,:]
-@test X[a,i].values == data[r,i]
-@test Y[a,i].values == data[r,i]
+@test X[a,i].values == data[r,i][:,:]
+@test Y[a,i].values == data[r,i][:,:]
 @test X[a,r].values == data[r,r]
 @test Y[a,r].values == data[r,r]
 @test X[a,a].values == data[r,r]
@@ -71,8 +71,8 @@ tsr = times[1]:Hour(1):times[2]
 # Array of dates/times
 @test X[collect(dates[r])].values == data[r,:]
 @test Y[collect(times[r])].values == data[r,:]
-@test X[collect(dates[r]),i].values == data[r,i]
-@test Y[collect(times[r]),i].values == data[r,i]
+@test X[collect(dates[r]),i].values == data[r,i][:,:]
+@test Y[collect(times[r]),i].values == data[r,i][:,:]
 @test X[collect(dates[r]),r].values == data[r,r]
 @test Y[collect(times[r]),r].values == data[r,r]
 @test X[collect(dates[r]),a].values == data[r,r]
@@ -80,7 +80,7 @@ tsr = times[1]:Hour(1):times[2]
 # Step ranges
 @test X[dsr].values == data[r,:]
 @test Y[tsr].values == data[r,:]
-@test X[dsr,i].values == data[r,i]
-@test Y[tsr,i].values == data[r,i]
+@test X[dsr,i].values == data[r,i][:,:]
+@test Y[tsr,i].values == data[r,i][:,:]
 @test X[dsr,r].values == data[r,r]
 @test Y[tsr,r].values == data[r,r]
