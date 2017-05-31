@@ -8,27 +8,39 @@ findalphanum(s::String)::Vector{Int} = find(isalpha.(split(s,"")).+isnumber.(spl
 namefix(s::String)::String = s[findalphanum(s)]
 namefix(s::Symbol)::Symbol = Symbol(namefix(string(s)))
 
-abstract AbstractTS
+# abstract AbstractTS
+
 @doc doc"""
 Time series type aimed at efficiency and simplicity.
 Motivated by the `xts` package in R and the `pandas` package in Python.
 """ ->
-type TS{V<:Any, T<:TimeType} <: AbstractTS
-    values::AbstractArray{V}
+mutable struct TS{V,T}
+    values::Matrix{V}
     index::Vector{T}
     fields::Vector{Symbol}
-    function TS(values, index, fields)
-        @assert size(values,1) == length(index) "Length of index not equal to number of value rows."
-        @assert (isempty(values) && isempty(fields)) || (size(values,2) == length(fields)) "Length of fields not equal to number of columns in values."
+    function TS{V,T}(values, index, fields) where {V,T<:TimeType}
+        @assert size(values,1)==length(index) "Length of index not equal to number of value rows."
+        @assert size(values,2)==length(fields) || (isempty(fields) && isempty(values)) "Length of fields not equal to number of columns in values."
         order = sortperm(index)
-        if size(values,2) == 1
-            new(values[order], index[order], namefix.(fields))
-        else
-            new(values[order,:], index[order], namefix.(fields))
-        end
+        new(values[order,:], index[order], namefix.(fields))
     end
 end
 
+# type TS{V<:Any, T<:TimeType} <: AbstractTS
+#     values::AbstractArray{V}
+#     index::Vector{T}
+#     fields::Vector{Symbol}
+#     function TS(values, index, fields)
+#         @assert size(values,1) == length(index) "Length of index not equal to number of value rows."
+#         @assert (isempty(values) && isempty(fields)) || (size(values,2) == length(fields)) "Length of fields not equal to number of columns in values."
+#         order = sortperm(index)
+#         if size(values,2) == 1
+#             new(values[order], index[order], namefix.(fields))
+#         else
+#             new(values[order,:], index[order], namefix.(fields))
+#         end
+#     end
+# end
 
 function autocol(col::Int)
     @assert col >= 1 "Invalid column number $col - cannot generate column name"
@@ -58,7 +70,7 @@ TS{V,T}(v::AbstractArray{V}, t::Vector{T}) = TS{V,T}(v, t, autocol(1:size(v,2)))
 TS{V,T}(v::V, t::T, f::Symbol) = TS{V,T}([v], [t], f)
 TS{V,T}(v::V, t::T) = TS{V,T}([v], [t], :A)
 TS() = TS([], Date[], Symbol[])
-TS(v::AbstractArray) = TS(v, [Dates.Date() for i in 1:size(v,1)])
+TS(v::AbstractArray) = TS(v, [Dates.Date()+Dates.Day(i) for i in 0:size(v,1)-1])
 
 # Conversions ------------------------------------------------------------------
 convert(::Type{TS{Float64}}, x::TS{Bool}) = TS{Float64}(map(Float64, x.values), x.index, x.fields)
