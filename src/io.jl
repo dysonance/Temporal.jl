@@ -4,6 +4,7 @@ using Base.Dates
 const YAHOO_URL = "https://query1.finance.yahoo.com/v7/finance/download"  # for querying yahoo's servers
 const YAHOO_TMP = "https://ca.finance.yahoo.com/quote/^GSPC/history?p=^GSPC"  # for getting the cookies and crumbs
 const QUANDL_URL = "https://www.quandl.com/api/v3/datasets"  # for querying quandl's servers
+const GOOGLE_URL = "http://finance.google.com/finance/historical?"  # for querying google finance's servers
 
 @doc """
 Read contents from a text file into a TS object.
@@ -106,8 +107,17 @@ function csvresp(resp; sort::Char='d')
     N = length(rowdata)
     k = length(header)
     v = map(s -> Array{String}(split(s, ',')), rowdata)
-    t = map(s -> Dates.DateTime(s[1]), v)
-    isdate(t) ? t = Date.(t) : nothing
+    source_is_google = (header[1] == "\ufeffDate")
+    if source_is_google
+        header[1] = "Date"
+        format = Dates.DateFormat("dd-uuu-yy")
+        t = map(s -> Dates.DateTime(s[1], format), v) 
+        t .+= Dates.Year(2000)  # instead of year 0017, take year 2017
+    else
+        format = Dates.DateFormat("yyyy-mm-dd")
+        t = map(s -> Dates.DateTime(s[1]), v)
+    end
+    Temporal.isdate(t) ? t = Date.(t) : nothing
     data = zeros(Float64, (N,k-1))
     if length(header) == 2 && header[2] == "Stock Splits"
         # Logic to be applied for stock splits for Yahoo Finance downloads
@@ -176,7 +186,7 @@ quandl(code::String;
 ```
 
 
-*Example*
+# Example
 
 ```
 julia> quandl("CHRIS/CME_CL1", from="2010-01-01", thru=string(Dates.today()), freq='a')
@@ -318,4 +328,54 @@ function yahoo(syms::Vector{String};
         out[s] = yahoo(s, from=from, thru=thru, freq=freq, event=event, crumb_tuple=crumb_tuple)
     end
     return out
+end
+
+# ==============================================================================
+# QUANDL INTERFACE =============================================================
+# ==============================================================================
+@doc doc"""
+Download stock price data from Google Finance into a TS object.
+
+`google(symb::String; from::String="2000-01-01", thru::String=string(Dates.today()))::TS`
+
+# Arguments
+- `symb` ticker symbol of the stock
+- `from` starting date of the historical data request (string formatted as yyyy-mm-dd)
+- `thru` ending date of the historical data request (string formatted as yyyy-mm-dd)
+
+# Example
+
+```
+julia> google("IBM", from="2010-06-09", thru=string(Dates.today()))
+1756x5 Temporal.TS{Float64,Date}: 2010-06-09 to 2017-05-30
+Index       Open    High    Low     Close   Volume      
+2010-06-09  124.83  125.84  123.58  123.9   7.800309e6  
+2010-06-10  125.99  128.22  125.8   127.68  7.47961e6   
+2010-06-11  126.73  128.8   126.44  128.45  5.827093e6  
+2010-06-14  128.5   129.97  128.49  128.5   6.753113e6  
+2010-06-15  128.93  129.95  128.37  129.79  6.652612e6
+⋮
+2017-05-23  152.57  153.68  151.92  152.03  2.564503e6  
+2017-05-24  152.21  152.76  151.23  152.51  3.732399e6  
+2017-05-25  153.25  153.73  152.95  153.2   2.582815e6  
+2017-05-26  152.85  153.0   152.06  152.49  2.443507e6  
+2017-05-30  151.95  152.67  151.59  151.73  3.666032e6
+```
+""" ->
+function google(symb::String;
+                from::String="2000-01-01",
+                thru::String=string(Dates.today()))::TS
+    @assert freq in ['d', 'w', 'm', 'q', 'a', 'y']
+    from_date = parse(Date, from, Dates.DateFormat("yyyy-mm-dd"))
+    thru_date = parse(Date, thru, Dates.DateFormat("yyyy-mm-dd"))
+    url = string("$(GOOGLE_URL)q=$(symb)",
+                 "&startdate=$(Dates.monthabbr(Dates.month(from_date)))",
+                 "+$(@sprintf("%.2d",Dates.dayofmonth(from_date)))",
+                 "+$(Dates.year(from_date))",
+                 "&enddate=$(Dates.monthabbr(thru_date))",
+                 "+$(@sprintf("%.2d",Dates.dayofmonth(thru_date)))",
+                 "+$(Dates.year(thru_date))&output=csv")
+    response = Requests.get(url)
+    indata = Temporal.csvresp(response)
+    return ts(indata[1], indata[2], indata[3][2:end])
 end
