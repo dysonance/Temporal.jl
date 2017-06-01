@@ -143,6 +143,8 @@ There are some sample data CSV files located in the Temporal package directory w
 ```julia
 julia> datafile = "$(Pkg.dir("Temporal"))/data/corn.csv";
 
+julia> corn = tsread(datafile)
+
 14396x8 Temporal.TS{Float64,Date}: 1959-07-01 to 2016-08-30
 Index       Open    High    Low     Last    Change  Settle  Volume    OpenInterest  
 1959-07-01  120.2   120.3   119.6   119.7   NaN     119.7   3952.0    13997.0       
