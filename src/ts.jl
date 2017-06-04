@@ -9,20 +9,25 @@ namefix(s::String)::String = s[findalphanum(s)]
 namefix(s::Symbol)::Symbol = Symbol(namefix(string(s)))
 
 abstract AbstractTS
+
 @doc doc"""
 Time series type aimed at efficiency and simplicity.
 
 Motivated by the `xts` package in R and the `pandas` package in Python.
 """ ->
 type TS{V<:Any, T<:TimeType} <: AbstractTS
-    values::Matrix{V}
+    values::AbstractArray{V}
     index::Vector{T}
     fields::Vector{Symbol}
     function TS(values, index, fields)
         @assert size(values,1) == length(index) "Length of index not equal to number of value rows."
         @assert (isempty(values) && isempty(fields)) || (size(values,2) == length(fields)) "Length of fields not equal to number of columns in values."
         order = sortperm(index)
-        new(values[order,:], index[order], namefix.(fields))
+        if size(values,2) == 1
+            return new(values[order], index[order], namefix.(fields))
+        else
+            return new(values[order,:], index[order], namefix.(fields))
+        end
     end
 end
 
