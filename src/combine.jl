@@ -84,8 +84,7 @@ Equivalent to `x` LEFT JOIN `y` ON `x.index` = `y.index`.
 `ljoin(x::TS, y::TS)::TS`
 """ ->
 function ljoin(x::TS, y::TS)::TS
-    idx = setdiff(x.index, y.index)
-    return [x[idx] y[idx]]
+    return [x y[intersect(x.index, y.index)]]
 end
 
 @doc """
@@ -96,8 +95,7 @@ Equivalent to `x` RIGHT JOIN `y` ON `x.index` = `y.index`.
 `rjoin(x::TS, y::TS)::TS`
 """ ->
 function rjoin(x::TS, y::TS)::TS
-    idx = setdiff(y.index, x.index)
-    return [x[idx] y[idx]]
+    return [x[intersect(x.index, y.index)] y]
 end
 
 # ljoin(x::TS, y::TS) = ts([x.values partner(x,y).values], x.index, [x.fields; y.fields])
