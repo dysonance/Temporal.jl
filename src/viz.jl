@@ -15,7 +15,14 @@ import Plots:
 #     (X.index, X.values)
 # end
 
-tslab(X::TS)::Matrix{String} = transpose(string.(X.fields))
+function tslab(X::TS)::Matrix{String}
+    arr = string.(X.fields)
+    out = repmat([""], 1, length(arr))
+    @inbounds for i in 1:length(arr)
+        out[1,i] = arr[i]
+    end
+    return out
+end
 
 plot(X::TS; args...) = plot(X.index, X.values, lab=tslab(X); args...)
 plot!(X::TS; args...) = plot!(X.index, X.values, lab=tslab(X); args...)
@@ -28,4 +35,3 @@ bar!(X::TS; args...) = bar!(X.values, lab=tslab(X); args...)
 
 histogram(X::TS; args...) = histogram(X.values, lab=tslab(X); args...)
 histogram!(X::TS; args...) = histogram!(X.values, lab=tslab(X); args...)
-
