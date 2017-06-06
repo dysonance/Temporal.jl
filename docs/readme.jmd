@@ -1,0 +1,164 @@
+---
+title : Temporal
+---
+
+[![Build Status](https://travis-ci.org/dysonance/Temporal.jl.svg?branch=master)](https://travis-ci.org/dysonance/Temporal.jl)
+
+# Temporal
+This package provides a flexible & efficient time series class, `TS`, for the [Julia](http://julialang.org/) programming language. While still early in development, the overarching goal is for the class to be able to slice & dice data with the rapid prototyping speed of [R](https://www.r-project.org/)'s [`xts`](https://github.com/joshuaulrich/xts) and [Python](https://www.python.org/)'s [`pandas`](http://pandas.pydata.org/) packages, while retaining the performance one expects from Julia.
+
+# Installation
+`Temporal` can be easily installed using Julia's built-in package manager.
+
+```{julia;eval=false;term=true}
+Pkg.add("Temporal")
+```
+
+It can then be loaded as usual in Julia.
+
+```{julia;term=true}
+using Temporal
+```
+
+# Examples
+
+## Data Input/Output
+There are currently several options for how to get time series data into the Julia environment as `Temporal.TS` objects.
+- Data Vendor Downloads
+    - Quandl
+    - Yahoo! Finance
+    - Google Finance
+- Local Flat Files (CSV, TSV, etc.)
+
+
+### Quandl Data Downloads
+```{julia;term=true}
+Crude = quandl("CHRIS/CME_CL1", from="2010-06-09", thru=string(Dates.today()), freq='w')  # Download weekly WTI crude oil price data
+```
+
+### Yahoo! Finance Downloads
+```{julia;term=true}
+Snapchat = yahoo("SNAP", from="2017-03-03")  # Download historical prices for Snapchat since its IPO date
+IBM_splits = yahoo("IBM", event="split")  # Get all stock splits in IBM's entire trading history
+XOM_dividends = yahoo("XOM", event="div", from="2000-01-01", thru="2009-12-31")  # Get all divident payments Exxon disbursed during the 2000's
+```
+
+### Google Finance Downloads
+```{julia;term=true}
+Apple = google("AAPL", from="2006-01-01", thru="2010-01-01")  # Let's see how Apple's stock navigated through the financial crisis
+```
+
+### Flat File Import
+
+There are some sample data CSV files located in the Temporal package directory with some historical commodities prices for sample use (below file containing corn prices sourced from Quandl using the same "CHRIS" database).
+
+```{julia;term=true}
+datafile = "$(Pkg.dir("Temporal"))/data/corn.csv"
+corn = tsread(datafile)
+```
+
+## Indexing Functionality
+Easily one of the more important parts of handling time series data is the ability to retrieve from that time series specific portions of the data that you want. To this end, `TS` objects provide a fairly flexible indexing interface to make it easier to slice & dice data in the ways commonly desired, while maintaining an emphasis on speed and performance wherever possible.
+
+```{julia;term=true}
+crude = quandl("CHRIS/CME_CL1")  # Download crude oil prices from Quandl
+```
+
+### Numerical & range-based indexing
+```{julia;term=true}
+crude[1]  # get the first row
+crude[end,:]  # get the last row
+crude[end-100:end, 1:4]
+```
+
+### Column/field indexing using Symbols
+The `fields` member of the `Temporal.TS` object (wherein the column names are stored) are represented using julia's builtin `Symbol` datatype.
+
+```{julia;term=true}
+crude[:Settle]
+crude[[:Settle,:Volume]]
+```
+
+### Date indexing to select rows
+
+```{julia;term=true}
+using Base.Dates
+crude[today()]  # select the row corresponding to today's date
+crude[collect(today()-Year(1):Day(1):today())]
+```
+
+### String-based date indexing
+One of the features of R's xts package that I personally find most appealing is the ease with which one can subset out dates simply by passing easily readable character strings. `Temporal` implements this same logic for `TS` objects.
+
+On a tangential note, it's interesting to observe that while this indexing logic is implemented in low-level `C` code in other packages, this logic has been implemented in pure julia, making it far easier to read, interpret, understand, debug, and/or adapt to one's own purposes.
+
+```{julia;term=true}
+crude["2016"]  # retrieve all rows from the year 2016
+crude["2015", 6]  # retrive the sixth column from 2015
+crude["/2012", 1:4]  # retrieve first four columns for all rows through 2012
+crude["2010/", end-2:end]  # retrieve last three columns for the year 2010 and on
+crude["2014/2015", :Settle]  # retrieve settle prices for the years 2014 and 2015
+```
+
+## Merging, joining, and combining data
+```{julia;term=true}
+gasoline = quandl("CHRIS/CME_RB1")
+gasoline_settles = cl(gasoline)  # (note `cl` function will take fields named :Close, :AdjClose, :Settle, and :Last)
+crude_settles = cl(crude)  # all OHLC(V) functions also implemented: op, hi, lo, cl, vo
+
+crude_settles.fields[1] = :Crude;
+gasoline_settles.fields[1] = :Gasoline;
+
+A = ojoin(crude_settles, gasoline_settles)  # full outer join
+A = [crude_settles gasoline_settles]  # hcat -- same as full outer join
+A = dropnan(A)
+
+A = [A randn(size(A,1))]  # can join to arrays of same size
+A = [A 0];  # can join to single numbers as well
+A.fields[3:4] = [:RandomNormal, :Zeros];
+A
+
+ijoin(crude_settles, gasoline_settles)  # inner join -- keep points in time where both objects have observations
+ljoin(crude_settles, gasoline_settles)  # left join
+rjoin(crude_settles, gasoline_settles)  # right join
+
+fracker_era = [crude["/2013"]; crude["2016/"]]  # vertical concatenation also implemented!
+avg_return_overall = mean(diff(log(cl(crude))))
+avg_return_fracker = mean(diff(log(cl(fracker_era))))
+```
+
+## Aggregation/collapsing functionality
+
+```{julia;term=true;eval=false}
+eom(crude)  # Get the last values observed at the end of each month
+[crude.index eom(crude.index)]  # (NOTE: the `eom` function returns a Boolean Vector when passed a Vector of TimeTypes)
+collapse(crude, eom(crude.index), fun=mean)  # monthly averages for all columns
+collapse(crude[:Volume], eoy(crude.index), fun=sum)  # Get the total yearly trading volume of crude oil
+```
+
+# Acknowledgements
+This package is inspired mostly by R's [xts](https://github.com/joshuaulrich/xts) package and Python's [pandas](http://pandas.pydata.org/) package. Both packages expedite the often tedious process of acquiring & munging data and provide impressively well-developed and feature-rick toolkits for analysis.
+
+Many thanks also to the developers/contributors to the current Julia [TimeSeries](https://github.com/JuliaStats/TimeSeries.jl), whose code I have referred to countless times as a resource while developing this package.
+
+# Temporal vs. TimeSeries
+The existing Julia type for representing time series objects is a reasonably reliable and robust solution. However, the motivation for developing `Temporal` and its flagship `TS` type was driven by a small number of design decisions and semantics used in `TimeSeries` that could arguably/subjectively prove inconvenient. A few that stood out as sufficient motivation for a new package are given below.
+
+* A key difference is that Temporal's `TS` type is defined to be `mutable`, whereas the TimeSeries `TimeArray` type is defined to be `immutable`
+    * Since in Julia, an object of `immutable` type "is passed around (both in assignment statements and in function calls) by copying, whereas a mutable type is passed around by reference" (see [here](https://docs.julialang.org/en/release-0.4/manual/types/#immutable-composite-types)), the `TS` type can be a more memory-efficient option
+        * This assumes that proper care is taken to modify the object only when desired, a consideration inseparable from pass-by-reference semantics
+    * Additionally, making the `TS` object `mutable` should provide greater ease & adaptability when modifying the object's fields
+* Its indexing functionality operates differently than expected for the `Array` type, such that the `TimeArray` cannot be indexed in the same manner
+    * For example, indexing columns must be done with `String`s, requiring `Array`-like indexing syntax to be done on the underlying `values` member of the object
+    * Additionally, this difference in indexing syntax could cause confusion for newcomers and create unnecessary headaches in basic data munging and indexing tasks
+    * The syntax is similar to that of the `DataFrame` class in Python. While this a familiar framework, R's `xts` class is functionally equivalent to the matrix clas
+    * In like fashion, a goal of this package is for the `TS` type to behave like an `Array` as much as possible, but offer more flexibility when joining/merging through the use of *temporal* indexing, to simplify challenges uniquely associated with managing time series data structures
+* Another difference between `TS` and `TimeSeries` lies in the existence of a "metadata" holder for the object
+    * While this feature may be useful in some cases, the `TS` object will likely occupy less memory than an equivalent `TimeSeries` object, simply because it does not hold any metadata about the object
+    * In cases where such underlying metadata is of use, there are likely ways to access it without attaching it to the object
+* A deliberate stylistic decision was made in giving Temporal's time series type a compact name
+    * While the `TimeSeries` package names its type `TimeArray`, typing out nine characters can slow one down when prototyping in the REPL
+    * Creating a type alias is certainly a perfectly acceptable workaround, but only having to type `TS` (or `ts`) when constructing the type can save a considerable amount of time if you're experimenting in the REPL for any length of time
+    * Additionally, if you don't want to type out field names every time you instantiate a new time series, the `TS` class will auto-populate field names for you
+
+So in all, the differences between the two classes are relatively stylistic, but over time will hopefully increase efficiency both when writing and running code.
