@@ -145,8 +145,7 @@ Index       Open   High   Low    Close  Volume
 There are some sample data CSV files located in the Temporal package directory with some historical commodities prices for sample use (below file containing corn prices sourced from Quandl using the same "CHRIS" database).
 
 ````julia
-julia> datafile = "$(Pkg.dir("Temporal"))/data/corn.csv"
-"/Users/jacobamos/.julia/v0.6/Temporal/data/corn.csv"
+julia> datafile = "$(Pkg.dir("Temporal"))/data/corn.csv";
 
 julia> corn = tsread(datafile)
 14396x8 Temporal.TS{Float64,Date}: 1959-07-01 to 2016-08-30
