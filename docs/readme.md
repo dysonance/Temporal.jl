@@ -7,23 +7,10 @@ This package provides a flexible & efficient time series class, `TS`, for the [J
 `Temporal` can be easily installed using Julia's built-in package manager.
 
 ````julia
+julia> Pkg.add("Temporal")
 
-Pkg.add("Temporal")
-````
-
-
-
-
-It can then be loaded as usual in Julia.
-
-````julia
 julia> using Temporal
-
 ````
-
-
-
-
 
 # Examples
 
@@ -63,10 +50,6 @@ Index       Open   High   Low    Last   Change  Settle  Volume     PreviousDayOp
 2017-06-11  47.71  48.42  46.86  47.39  0.26    47.4    700903.0   545587.0                 
 
 ````
-
-
-
-
 
 ### Yahoo! Finance Downloads
 ````julia
@@ -128,12 +111,7 @@ Index       Dividends
 2009-05-11  0.42       
 2009-08-11  0.42       
 2009-11-09  0.42       
-
 ````
-
-
-
-
 
 ### Google Finance Downloads
 ````julia
@@ -160,20 +138,14 @@ Index       Open   High   Low    Close  Volume
 2009-12-29  30.38  30.39  29.82  29.87  1.11301071e8  
 2009-12-30  29.83  30.29  29.76  30.23  1.03020708e8  
 2009-12-31  30.45  30.48  30.08  30.1   8.8102679e7   
-
 ````
-
-
-
-
 
 ### Flat File Import
 
 There are some sample data CSV files located in the Temporal package directory with some historical commodities prices for sample use (below file containing corn prices sourced from Quandl using the same "CHRIS" database).
 
 ````julia
-julia> datafile = "$(Pkg.dir("Temporal"))/data/corn.csv"
-"/Users/jacobamos/.julia/v0.6/Temporal/data/corn.csv"
+julia> datafile = "$(Pkg.dir("Temporal"))/data/corn.csv";
 
 julia> corn = tsread(datafile)
 14396x8 Temporal.TS{Float64,Date}: 1959-07-01 to 2016-08-30
@@ -200,10 +172,6 @@ Index       Open    High    Low     Last    Change  Settle  Volume    OpenIntere
 2016-08-30  311.75  312.75  303.5   304.0   7.75    304.0   123102.0  66033.0       
 
 ````
-
-
-
-
 
 ## Indexing Functionality
 Easily one of the more important parts of handling time series data is the ability to retrieve from that time series specific portions of the data that you want. To this end, `TS` objects provide a fairly flexible indexing interface to make it easier to slice & dice data in the ways commonly desired, while maintaining an emphasis on speed and performance wherever possible.
@@ -234,10 +202,6 @@ Index       Open   High   Low    Last   Change  Settle  Volume      PreviousDayO
 2017-06-05  47.71  48.42  46.86  47.39  0.26    47.4    700903.0    545587.0                 
 
 ````
-
-
-
-
 
 ### Numerical & range-based indexing
 ````julia
@@ -276,10 +240,6 @@ Index       Open   High   Low    Last
 2017-06-05  47.71  48.42  46.86  47.39  
 
 ````
-
-
-
-
 
 ### Column/field indexing using Symbols
 The `fields` member of the `Temporal.TS` object (wherein the column names are stored) are represented using julia's builtin `Symbol` datatype.
@@ -335,10 +295,6 @@ Index       Settle  Volume
 
 ````
 
-
-
-
-
 ### Date indexing to select rows
 
 ````julia
@@ -374,10 +330,6 @@ Index       Open   High   Low    Last   Change  Settle  Volume      PreviousDayO
 2017-06-05  47.71  48.42  46.86  47.39  0.26    47.4    700903.0    545587.0                 
 
 ````
-
-
-
-
 
 ### String-based date indexing
 One of the features of R's xts package that I personally find most appealing is the ease with which one can subset out dates simply by passing easily readable character strings. `Temporal` implements this same logic for `TS` objects.
@@ -507,10 +459,6 @@ Index       Settle
 
 ````
 
-
-
-
-
 ## Merging, joining, and combining data
 ````julia
 julia> gasoline = quandl("CHRIS/CME_RB1")
@@ -585,13 +533,11 @@ Index       Settle
 2017-06-02  47.66   
 2017-06-05  47.4    
 
-julia> 
-crude_settles.fields[1] = :Crude;
+julia> crude_settles.fields[1] = :Crude;
 
 julia> gasoline_settles.fields[1] = :Gasoline;
 
-julia> 
-A = ojoin(crude_settles, gasoline_settles)  # full outer join
+julia> A = ojoin(crude_settles, gasoline_settles)  # full outer join
 8589x2 Temporal.TS{Float64,Date}: 1983-03-30 to 2017-06-05
 Index       Crude  Gasoline  
 1983-03-30  29.4   NaN       
@@ -663,8 +609,7 @@ Index       Crude  Gasoline
 2017-06-02  47.66  1.5771    
 2017-06-05  47.4   1.5381    
 
-julia> 
-A = [A randn(size(A,1))]  # can join to arrays of same size
+julia> A = [A randn(size(A,1))]  # can join to arrays of same size
 2928x3 Temporal.TS{Float64,Date}: 2005-10-03 to 2017-06-05
 Index       Crude  Gasoline   A       
 2005-10-03  65.47  1.9488     0.4368  
@@ -716,8 +661,7 @@ Index       Crude  Gasoline   RandomNormal Zeros
 2017-06-02  47.66  1.5771     1.6278       0.0    
 2017-06-05  47.4   1.5381     0.3595       0.0    
 
-julia> 
-ijoin(crude_settles, gasoline_settles)  # inner join -- keep points in time where both objects have observations
+julia> ijoin(crude_settles, gasoline_settles)  # inner join -- keep points in time where both objects have observations
 2928x2 Temporal.TS{Float64,Date}: 2005-10-03 to 2017-06-05
 Index       Crude  Gasoline  
 2005-10-03  65.47  1.9488    
@@ -789,8 +733,7 @@ Index       Crude  Gasoline
 2017-06-02  47.66  1.5771    
 2017-06-05  47.4   1.5381    
 
-julia> 
-fracker_era = [crude["/2013"]; crude["2016/"]]  # vertical concatenation also implemented!
+julia> fracker_era = [crude["/2013"]; crude["2016/"]]  # vertical concatenation also implemented!
 8084x8 Temporal.TS{Float64,Date}: 1983-03-30 to 2017-06-05
 Index       Open   High   Low    Last   Change  Settle  Volume      PreviousDayOpenInterest  
 1983-03-30  29.01  29.56  29.01  29.4   NaN     29.4    949.0       470.0                    
@@ -819,12 +762,7 @@ julia> avg_return_overall = mean(diff(log(cl(crude))))
 
 julia> avg_return_fracker = mean(diff(log(cl(fracker_era))))
 5.909038158559879e-5
-
 ````
-
-
-
-
 
 ## Aggregation/collapsing functionality
 
@@ -835,9 +773,6 @@ eom(crude)  # Get the last values observed at the end of each month
 collapse(crude, eom(crude.index), fun=mean)  # monthly averages for all columns
 collapse(crude[:Volume], eoy(crude.index), fun=sum)  # Get the total yearly trading volume of crude oil
 ````
-
-
-
 
 # Acknowledgements
 This package is inspired mostly by R's [xts](https://github.com/joshuaulrich/xts) package and Python's [pandas](http://pandas.pydata.org/) package. Both packages expedite the often tedious process of acquiring & munging data and provide impressively well-developed and feature-rick toolkits for analysis.
