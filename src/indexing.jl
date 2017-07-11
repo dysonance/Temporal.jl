@@ -1,4 +1,5 @@
 import Base: getindex, setindex!
+const RNG_DLM = '/'
 
 #===============================================================================
                             SETTING VALUES
@@ -232,18 +233,18 @@ function thisdt(s::AbstractString, t::Vector{Date})
     n = length(s)
     if n == 4  # yyyy given
         y = parse(Int, s)
-        return year(t) .== y
+        return year.(t) .== y
     elseif n == 7  # yyyy-mm given
         a = split(s, '-')
         y = parse(Int, a[1])
         m = parse(Int, a[2])
-        return (year(t) .== y) .* (month(t) .== m)
+        return (year.(t) .== y) .* (month.(t) .== m)
     elseif n == 10  # yyyy-mm-dd given
         a = split(s, '-')
         y = parse(Int, a[1])
         m = parse(Int, a[2])
         d = parse(Int, a[3])
-        return (year(t) .== y) .* (month(t) .== m) .* day(t) .== d
+        return (year.(t) .== y) .* (month.(t) .== m) .* day.(t) .== d
     else
         error("Unable to parse date string $s.")
     end
@@ -302,6 +303,19 @@ function thrudt(s::AbstractString, t::Vector{DateTime})
         min = parse(Int, c[2])
         sec = parse(Int, c[3])
         ymdhms = DateTime(y, m, d, hr, min, sec)
+    elseif n >= 20  # milliseconds given
+        a = split(s, 'T')
+        b = split(a[1], '-')
+        c = split(a[2], ':')
+        f = split(c[3], '.')
+        y = parse(Int, b[1])
+        m = parse(Int, b[2])
+        d = parse(Int, b[3])
+        hr = parse(Int, c[1])
+        min = parse(Int, c[2])
+        sec = parse(Int, f[1])
+        milli = parse(Int, f[2])
+        ymdhms = DateTime(y, m, d, hr, min, sec, milli)
     else
         error("Unable to parse date string $s.")
     end
@@ -353,6 +367,19 @@ function fromdt(s::AbstractString, t::Vector{DateTime})
         min = parse(Int, c[2])
         sec = parse(Int, c[3])
         ymdhms = DateTime(y, m, d, hr, min, sec)
+    elseif n >= 20  # milliseconds given
+        a = split(s, 'T')
+        b = split(a[1], '-')
+        c = split(a[2], ':')
+        f = split(c[3], '.')
+        y = parse(Int, b[1])
+        m = parse(Int, b[2])
+        d = parse(Int, b[3])
+        hr = parse(Int, c[1])
+        min = parse(Int, c[2])
+        sec = parse(Int, f[1])
+        milli = parse(Int, f[2])
+        ymdhms = DateTime(y, m, d, hr, min, sec, milli)
     else
         error("Unable to parse date string $s.")
     end
@@ -362,18 +389,18 @@ function thisdt(s::AbstractString, t::Vector{DateTime})
     n = length(s)
     if n == 4  # yyyy given
         y = parse(Int, s)
-        return year(t) .== y
+        return year.(t) .== y
     elseif n == 7  # yyyy-mm given
         a = split(s, '-')
         y = parse(Int, a[1])
         m = parse(Int, a[2])
-        return (year(t) .== y) .* (month(t) .== m)
+        return (year.(t) .== y) .* (month.(t) .== m)
     elseif n == 10  # yyyy-mm-dd given
         a = split(s, '-')
         y = parse(Int, a[1])
         m = parse(Int, a[2])
         d = parse(Int, a[3])
-        return (year(t) .== y) .* (month(t) .== m) .* (day(t) .== d)
+        return (year.(t) .== y) .* (month.(t) .== m) .* (day.(t) .== d)
     elseif n == 13  # yyyy-mm-ddTHH given
         a = split(s, 'T')
         b = split(a[1], '-')
@@ -382,7 +409,7 @@ function thisdt(s::AbstractString, t::Vector{DateTime})
         m = parse(Int, b[2])
         d = parse(Int, b[3])
         hr = parse(Int, c[1])
-        return (year(t) .== y) .* (month(t) .== m) .* (day(t) .== d) .* (hour(t) .== hr)
+        return (year.(t) .== y) .* (month.(t) .== m) .* (day.(t) .== d) .* (hour.(t) .== hr)
     elseif n == 16  # yyyy-mm-ddTHH:MM given
         a = split(s, 'T')
         b = split(a[1], '-')
@@ -392,7 +419,7 @@ function thisdt(s::AbstractString, t::Vector{DateTime})
         d = parse(Int, b[3])
         hr = parse(Int, c[1])
         min = parse(Int, c[2])
-        return (year(t) .== y) .* (month(t) .== m) .* (day(t) .== d) .* (hour(t) .== hr) .* (minute(t) .== min)
+        return (year.(t) .== y) .* (month.(t) .== m) .* (day.(t) .== d) .* (hour.(t) .== hr) .* (minute.(t) .== min)
     elseif n == 19  # yyyy-mm-ddTHH:MM:SS given
         a = split(s, 'T')
         b = split(a[1], '-')
@@ -403,7 +430,20 @@ function thisdt(s::AbstractString, t::Vector{DateTime})
         hr = parse(Int, c[1])
         min = parse(Int, c[2])
         sec = parse(Int, c[3])
-        return (year(t) .== y) .* (month(t) .== m) .* (day(t) .== d) .* (hour(t) .== hr) .* (minute(t) .== min) .* (second(t) .== sec)
+        return (year.(t) .== y) .* (month.(t) .== m) .* (day.(t) .== d) .* (hour.(t) .== hr) .* (minute.(t) .== min) .* (second.(t) .== sec)
+    elseif n >= 20  # milliseconds given
+        a = split(s, 'T')
+        b = split(a[1], '-')
+        c = split(a[2], ':')
+        f = split(c[3], '.')
+        y = parse(Int, b[1])
+        m = parse(Int, b[2])
+        d = parse(Int, b[3])
+        hr = parse(Int, c[1])
+        min = parse(Int, c[2])
+        sec = parse(Int, f[1])
+        milli = parse(Int, f[2])
+        return (year.(t) .== y) .* (month.(t) .== m) .* (day.(t) .== d) .* (hour.(t) .== hr) .* (minute.(t) .== min) .* (second.(t) .== sec) .* (millisecond.(t) .== milli)
     else
         error("Unable to parse date string $s.")
     end
@@ -413,8 +453,6 @@ function fromthru(from::AbstractString, thru::AbstractString, t::Vector{DateTime
     thruidx = thrudt(thru, t)
     return fromidx .* thruidx
 end
-
-const RNG_DLM = '/'
 
 function dtidx(s::AbstractString, t::Vector{Date})
     @assert !in('T', s) "Cannot index Date type with sub-daily frequency."
@@ -438,7 +476,6 @@ function dtidx(s::AbstractString, t::Vector{Date})
     end
 end
 function dtidx(s::AbstractString, t::Vector{DateTime})
-    @assert !in('T', s) "Cannot index Date type with sub-daily frequency."
     bds = split(s, RNG_DLM)
     if length(bds) == 1  # single date
         return thisdt(s, t)
