@@ -764,6 +764,32 @@ julia> avg_return_fracker = mean(diff(log(cl(fracker_era))))
 5.909038158559879e-5
 ````
 
+## Visualization
+Visualization capabilities are made available by the plotting API's made available by the impressively thorough and all-encompassing [Plots.jl](https://github.com/JuliaPlots/Plots.jl) package.
+
+However, the ambitious and far-reaching nature of this project makes it such that precompilation is not an easy task. Since `Temporal` is precompiled, all of its dependencies must be precompilable (including `Plots`). Hence, in order for `Temporal` to build and plotting to work, you will need a version of `Plots` that is able to __precompile__. As of the time of this writing, I believe the *master* branch of the package repository is required, which appears to be some 0.12.0 pre-release version (`v"0.12.0+"`).
+
+```julia
+using Temporal, Indicators
+
+# download historical prices for crude oil futures and subset
+X = quandl("CHRIS/CME_CL1")
+subset = "2012/"
+x = cl(X)[subset]
+x.fields[1] = :CrudeFutures
+
+# add some moving averages
+V = [x sma(x,n=200) ema(x,n=50)]
+
+# visualizations
+ℓ = Plots.@layout [ a{0.7h}; b{0.3h} ]
+plot(V, c=[:black :orange :cyan], w=[3 2 2], layout=ℓ, subplot=1)
+plot!(wma(x,n=25), c=:red, w=2, subplot=1)
+bar!(X["2012/",:Volume], c=:grey, alpha=0.5, layout=ℓ, subplot=2)
+```
+
+![alt text](https://raw.githubusercontent.com/dysonance/Temporal.jl/master/examples/visualization_example1.png)
+
 ## Aggregation/collapsing functionality
 
 ````julia
