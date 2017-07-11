@@ -1,9 +1,10 @@
-VERSION >= v"0.5-" && __precompile__(true)
+VERSION >= v"0.6-" && __precompile__(true)
 
 module Temporal
 using Base.Dates
 using Requests
 using JSON
+using Plots
 
 export
     # Foundational
@@ -27,10 +28,10 @@ export
     # Financial
     has_open, has_high, has_low, has_close, has_volume, is_ohlc, is_ohlcv,
     op, hi, lo, cl, vo, ohlc, ohlcv, hlc, hl,
+    # Visualization
+    plot, plot!, scatter, scatter!, histogram, histogram!, bar, bar!,
     # Modeling
     acf#, fit, fitted_values, resid, indvar, depvar, AR_Model
-    # Visualization
-    # plot, plot!, scatter, scatter!, histogram, histogram!, bar, bar!,
 
 include("ts.jl")
 include("show.jl")
@@ -42,6 +43,6 @@ include("models.jl")
 include("slice.jl")
 include("io.jl")
 include("ohlc.jl")
-# include("viz.jl")
+include("viz.jl")
 
 end # module
