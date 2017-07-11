@@ -4,24 +4,48 @@ using Base.Dates
 ################################################################################
 # TYPE DEFINITION ##############################################################
 ################################################################################
-findalphanum(s::String)::Vector{Int} = find(isalpha.(split(s,"")).+isnumber.(split(s,"")))
+findalphanum(s::String)::Vector{Int} = union(find(isalpha,s), find(isnumber,s))
+# findalphanum(s::String)::Vector{Int} = find(isalpha.(split(s,"")).+isnumber.(split(s,"")))
 namefix(s::String)::String = s[findalphanum(s)]
 namefix(s::Symbol)::Symbol = Symbol(namefix(string(s)))
 
-abstract AbstractTS
+# abstract AbstractTS
+# 
+# @doc doc"""
+# Time series type aimed at efficiency and simplicity.
+# 
+# Motivated by the `xts` package in R and the `pandas` package in Python.
+# """ ->
+# type TS{V<:Any, T<:TimeType} <: AbstractTS
+#     values::AbstractArray{V}
+#     index::Vector{T}
+#     fields::Vector{Symbol}
+#     function TS(values, index, fields)
+#         @assert size(values,1) == length(index) "Length of index not equal to number of value rows."
+#         @assert (isempty(values) && isempty(fields)) || (size(values,2) == length(fields)) "Length of fields not equal to number of columns in values."
+#         order = sortperm(index)
+#         if size(values,2) == 1
+#             return new(values[order], index[order], namefix.(fields))
+#         else
+#             return new(values[order,:], index[order], namefix.(fields))
+#         end
+#     end
+# end
+
+abstract type AbstractTS end
 
 @doc doc"""
 Time series type aimed at efficiency and simplicity.
 
 Motivated by the `xts` package in R and the `pandas` package in Python.
 """ ->
-type TS{V<:Any, T<:TimeType} <: AbstractTS
-    values::AbstractArray{V}
+mutable struct TS{V,T}
+    values::Array{V}
     index::Vector{T}
     fields::Vector{Symbol}
-    function TS(values, index, fields)
-        @assert size(values,1) == length(index) "Length of index not equal to number of value rows."
-        @assert (isempty(values) && isempty(fields)) || (size(values,2) == length(fields)) "Length of fields not equal to number of columns in values."
+    function TS{V,T}(values, index, fields) where {V,T<:TimeType}
+        @assert size(values,1)==length(index) "Length of index not equal to number of value rows."
+        @assert size(values,2)==length(fields) || (isempty(fields) && isempty(values)) "Length of fields not equal to number of columns in values."
         order = sortperm(index)
         if size(values,2) == 1
             return new(values[order], index[order], namefix.(fields))
@@ -30,18 +54,6 @@ type TS{V<:Any, T<:TimeType} <: AbstractTS
         end
     end
 end
-
-# mutable struct TS{V,T}
-#     values::Matrix{V}
-#     index::Vector{T}
-#     fields::Vector{Symbol}
-#     function TS{V,T}(values, index, fields) where {V,T<:TimeType}
-#         @assert size(values,1)==length(index) "Length of index not equal to number of value rows."
-#         @assert size(values,2)==length(fields) || (isempty(fields) && isempty(values)) "Length of fields not equal to number of columns in values."
-#         order = sortperm(index)
-#         new(values[order,:], index[order], namefix.(fields))
-#     end
-# end
 
 function autocol(col::Int)
     @assert col >= 1 "Invalid column number $col - cannot generate column name"
