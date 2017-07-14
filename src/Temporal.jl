@@ -4,7 +4,7 @@ module Temporal
 using Base.Dates
 using Requests
 using JSON
-using Plots
+#using Plots
 
 export
     # Foundational
@@ -29,7 +29,7 @@ export
     has_open, has_high, has_low, has_close, has_volume, is_ohlc, is_ohlcv,
     op, hi, lo, cl, vo, ohlc, ohlcv, hlc, hl,
     # Visualization
-    plot, plot!, scatter, scatter!, histogram, histogram!, bar, bar!,
+    #plot, plot!, scatter, scatter!, histogram, histogram!, bar, bar!,
     # Modeling
     acf#, fit, fitted_values, resid, indvar, depvar, AR_Model
 
