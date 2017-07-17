@@ -4,11 +4,11 @@ Methods to simplify the plotting functionality for TS objects.
 Plots.jl doesn't support pre-compilation, however, so not making this a dependency yet.
 =#
 
-import Plots:
-    plot, plot!,
-    scatter, scatter!,
-    bar, bar!,
-    histogram, histogram!
+#import Plots:
+#    plot, plot!,
+#    scatter, scatter!,
+#    bar, bar!,
+#    histogram, histogram!
 
 # @recipe function f(X::TS)
 #     lab --> (string.(X.fields))'

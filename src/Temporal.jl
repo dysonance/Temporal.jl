@@ -43,6 +43,6 @@ include("models.jl")
 include("slice.jl")
 include("io.jl")
 include("ohlc.jl")
-include("viz.jl")
+#include("viz.jl")
 
 end # module
