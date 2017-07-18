@@ -4,6 +4,7 @@ module Temporal
 using Base.Dates
 using Requests
 using JSON
+using RecipesBase
 #using Plots
 
 export
@@ -43,6 +44,6 @@ include("models.jl")
 include("slice.jl")
 include("io.jl")
 include("ohlc.jl")
-#include("viz.jl")
+include("viz.jl")
 
 end # module
