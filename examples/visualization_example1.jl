@@ -7,11 +7,13 @@ x = cl(X)[subset]
 x.fields[1] = :CrudeFutures
 
 # merge with some technical indicators
-V = [x sma(x,n=200) ema(x,n=50)]
+D = [x sma(x,n=200) ema(x,n=50)]
 
 # visualize the multivariate time series object
-ℓ = Plots.@layout [ a{0.7h}; b{0.3h} ]
-plot(V, c=[:black :orange :cyan], w=[3 2 2], layout=ℓ, subplot=1)
+using Plots
+plotlyjs()
+ℓ = @layout [ a{0.7h}; b{0.3h} ]
+plot(D, c=[:black :orange :cyan], w=[4 2 2], layout=ℓ, subplot=1)
 plot!(wma(x,n=25), c=:red, w=2, subplot=1)
 bar!(X["2012/",:Volume], c=:grey, alpha=0.5, layout=ℓ, subplot=2)
 
