@@ -776,9 +776,7 @@ collapse(crude[:Volume], eoy(crude.index), fun=sum)  # Get the total yearly trad
 
 ## Visualization
 
-Visualization capabilities are made available by the plotting API's made available by the impressively thorough and all-encompassing [Plots.jl](https://github.com/JuliaPlots/Plots.jl) package.
-
-However, the ambitious and far-reaching nature of this project makes it such that precompilation is not an easy task. Since `Temporal` is precompiled, all of its dependencies must be precompilable (including `Plots`). Hence, in order for `Temporal` to build and plotting to work, you will need a version of `Plots` that is able to __precompile__. As of the time of this writing, I believe the *master* branch of the package repository is required, which appears to be some 0.12.0 pre-release version (`v"0.12.0+"`).
+Visualization capabilities are made available by the plotting API's made available by the impressively thorough and all-encompassing [Plots.jl](https://github.com/JuliaPlots/Plots.jl) package. Temporal uses the [RecipesBase](https://github.com/JuliaPlots/RecipesBase.jl) package to enable use of the whole suite of `Plots.jl` functionality while still permitting Temporal to precompile.
 
 ```julia
 using Temporal, Indicators
