@@ -2,21 +2,21 @@
 #TODO: include functionality for filling the missing values (approx, locf, etc.)
 
 # Date vector
-mondays(t::AbstractArray{Date,1}) = dayofweek(t) .== Monday
-tuesdays(t::AbstractArray{Date,1}) = dayofweek(t) .== Tuesday
-wednesdays(t::AbstractArray{Date,1}) = dayofweek(t) .== Wednesday
-thursdays(t::AbstractArray{Date,1}) = dayofweek(t) .== Thursday
-fridays(t::AbstractArray{Date,1}) = dayofweek(t) .== Friday
-saturdays(t::AbstractArray{Date,1}) = dayofweek(t) .== Saturday
-sundays(t::AbstractArray{Date,1}) = dayofweek(t) .== Sunday
+mondays(t::AbstractArray{Date,1}) = dayofweek.(t) .== Monday
+tuesdays(t::AbstractArray{Date,1}) = dayofweek.(t) .== Tuesday
+wednesdays(t::AbstractArray{Date,1}) = dayofweek.(t) .== Wednesday
+thursdays(t::AbstractArray{Date,1}) = dayofweek.(t) .== Thursday
+fridays(t::AbstractArray{Date,1}) = dayofweek.(t) .== Friday
+saturdays(t::AbstractArray{Date,1}) = dayofweek.(t) .== Saturday
+sundays(t::AbstractArray{Date,1}) = dayofweek.(t) .== Sunday
 # DateTime vector
-mondays(t::AbstractArray{DateTime,1}) = dayofweek(t) .== Monday
-tuesdays(t::AbstractArray{DateTime,1}) = dayofweek(t) .== Tuesday
-wednesdays(t::AbstractArray{DateTime,1}) = dayofweek(t) .== Wednesday
-thursdays(t::AbstractArray{DateTime,1}) = dayofweek(t) .== Thursday
-fridays(t::AbstractArray{DateTime,1}) = dayofweek(t) .== Friday
-saturdays(t::AbstractArray{DateTime,1}) = dayofweek(t) .== Saturday
-sundays(t::AbstractArray{DateTime,1}) = dayofweek(t) .== Sunday
+mondays(t::AbstractArray{DateTime,1}) = dayofweek.(t) .== Monday
+tuesdays(t::AbstractArray{DateTime,1}) = dayofweek.(t) .== Tuesday
+wednesdays(t::AbstractArray{DateTime,1}) = dayofweek.(t) .== Wednesday
+thursdays(t::AbstractArray{DateTime,1}) = dayofweek.(t) .== Thursday
+fridays(t::AbstractArray{DateTime,1}) = dayofweek.(t) .== Friday
+saturdays(t::AbstractArray{DateTime,1}) = dayofweek.(t) .== Saturday
+sundays(t::AbstractArray{DateTime,1}) = dayofweek.(t) .== Sunday
 # Time series input
 mondays(x::TS) = x[mondays(x.index)]
 tuesdays(x::TS) = x[tuesdays(x.index)]
@@ -31,28 +31,28 @@ sundays(x::TS) = x[sundays(x.index)]
 # If `cal` is false, returns all observations for which the next index is a new month.
 function bow(t::AbstractArray{Date,1}; cal::Bool=false)
     if cal
-        return BitArray{1}(t .== firstdayofweek(t))
+        return BitArray{1}(t .== firstdayofweek.(t))
     else
         return BitArray{1}([0;diff(week(t)).!=0])
     end
 end
 function eow(t::AbstractArray{Date,1}; cal::Bool=false)
     if cal
-        return BitArray{1}(t .== lastdayofweek(t))
+        return BitArray{1}(t .== lastdayofweek.(t))
     else
         return BitArray{1}([diff(week(t)).!=0;0])
     end
 end
 function bom(t::AbstractArray{Date,1}; cal::Bool=false)
     if cal
-        return BitArray{1}(t .== firstdayofmonth(t))
+        return BitArray{1}(t .== firstdayofmonth.(t))
     else
         return BitArray{1}([0;diff(month(t)).!=0])
     end
 end
 function eom(t::AbstractArray{Date,1}; cal::Bool=false)
     if cal
-        return BitArray{1}(t .== lastdayofmonth(t))
+        return BitArray{1}(t .== lastdayofmonth.(t))
     else
         BitArray{1}([diff(month(t)).!=0;0])
     end
@@ -61,54 +61,54 @@ function boq(t::AbstractArray{Date,1}; cal::Bool=false)
     if cal
         return BitArray{1}(t .== firstdayofquarter(t))
     else
-        return BitArray{1}([0;diff(quarterofyear(t)).!=0])
+        return BitArray{1}([0;diff(quarterofyear.(t)).!=0])
     end
 end
 function eoq(t::AbstractArray{Date,1}; cal::Bool=false)
     if cal
         return BitArray{1}(t .== lastdayofquarter(t))
     else
-        return BitArray{1}([diff(quarterofyear(t)).!=0;0])
+        return BitArray{1}([diff(quarterofyear.(t)).!=0;0])
     end
 end
 function boy(t::AbstractArray{Date,1}; cal::Bool=false)
     if cal
-        return BitArray{1}(t .== firstdayofyear(t))
+        return BitArray{1}(t .== firstdayofyear.(t))
     else
         return BitArray{1}([0;diff(year(t)).!=0])
     end
 end
 function eoy(t::AbstractArray{Date,1}; cal::Bool=false)
     if cal
-        return BitArray{1}(t .== lastdayofyear(t))
+        return BitArray{1}(t .== lastdayofyear.(t))
     else
         return BitArray{1}([diff(year(t)).!=0;0])
     end
 end
 function bow(t::AbstractArray{DateTime,1}; cal::Bool=false)
     if cal
-        return BitArray{1}(t .== firstdayofweek(t))
+        return BitArray{1}(t .== firstdayofweek.(t))
     else
         return BitArray{1}([0;diff(week(t)).!=0])
     end
 end
 function eow(t::AbstractArray{DateTime,1}; cal::Bool=false)
     if cal
-        return BitArray{1}(t .== lastdayofweek(t))
+        return BitArray{1}(t .== lastdayofweek.(t))
     else
         return BitArray{1}([diff(week(t)).!=0;0])
     end
 end
 function bom(t::AbstractArray{DateTime,1}; cal::Bool=false)
     if cal
-        return BitArray{1}(t .== firstdayofmonth(t))
+        return BitArray{1}(t .== firstdayofmonth.(t))
     else
         return BitArray{1}([0;diff(month(t)).!=0])
     end
 end
 function eom(t::AbstractArray{DateTime,1}; cal::Bool=false)
     if cal
-        return BitArray{1}(t .== lastdayofmonth(t))
+        return BitArray{1}(t .== lastdayofmonth.(t))
     else
         BitArray{1}([diff(month(t)).!=0;0])
     end
@@ -117,26 +117,26 @@ function boq(t::AbstractArray{DateTime,1}; cal::Bool=false)
     if cal
         return BitArray{1}(t .== firstdayofquarter(t))
     else
-        return BitArray{1}([0;diff(quarterofyear(t)).!=0])
+        return BitArray{1}([0;diff(quarterofyear.(t)).!=0])
     end
 end
 function eoq(t::AbstractArray{DateTime,1}; cal::Bool=false)
     if cal
         return BitArray{1}(t .== lastdayofquarter(t))
     else
-        return BitArray{1}([diff(quarterofyear(t)).!=0;0])
+        return BitArray{1}([diff(quarterofyear.(t)).!=0;0])
     end
 end
 function boy(t::AbstractArray{DateTime,1}; cal::Bool=false)
     if cal
-        return BitArray{1}(t .== firstdayofyear(t))
+        return BitArray{1}(t .== firstdayofyear.(t))
     else
         return BitArray{1}([0;diff(year(t)).!=0])
     end
 end
 function eoy(t::AbstractArray{DateTime,1}; cal::Bool=false)
     if cal
-        return BitArray{1}(t .== lastdayofyear(t))
+        return BitArray{1}(t .== lastdayofyear.(t))
     else
         return BitArray{1}([diff(year(t)).!=0;0])
     end
