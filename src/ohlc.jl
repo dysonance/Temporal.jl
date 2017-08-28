@@ -55,3 +55,6 @@ ohlc(x::TS)::TS = [op(x) hi(x) lo(x) cl(x)]
 ohlcv(x::TS)::TS = [op(x) hi(x) lo(x) cl(x) vo(x)]
 hlc(x::TS)::TS = [hi(x) lo(x) cl(x)]
 hl(x::TS)::TS = [hi(x) lo(x)]
+hl2(x::TS)::TS = (hi(x) + lo(x)) * 0.5
+hlc3(x::TS; args...)::TS = (hi(x) + lo(x) + cl(x; args...)) * 0.3333333333333333
+ohlc4(x::TS; args...)::TS = (op(x) + hi(x) + lo(x) + cl(x; args...)) * 0.25
