@@ -28,7 +28,7 @@ export
     google,
     # Financial
     has_open, has_high, has_low, has_close, has_volume, is_ohlc, is_ohlcv,
-    op, hi, lo, cl, vo, ohlc, ohlcv, hlc, hl,
+    op, hi, lo, cl, vo, ohlc, ohlcv, hlc, hl, hl2, hlc3, ohlc4,
     # Visualization
     #plot, plot!, scatter, scatter!, histogram, histogram!, bar, bar!,
     # Modeling
