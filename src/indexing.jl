@@ -164,7 +164,7 @@ getindex{V,T}(x::TS{V,T}, c::Symbol)::TS{V,T} = x[:, x.fields.==c]
 getindex{V,T}(x::TS{V,T}, c::Vector{Symbol})::TS{V,T} = x[:, overlaps(x.fields, c)]
 
 getindex{V,T}(x::TS{V,T}, ::Colon, c::Symbol)::TS{V,T} = x[:, x.fields.==c]
-getindex{V,T}(x::TS{V,T}, ::Colon, c::Vector{Symbol})::TS{V,T} = x[r, overlaps(x.fields, c)]
+getindex{V,T}(x::TS{V,T}, ::Colon, c::Vector{Symbol})::TS{V,T} = x[:, overlaps(x.fields, c)]
 
 getindex{V,T}(x::TS{V,T}, r::Int, c::Symbol)::TS{V,T} = x[r, x.fields.==c]
 getindex{V,T}(x::TS{V,T}, r::Int, c::Vector{Symbol})::TS{V,T} = x[r, overlaps(x.fields, c)]
