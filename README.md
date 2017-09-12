@@ -776,7 +776,7 @@ collapse(crude[:Volume], eoy(crude.index), fun=sum)  # Get the total yearly trad
 
 ## Visualization
 
-Visualization capabilities are made available by the plotting API's made available by the impressively thorough and all-encompassing [Plots.jl](https://github.com/JuliaPlots/Plots.jl) package. Temporal uses the [RecipesBase](https://github.com/JuliaPlots/RecipesBase.jl) package to enable use of the whole suite of `Plots.jl` functionality while still permitting Temporal to precompile.
+Visualization capabilities are made available by the plotting API's made available by the impressively thorough and all-encompassing [Plots.jl](https://github.com/JuliaPlots/Plots.jl) package. Temporal uses the [RecipesBase](https://github.com/JuliaPlots/RecipesBase.jl) package to enable use of the whole suite of `Plots.jl` functionality while still permitting Temporal to precompile. The package [Indicators](https://github.com/dysonance/Indicators.jl) package is used to compute the moving averages seen below.
 
 ```julia
 using Temporal, Indicators
