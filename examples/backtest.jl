@@ -1,5 +1,6 @@
 # load dependencies
 using Temporal, Indicators, Base.Dates
+charts = false
 
 # define backtest setup
 from_date = today() - Year(10)
