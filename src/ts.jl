@@ -4,9 +4,9 @@ using Base.Dates
 ################################################################################
 # TYPE DEFINITION ##############################################################
 ################################################################################
-findalphanum(s::String)::Vector{Int} = union(find(isalpha,s), find(isnumber,s))
+findalphanum(s::AbstractString)::Vector{Int} = union(find(isalpha,s), find(isnumber,s))
 # findalphanum(s::String)::Vector{Int} = find(isalpha.(split(s,"")).+isnumber.(split(s,"")))
-namefix(s::String)::String = s[findalphanum(s)]
+namefix(s::AbstractString)::AbstractString = s[findalphanum(s)]
 namefix(s::Symbol)::Symbol = Symbol(namefix(string(s)))
 
 # abstract AbstractTS
