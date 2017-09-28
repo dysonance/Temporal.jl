@@ -1,9 +1,10 @@
 import Base:getindex
 
-#===============================================================================
-							NUMERICAL INDEXING
-===============================================================================#
-getindex{V,T}(x::TS{V,T})::TS{V,T} = x
+getindex(x::TS) = x
+getindex(x::TS, ::Colon) = x
+getindex(x::TS, ::Colon, ::Colon) = x
+getindex{C<:Integer}(x::TS, ::Colon, c::C) = TS(x.values[:,c], x.index, x.fields[c])
+getindex{C<:Vector{<:Integer}}(x::TS, ::Colon, c::C) = TS(x.values[:,c], x.index, x.fields[c])
 
 getindex{V,T}(x::TS{V,T}, ::Colon)::TS{V,T} = x
 getindex{V,T}(x::TS{V,T}, ::Colon, ::Colon)::TS{V,T} = x
