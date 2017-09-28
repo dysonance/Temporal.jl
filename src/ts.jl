@@ -83,7 +83,8 @@ TS{V,T}(v::AbstractArray{V}, t::Vector{T}) = TS{V,T}(v, t, autocol(1:size(v,2)))
 TS{V,T}(v::V, t::T, f::Symbol) = TS{V,T}([v], [t], f)
 TS{V,T}(v::V, t::T) = TS{V,T}([v], [t], :A)
 TS() = TS([], Date[], Symbol[])
-TS(v::AbstractArray) = TS(v, [Dates.Date()+Dates.Day(i) for i in 0:size(v,1)-1])
+TS(v::AbstractArray, t::StepRange) = TS(v, collect(t))
+TS(v::AbstractArray) = TS(v, today()-Day(size(v,1)-1):Day(1):today())
 
 # Conversions ------------------------------------------------------------------
 convert(::Type{TS{Float64}}, x::TS{Bool}) = TS{Float64}(map(Float64, x.values), x.index, x.fields)
