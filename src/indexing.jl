@@ -7,81 +7,72 @@ const RNG_DLM = '/'
 # Translate indices TS understands into indices Arrays can understand (Int Arrays)
 getrows{V,T}(x::TS{V,T}, r::Int) = r
 getrows{V,T}(x::TS{V,T}, r::T) = find(x.index .== r)
-getrows{V,T}(x::TS{V,T}, r::AbstractArray{Int,1}) = r
+getrows{V,T}(x::TS{V,T}, r::AbstractVector{Int}) = r
 getrows{V,T}(x::TS{V,T}, r::Vector{Bool}) = (@assert size(x,1)==length(r); find(r))
 getrows{V,T}(x::TS{V,T}, r::BitArray{1}) = (@assert size(x,1)==length(r); find(r))
 getrows{V,T}(x::TS{V,T}, r::Vector{T}) = find(overlaps(x.index, r))
 
 getcols{V,T}(x::TS{V,T}, c::Int) = c
 getcols{V,T}(x::TS{V,T}, c::Symbol) = find(x.fields .== c)
-getcols{V,T}(x::TS{V,T}, c::AbstractArray{Int,1}) = c
+getcols{V,T}(x::TS{V,T}, c::AbstractVector{Int}) = c
 getcols{V,T}(x::TS{V,T}, c::Vector{Bool}) = (@assert size(x,2)==length(c); find(c))
 getcols{V,T}(x::TS{V,T}, c::BitArray{1}) = (@assert size(x,2)==length(c); find(c))
 getcols{V,T}(x::TS{V,T}, c::Vector{Symbol}) = find(overlaps(x.fields, c))
 
 # Ensure no bounds are violated before calling `setindex!`
-function checkdims(x::TS, v; r=1:size(x,1), c=1:size(x,2))
-    @assert size(v,2) == length(c)
+function checkdims(x::TS, v, r::AbstractVector=1:size(x,1), c::AbstractVector=1:size(x,2))::Void
     @assert size(v,1) == length(r)
     @assert size(x,1) >= length(r)
+    @assert size(v,2) == length(c)
     @assert size(x,2) >= length(c)
-    if size(x,2)==1
-        @assert length(c)==1
-    else
-        @assert size(x,2)>=length(c)
-    end
+    nothing
 end
 
-# All rows + all columns
-setindex!{V,T}(x::TS{V,T}, v, ::Colon) = (checkdims(x,v); x.values=v)
-setindex!{V,T}(x::TS{V,T}, v, ::Colon, ::Colon) = (checkdims(x,v); x.values=v)
-# Row subset + all columns
-setindex!{V,T}(x::TS{V,T}, v, r::Int, ::Colon) = (checkdims(x,v,r=r); x.values[getrows(x,r),:]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::T, ::Colon) = (checkdims(x,v,r=r); x.values[getrows(x,r),:]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::AbstractArray{Int,1}, ::Colon) = (checkdims(x,v,r=r); x.values[getrows(x,r),:]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::Vector{Bool}, ::Colon) = (checkdims(x,v,r=r); x.values[getrows(x,r),:]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::Vector{T}, ::Colon) = (checkdims(x,v,r=r); x.values[getrows(x,r),:]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::Int) = (checkdims(x,v,r=r); x.values[getrows(x,r),:]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::T) = (checkdims(x,v,r=r); x.values[getrows(x,r),:]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::AbstractArray{Int,1}) = (checkdims(x,v,r=r); x.values[getrows(x,r),:]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::Vector{Bool}) = (checkdims(x,v,r=r); x.values[getrows(x,r),:]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::Vector{T}) = (checkdims(x,v,r=r); x.values[getrows(x,r),:]=v)
-# Column subset + all rows
-setindex!{V,T}(x::TS{V,T}, v, ::Colon, c::Int) = (checkdims(x,v,c=c); x.values[:,getcols(x,c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, ::Colon, c::Symbol) = (checkdims(x,v,c=c); x.values[:,getcols(x,c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, ::Colon, c::AbstractArray{Int,1}) = (checkdims(x,v,c=c); x.values[:,getcols(x,c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, ::Colon, c::Vector{Bool}) = (checkdims(x,v,c=c); x.values[:,getcols(x,c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, ::Colon, c::Vector{Symbol}) = (checkdims(x,v,c=c); x.values[:,getcols(x,c)]=v)
-# Row subset + column subset
-setindex!{V,T}(x::TS{V,T}, v, r::Int, c::Int) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(x,c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::Int, c::Symbol) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(x,c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::Int, c::AbstractArray{Int,1}) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(x,c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::Int, c::Vector{Bool}) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(x,c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::Int, c::Vector{Symbol}) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(x,c)]=v)
+setindex!(x::TS, v, r::Int) = x.values[r,:] = v
+setindex!(x::TS, v, r::Int, ::Colon) = x.values[r,:] = v
+setindex!(x::TS, v, r::Int, c::Int) = x.values[r,c] = v
+setindex!(x::TS, v, r::Int, c::Symbol) = x.values[r,find(x.fields.==c)] = v
+setindex!(x::TS, v, r::Int, c::AbstractVector{Int}) = x.values[r,c] = v
+setindex!(x::TS, v, r::Int, c::AbstractVector{Bool}) = x.values[r,c] = v
+setindex!(x::TS, v, r::Int, c::AbstractVector{Symbol}) = x.values[r,map((s)->s in c, x.fields)]
 
-setindex!{V,T}(x::TS{V,T}, v, r::AbstractArray{Int,1}, c::Int) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::AbstractArray{Int,1}, c::Symbol) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::AbstractArray{Int,1}, c::AbstractArray{Int,1}) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::AbstractArray{Int,1}, c::Vector{Bool}) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::AbstractArray{Int,1}, c::Vector{Symbol}) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
+setindex!(x::TS, v, r::AbstractVector{Int}) = x.values[r,:] = v
+setindex!(x::TS, v, r::AbstractVector{Int}, ::Colon) = x.values[r,:] = v
+setindex!(x::TS, v, r::AbstractVector{Int}, c::Int) = x.values[r,c] = v
+setindex!(x::TS, v, r::AbstractVector{Int}, c::Symbol) = x.values[r,find(x.fields.==c)] = v
+setindex!(x::TS, v, r::AbstractVector{Int}, c::AbstractVector{Int}) = x.values[r,c] = v
+setindex!(x::TS, v, r::AbstractVector{Int}, c::AbstractVector{Bool}) = x.values[r,c] = v
+setindex!(x::TS, v, r::AbstractVector{Int}, c::AbstractVector{Symbol}) = x.values[r,map((s)->s in c, x.fields)]
 
-setindex!{V,T}(x::TS{V,T}, v, r::Vector{Bool}, c::Int) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::Vector{Bool}, c::Symbol) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::Vector{Bool}, c::AbstractArray{Int,1}) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::Vector{Bool}, c::Vector{Bool}) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::Vector{Bool}, c::Vector{Symbol}) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
+setindex!(x::TS, v, r::AbstractVector{Bool}) = x.values[r,:] = v
+setindex!(x::TS, v, r::AbstractVector{Bool}, ::Colon) = x.values[r,:] = v
+setindex!(x::TS, v, r::AbstractVector{Bool}, c::Int) = x.values[r,c] = v
+setindex!(x::TS, v, r::AbstractVector{Bool}, c::Symbol) = x.values[r,find(x.fields.==c)] = v
+setindex!(x::TS, v, r::AbstractVector{Bool}, c::AbstractVector{Int}) = x.values[r,c] = v
+setindex!(x::TS, v, r::AbstractVector{Bool}, c::AbstractVector{Bool}) = x.values[r,c] = v
+setindex!(x::TS, v, r::AbstractVector{Bool}, c::AbstractVector{Symbol}) = x.values[r,map((s)->s in c, x.fields)]
 
-setindex!{V,T}(x::TS{V,T}, v, r::Vector{T}, c::Int) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::Vector{T}, c::Symbol) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::Vector{T}, c::AbstractArray{Int,1}) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::Vector{T}, c::Vector{Bool}) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::Vector{T}, c::Vector{Symbol}) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
+findrows{T<:TimeType}(t::AbstractVector{T}, r::AbstractVector{T})::Vector{Bool} = [ti in r for ti=t]
+setindex!(x::TS, v, r::AbstractVector{TimeType}) = x.values[findrows(x.index,r),:] = v
+setindex!(x::TS, v, r::AbstractVector{TimeType}, ::Colon) = x.values[findrows(x.index,r),:] = v
+setindex!(x::TS, v, r::AbstractVector{TimeType}, c::Int) = x.values[findrows(x.index,r),c] = v
+setindex!(x::TS, v, r::AbstractVector{TimeType}, c::Symbol) = x.values[findrows(x.index,r),find(x.fields.==c)] = v
+setindex!(x::TS, v, r::AbstractVector{TimeType}, c::AbstractVector{Int}) = x.values[findrows(x.index,r),c] = v
+setindex!(x::TS, v, r::AbstractVector{TimeType}, c::AbstractVector{Bool}) = x.values[findrows(x.index,r),c] = v
+setindex!(x::TS, v, r::AbstractVector{TimeType}, c::AbstractVector{Symbol}) = x.values[findrows(x.index,r),map((s)->s in c, x.fields)]
 
-setindex!{V,T}(x::TS{V,T}, v, r::T, c::Int) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::T, c::Symbol) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::T, c::AbstractArray{Int,1}) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::T, c::Vector{Bool}) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
-setindex!{V,T}(x::TS{V,T}, v, r::T, c::Vector{Symbol}) = (checkdims(x,v,r=r,c=c); x.values[getrows(x,r),getcols(c)]=v)
+findrows{T<:TimeType}(t::AbstractVector{T}, r::T)::Vector{Bool} = r.==t
+setindex!(x::TS, v, r::TimeType) = x.values[findrows(x.index,r),:] = v
+setindex!(x::TS, v, r::TimeType, ::Colon) = x.values[findrows(x.index,r),:] = v
+setindex!(x::TS, v, r::TimeType, c::Int) = x.values[findrows(x.index,r),c] = v
+setindex!(x::TS, v, r::TimeType, c::Symbol) = x.values[findrows(x.index,r),find(x.fields.==c)] = v
+setindex!(x::TS, v, r::TimeType, c::AbstractVector{Int}) = x.values[findrows(x.index,r),c] = v
+setindex!(x::TS, v, r::TimeType, c::AbstractVector{Bool}) = x.values[findrows(x.index,r),c] = v
+setindex!(x::TS, v, r::TimeType, c::AbstractVector{Symbol}) = x.values[findrows(x.index,r),map((s)->s in c, x.fields)]
+
+setindex!(x::TS, v, ::Colon) = x.values = v
+setindex!(x::TS, v, ::Colon, ::Colon) = x.values = v
+setindex!(x::TS, v) = x.values = v
 
 #===============================================================================
 							NUMERICAL INDEXING
@@ -91,17 +82,17 @@ getindex{V,T}(x::TS{V,T})::TS{V,T} = x
 getindex{V,T}(x::TS{V,T}, ::Colon)::TS{V,T} = x
 getindex{V,T}(x::TS{V,T}, ::Colon, ::Colon)::TS{V,T} = x
 getindex{V,T}(x::TS{V,T}, ::Colon, c::Int)::TS{V,T} = ts(x.values[:,c], x.index, [x.fields[c]])
-getindex{V,T}(x::TS{V,T}, ::Colon, c::AbstractArray{Int,1})::TS{V,T} = ts(x.values[:,c], x.index, x.fields[c])
+getindex{V,T}(x::TS{V,T}, ::Colon, c::AbstractVector{Int})::TS{V,T} = ts(x.values[:,c], x.index, x.fields[c])
 
 getindex{V,T}(x::TS{V,T}, r::Int)::TS{V,T} = ts(x.values[r,:]', [x.index[r]], x.fields)
 getindex{V,T}(x::TS{V,T}, r::Int, ::Colon)::TS{V,T} = ts(x.values[r,:]', [x.index[r]], x.fields)
 getindex{V,T}(x::TS{V,T}, r::Int, c::Int)::TS{V,T} = ts([x.values[r,c]], [x.index[r]], [x.fields[c]])
-getindex{V,T}(x::TS{V,T}, r::Int, c::AbstractArray{Int,1})::TS{V,T} = ts(x.values[r,c]', [x.index[r]], x.fields[c])
+getindex{V,T}(x::TS{V,T}, r::Int, c::AbstractVector{Int})::TS{V,T} = ts(x.values[r,c]', [x.index[r]], x.fields[c])
 
-getindex{V,T}(x::TS{V,T}, r::AbstractArray{Int,1})::TS{V,T} = ts(x.values[r,:], x.index[r], x.fields)
-getindex{V,T}(x::TS{V,T}, r::AbstractArray{Int,1}, ::Colon)::TS{V,T} = ts(x.values[r,:], x.index[r], x.fields)
-getindex{V,T}(x::TS{V,T}, r::AbstractArray{Int,1}, c::Int)::TS{V,T} = ts(x.values[r,c], x.index[r], [x.fields[c]])
-getindex{V,T}(x::TS{V,T}, r::AbstractArray{Int,1}, c::AbstractArray{Int,1})::TS{V,T} = ts(x.values[r, c], x.index[r], x.fields[c])
+getindex{V,T}(x::TS{V,T}, r::AbstractVector{Int})::TS{V,T} = ts(x.values[r,:], x.index[r], x.fields)
+getindex{V,T}(x::TS{V,T}, r::AbstractVector{Int}, ::Colon)::TS{V,T} = ts(x.values[r,:], x.index[r], x.fields)
+getindex{V,T}(x::TS{V,T}, r::AbstractVector{Int}, c::Int)::TS{V,T} = ts(x.values[r,c], x.index[r], [x.fields[c]])
+getindex{V,T}(x::TS{V,T}, r::AbstractVector{Int}, c::AbstractVector{Int})::TS{V,T} = ts(x.values[r, c], x.index[r], x.fields[c])
 
 #===============================================================================
 							BOOLEAN INDEXING
@@ -109,19 +100,19 @@ getindex{V,T}(x::TS{V,T}, r::AbstractArray{Int,1}, c::AbstractArray{Int,1})::TS{
 getindex{V,T}(x::TS{V,T}, r::BitArray{1})::TS{V,T} = TS(x.values[r,:], x.index[r], x.fields)
 getindex{V,T}(x::TS{V,T}, r::BitArray{1}, ::Colon)::TS{V,T} = TS(x.values[r,:], x.index[r], x.fields)
 getindex{V,T}(x::TS{V,T}, r::BitArray{1}, c::Int)::TS{V,T} = TS(x.values[r,c], x.index[r], x.fields[c])
-getindex{V,T}(x::TS{V,T}, r::BitArray{1}, c::AbstractArray{Int,1})::TS{V,T} = TS(x.values[r,c], x.index[r], x.fields[c])
+getindex{V,T}(x::TS{V,T}, r::BitArray{1}, c::AbstractVector{Int})::TS{V,T} = TS(x.values[r,c], x.index[r], x.fields[c])
 getindex{V,T}(x::TS{V,T}, r::BitArray{1}, c::BitArray{1})::TS{V,T} = TS(x.values[r,c], x.index[r], x.fields[c])
 getindex{V,T}(x::TS{V,T}, r::BitArray{1}, c::Vector{Bool})::TS{V,T} = TS(x.values[r,c], x.index[r], x.fields[c])
 
 getindex{V,T}(x::TS{V,T}, r::Vector{Bool})::TS{V,T} = TS(x.values[r,:], x.index[r], x.fields)
 getindex{V,T}(x::TS{V,T}, r::Vector{Bool}, ::Colon)::TS{V,T} = TS(x.values[r,:], x.index[r], x.fields)
 getindex{V,T}(x::TS{V,T}, r::Vector{Bool}, c::Int)::TS{V,T} = TS(x.values[r,c], x.index[r], x.fields[c])
-getindex{V,T}(x::TS{V,T}, r::Vector{Bool}, c::AbstractArray{Int,1})::TS{V,T} = TS(x.values[r,c], x.index[r], x.fields[c])
+getindex{V,T}(x::TS{V,T}, r::Vector{Bool}, c::AbstractVector{Int})::TS{V,T} = TS(x.values[r,c], x.index[r], x.fields[c])
 getindex{V,T}(x::TS{V,T}, r::Vector{Bool}, c::Vector{Bool})::TS{V,T} = TS(x.values[r,c], x.index[r], x.fields[c])
 getindex{V,T}(x::TS{V,T}, r::Vector{Bool}, c::BitArray{1})::TS{V,T} = TS(x.values[r,c], x.index[r], x.fields[c])
 
-getindex{V,T}(x::TS{V,T}, r::AbstractArray{Int,1}, c::BitArray{1})::TS{V,T} = TS(x.values[r,c], x.index[r], x.fields[c])
-getindex{V,T}(x::TS{V,T}, r::AbstractArray{Int,1}, c::Vector{Bool})::TS{V,T} = TS(x.values[r,c], x.index[r], x.fields[c])
+getindex{V,T}(x::TS{V,T}, r::AbstractVector{Int}, c::BitArray{1})::TS{V,T} = TS(x.values[r,c], x.index[r], x.fields[c])
+getindex{V,T}(x::TS{V,T}, r::AbstractVector{Int}, c::Vector{Bool})::TS{V,T} = TS(x.values[r,c], x.index[r], x.fields[c])
 getindex{V,T}(x::TS{V,T}, r::Int, c::BitArray{1})::TS{V,T} = TS(x.values[r,c], x.index[r], x.fields[c])
 getindex{V,T}(x::TS{V,T}, r::Int, c::Vector{Bool})::TS{V,T} = TS(x.values[r,c], x.index[r], x.fields[c])
 getindex{V,T}(x::TS{V,T}, ::Colon, c::BitArray{1})::TS{V,T} = TS(x.values[:,c], x.index[:], x.fields[c])
@@ -130,7 +121,7 @@ getindex{V,T}(x::TS{V,T}, ::Colon, c::Vector{Bool})::TS{V,T} = TS(x.values[:,c],
 getindex{V,T}(x::TS{V,T}, r::TS{Bool})::TS{V,T} = x[r.index[overlaps(r.index,x.index).*r.values]]
 getindex{V,T}(x::TS{V,T}, r::TS{Bool}, ::Colon)::TS{V,T} = x[r.index[overlaps(r.index,x.index).*r.values]]
 getindex{V,T}(x::TS{V,T}, r::TS{Bool}, c::Int)::TS{V,T} = x[r.index[overlaps(r.index,x.index).*r.values],c]
-getindex{V,T}(x::TS{V,T}, r::TS{Bool}, c::AbstractArray{Int,1})::TS{V,T} = x[r.index[overlaps(r.index,x.index).*r.values],c]
+getindex{V,T}(x::TS{V,T}, r::TS{Bool}, c::AbstractVector{Int})::TS{V,T} = x[r.index[overlaps(r.index,x.index).*r.values],c]
 getindex{V,T}(x::TS{V,T}, r::TS{Bool}, c::Vector{Bool})::TS{V,T} = x[r.index[overlaps(r.index,x.index).*r.values],c]
 getindex{V,T}(x::TS{V,T}, r::TS{Bool}, c::BitArray{1})::TS{V,T} = x[r.index[overlaps(r.index,x.index).*r.values],c]
 getindex{V,T}(x::TS{V,T}, r::TS{Bool}, c::Symbol)::TS{V,T} = x[r.index[overlaps(r.index,x.index).*r.values],c]
@@ -142,19 +133,19 @@ getindex{V,T}(x::TS{V,T}, r::TS{Bool}, c::Vector{Symbol})::TS{V,T} = x[r.index[o
 getindex{V,T}(x::TS{V,T}, r::TimeType)::TS{V,T} = x[x.index.==r]
 getindex{V,T}(x::TS{V,T}, r::TimeType, ::Colon)::TS{V,T} = x[x.index.==r,:]
 getindex{V,T}(x::TS{V,T}, r::TimeType, c::Int)::TS{V,T} = x[x.index.==r,c]
-getindex{V,T}(x::TS{V,T}, r::TimeType, c::AbstractArray{Int,1})::TS{V,T} = x[x.index.==r,c]
+getindex{V,T}(x::TS{V,T}, r::TimeType, c::AbstractVector{Int})::TS{V,T} = x[x.index.==r,c]
 getindex{V,T}(x::TS{V,T}, r::TimeType, c::BitArray{1})::TS{V,T} = x[x.index.==r,c]
 
 getindex{V,T}(x::TS{V,T}, r::AbstractArray{Date,1})::TS{V,T} = x[overlaps(x.index, r)]
 getindex{V,T}(x::TS{V,T}, r::AbstractArray{Date,1}, ::Colon)::TS{V,T} = x[overlaps(x.index, r), :]
 getindex{V,T}(x::TS{V,T}, r::AbstractArray{Date,1}, c::Int)::TS{V,T} = x[overlaps(x.index, r), c]
-getindex{V,T}(x::TS{V,T}, r::AbstractArray{Date,1}, c::AbstractArray{Int,1})::TS{V,T} = x[overlaps(x.index, r), c]
+getindex{V,T}(x::TS{V,T}, r::AbstractArray{Date,1}, c::AbstractVector{Int})::TS{V,T} = x[overlaps(x.index, r), c]
 getindex{V,T}(x::TS{V,T}, r::AbstractArray{Date,1}, c::BitArray{1})::TS{V,T} = x[overlaps(x.index, r), c]
 
 getindex{V,T}(x::TS{V,T}, r::AbstractArray{DateTime,1})::TS{V,T} = x[overlaps(x.index, r)]
 getindex{V,T}(x::TS{V,T}, r::AbstractArray{DateTime,1}, ::Colon)::TS{V,T} = x[overlaps(x.index, r), :]
 getindex{V,T}(x::TS{V,T}, r::AbstractArray{DateTime,1}, c::Int)::TS{V,T} = x[overlaps(x.index, r), c]
-getindex{V,T}(x::TS{V,T}, r::AbstractArray{DateTime,1}, c::AbstractArray{Int,1})::TS{V,T} = x[overlaps(x.index, r), c]
+getindex{V,T}(x::TS{V,T}, r::AbstractArray{DateTime,1}, c::AbstractVector{Int})::TS{V,T} = x[overlaps(x.index, r), c]
 getindex{V,T}(x::TS{V,T}, r::AbstractArray{DateTime,1}, c::BitArray{1})::TS{V,T} = x[overlaps(x.index, r), c]
 
 #===============================================================================
@@ -177,8 +168,8 @@ getindex{V,T}(x::TS{V,T}, r::Vector{Bool}, c::Symbol)::TS{V,T} = x[r, x.fields.=
 getindex{V,T}(x::TS{V,T}, r::BitArray{1}, c::Vector{Symbol})::TS{V,T} = x[r, overlaps(x.fields, c)]
 getindex{V,T}(x::TS{V,T}, r::Vector{Bool}, c::Vector{Symbol})::TS{V,T} = x[r, overlaps(x.fields, c)]
 
-getindex{V,T}(x::TS{V,T}, r::AbstractArray{Int,1}, c::Symbol)::TS{V,T} = x[r, x.fields.==c]
-getindex{V,T}(x::TS{V,T}, r::AbstractArray{Int,1}, c::Vector{Symbol})::TS{V,T} = x[r, overlaps(x.fields, c)]
+getindex{V,T}(x::TS{V,T}, r::AbstractVector{Int}, c::Symbol)::TS{V,T} = x[r, x.fields.==c]
+getindex{V,T}(x::TS{V,T}, r::AbstractVector{Int}, c::Vector{Symbol})::TS{V,T} = x[r, overlaps(x.fields, c)]
 
 getindex{V,T}(x::TS{V,T}, r::AbstractArray{Date,1}, c::Symbol)::TS{V,T} = x[r, x.fields.==c]
 getindex{V,T}(x::TS{V,T}, r::AbstractArray{Date,1}, c::Vector{Symbol})::TS{V,T} = x[r, overlaps(x.fields, c)]
@@ -499,7 +490,7 @@ end
 getindex{V,T}(x::TS{V,T}, r::AbstractString)::TS{V,T} = x[dtidx(r, x.index)]
 getindex{V,T}(x::TS{V,T}, r::AbstractString, ::Colon)::TS{V,T} = x[dtidx(r, x.index)]
 getindex{V,T}(x::TS{V,T}, r::AbstractString, c::Int)::TS{V,T} = x[dtidx(r, x.index), c]
-getindex{V,T}(x::TS{V,T}, r::AbstractString, c::AbstractArray{Int,1})::TS{V,T} = x[dtidx(r, x.index), c]
+getindex{V,T}(x::TS{V,T}, r::AbstractString, c::AbstractVector{Int})::TS{V,T} = x[dtidx(r, x.index), c]
 getindex{V,T}(x::TS{V,T}, r::AbstractString, c::BitArray{1})::TS{V,T} = x[dtidx(r, x.index), c]
 getindex{V,T}(x::TS{V,T}, r::AbstractString, c::Symbol)::TS{V,T} = x[dtidx(r, x.index), c]
 getindex{V,T}(x::TS{V,T}, r::AbstractString, c::Vector{Symbol})::TS{V,T} = x[dtidx(r, x.index), c]
