@@ -1,17 +1,15 @@
 import Base:setindex!
 
-setindex!{R<:Int}(x::TS, v, r::R) = x.values[r,:] = v
-setindex!{R₁<:Union{Int,Bool}, R₂<:AbstractVector}(x::TS, v, r::R₂) = x.values[r,:] = v
+setindex!{R<:Integer}(x::TS, v, r::R) = x.values[r,:] = v
+setindex!{R<:AbstractVector{<:Integer}}(x::TS, v, r::R) = x.values[r,:] = v
+setindex!{R<:AbstractVector{<:Integer}}(x::TS, v, r::R, ::Colon) = x.values[r,:] = v
 
-setindex!(x::TS, v, r::Int) = x.values[r,:] = v
-setindex!(x::TS, v, r::Int, ::Colon) = x.values[r,:] = v
 setindex!(x::TS, v, r::Int, c::Int) = x.values[r,c] = v
 setindex!(x::TS, v, r::Int, c::Symbol) = x.values[r,find(x.fields.==c)] = v
 setindex!(x::TS, v, r::Int, c::AbstractVector{Int}) = x.values[r,c] = v
 setindex!(x::TS, v, r::Int, c::AbstractVector{Bool}) = x.values[r,c] = v
 setindex!(x::TS, v, r::Int, c::AbstractVector{Symbol}) = x.values[r,map((s)->s in c, x.fields)]
 
-setindex!(x::TS, v, r::AbstractVector{Int}) = x.values[r,:] = v
 setindex!(x::TS, v, r::AbstractVector{Int}, ::Colon) = x.values[r,:] = v
 setindex!(x::TS, v, r::AbstractVector{Int}, c::Int) = x.values[r,c] = v
 setindex!(x::TS, v, r::AbstractVector{Int}, c::Symbol) = x.values[r,find(x.fields.==c)] = v
@@ -19,7 +17,6 @@ setindex!(x::TS, v, r::AbstractVector{Int}, c::AbstractVector{Int}) = x.values[r
 setindex!(x::TS, v, r::AbstractVector{Int}, c::AbstractVector{Bool}) = x.values[r,c] = v
 setindex!(x::TS, v, r::AbstractVector{Int}, c::AbstractVector{Symbol}) = x.values[r,map((s)->s in c, x.fields)]
 
-setindex!(x::TS, v, r::AbstractVector{Bool}) = x.values[r,:] = v
 setindex!(x::TS, v, r::AbstractVector{Bool}, ::Colon) = x.values[r,:] = v
 setindex!(x::TS, v, r::AbstractVector{Bool}, c::Int) = x.values[r,c] = v
 setindex!(x::TS, v, r::AbstractVector{Bool}, c::Symbol) = x.values[r,find(x.fields.==c)] = v
