@@ -36,6 +36,7 @@ export
 
 include("ts.jl")
 include("show.jl")
+include("indexing/utils.jl")
 include("indexing/getindex.jl")
 include("indexing/setindex.jl")
 include("indexing/stringrange.jl")

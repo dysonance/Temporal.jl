@@ -4,28 +4,6 @@ Utilities for combining and manipulating TS objects using their indexes
 
 import Base: hcat, vcat, merge
 
-function overlaps(x::AbstractArray, y::AbstractArray, n::Int=1)::Vector{Bool}
-    if n == 1
-        xx = falses(x)
-        @inbounds for i = 1:size(x,1), j = 1:size(y,1)
-            if x[i] == y[j]
-                xx[i] = true
-            end
-        end
-        return xx
-    elseif n == 2
-        yy = falses(y)
-        @inbounds for i = 1:size(x,1), j = 1:size(y,1)
-            if x[i] == y[j]
-                yy[i] = true
-            end
-        end
-        return yy
-    else
-        error("Argument `n` must be either 1 (x) or 2 (y).")
-    end
-end
-
 # function partner(x::TS, y::TS)
 #     yy = !overlaps(x.index, y.index) .* NaN
 #     yy[!isnan(yy),:] = y.values
