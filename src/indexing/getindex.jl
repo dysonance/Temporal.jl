@@ -6,7 +6,7 @@ getindex(x::TS, ::Colon) = x
 getindex(x::TS, ::Colon, ::Colon) = x
 
 # int/bool row indexing
-getindex{R<:Integer}(x::TS, r::R) = TS(x.values[r,:], x.index[r], x.fields)
+getindex{R<:Integer}(x::TS, r::R) = x[[r]]
 getindex{R<:AbstractVector{<:Integer}}(x::TS, r::R) = TS(x.values[r,:], x.index[r], x.fields)
 getindex{R<:Integer}(x::TS, r::R, ::Colon) = TS(x.values[r,:], x.index[r], x.fields)
 getindex{R<:AbstractVector{<:Integer}}(x::TS, r::R, ::Colon) = TS(x.values[r,:], x.index[r], x.fields)
@@ -16,11 +16,15 @@ getindex{C<:Integer}(x::TS, ::Colon, c::C) = TS(x.values[:,c], x.index, x.fields
 getindex{C<:Vector{<:Integer}}(x::TS, ::Colon, c::C) = TS(x.values[:,c], x.index, x.fields[c])
 getindex{C<:AbstractVector{<:Integer}}(x::TS, ::Colon, c::C) = TS(x.values[:,c], x.index, x.fields[c])
 
+# row+column indexing
+getindex{R<:Integer,C<:Integer}(x::TS, r::R, c::C) = TS(x.values[[r],c], x.index[r], [x.fields[c]])
+getindex{R<:AbstractVector{<:Integer},C<:Integer}(x::TS, r::R, c::C) = TS(x.values[r,c], x.index[r], [x.fields[c]])
+getindex{R<:Integer,C<:AbstractVector{<:Integer}}(x::TS, r::R, c::C) = TS(x.values[[r],c], x.index[r], x.fields[c])
+getindex{R<:AbstractVector{<:Integer},C<:AbstractVector{<:Integer}}(x::TS, r::R, c::C) = TS(x.values[r,c], x.index[r], x.fields[c])
+
 # symbol column indexing
-getindex{C<:Symbol}(x::TS, c::C) = (cols=findcolumns(c,x); TS(x.values[:,cols], x.index, x.fields[cols]))
-getindex{C<:AbstractVector{Symbol}}(x::TS, c::C) = (cols=findcolumns(c,x); TS(x.values[:,cols], x.index, x.fields[cols]))
-getindex{C<:Symbol}(x::TS, ::Colon, c::C) = (cols=findcolumns(c,x); TS(x.values[:,cols], x.index, x.fields[cols]))
-getindex{C<:AbstractVector{Symbol}}(x::TS, ::Colon, c::C) = (cols=findcolumns(c,x); TS(x.values[:,cols], x.index, x.fields[cols]))
+getindex{C<:AbstractVector{Symbol}}(x::TS, c::C) = x[:,overlaps(x.fields,c)]
+getindex{C<:AbstractVector{Symbol}}(x::TS, ::Colon, c::C) = x[c]
 getindex{C<:Symbol}(x::TS, c::C) = x[:, x.fields.==c]
 getindex{C<:Symbol}(x::TS, ::Colon, c::C) = x[c]
 getindex{C<:AbstractVector{<:Symbol}}(x::TS, c::C) = x[:, overlaps(x.fields, c)]
@@ -45,6 +49,12 @@ getindex{V,T<:TimeType,C<:Integer}(x::TS{V,T}, t::T, c::C) = x[x.index.==t,c]
 getindex{V,T<:TimeType,C<:Symbol}(x::TS{V,T}, t::T, c::C) = x[x.index.==t,c]
 getindex{V,T<:TimeType,C<:AbstractVector{<:Integer}}(x::TS{V,T}, t::T, c::C) = x[x.index.==t,c]
 getindex{V,T<:TimeType,C<:AbstractVector{<:Symbol}}(x::TS{V,T}, t::T, c::C) = x[x.index.==t,c]
+getindex{V,T<:TimeType}(x::TS{V,T}, t::AbstractVector{T}) = x[overlaps(x.index,t)]
+getindex{V,T<:TimeType}(x::TS{V,T}, t::AbstractVector{T}, ::Colon) = x[overlaps(x.index,t),:]
+getindex{V,T<:TimeType,C<:Integer}(x::TS{V,T}, t::AbstractVector{T}, c::C) = x[overlaps(x.index,t),c]
+getindex{V,T<:TimeType,C<:Symbol}(x::TS{V,T}, t::AbstractVector{T}, c::C) = x[overlaps(x.index,t),c]
+getindex{V,T<:TimeType,C<:AbstractVector{<:Integer}}(x::TS{V,T}, t::AbstractVector{T}, c::C) = x[overlaps(x.index,t),c]
+getindex{V,T<:TimeType,C<:AbstractVector{<:Symbol}}(x::TS{V,T}, t::AbstractVector{T}, c::C) = x[overlaps(x.index,t),c]
 
 # string-based date(time) row indexing
 getindex{R<:AbstractString}(x::TS, r::R) = x[dtidx(r, x.index)]
