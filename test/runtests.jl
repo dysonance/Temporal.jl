@@ -103,6 +103,7 @@ time_rng = times[1]:Hour(1):times[2]
 @test Y[time_rng,rng].values == data[rng,rng]
 
 # combining
+Y.index = X.index
 Z = [X Y]
 @test size(Z,1) == size(X,1) + size(Y,1)
 @test size(Z,2) == size(X,2) + size(Y,2)
@@ -123,3 +124,15 @@ Z = rjoin(X, Y)
 
 Z = ljoin(X,Y)
 @test size(Z,1) == size(Y,1)
+
+# operations
+y.index = x.index
+z = x + y
+@test z.values == x.values + y.values
+z = x - y
+@test z.values == x.values - y.values
+z = x .* y
+@test z.values == x.values .* y.values
+z = x ./ y
+@test z.values == x.values ./ y.values
+
