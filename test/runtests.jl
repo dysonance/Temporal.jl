@@ -102,9 +102,24 @@ time_rng = times[1]:Hour(1):times[2]
 @test X[date_rng,rng].values == data[rng,rng]
 @test Y[time_rng,rng].values == data[rng,rng]
 
-# #TODO: figure out how to test properly (idea: use raw files in data subdirectory to compare results of web api calls?)
-# # I/O
-# tsread(Pkg.dir("Temporal/data/corn.csv"))
-# quandl("CHRIS/CME_CL1")
-# google("AAPL")
-# yahoo("XOM")
+# combining
+Z = [X Y]
+@test size(Z,1) == size(X,1) + size(Y,1)
+@test size(Z,2) == size(X,2) + size(Y,2)
+
+Z = ojoin(X, Y)
+@test size(Z,1) == size(X,1) + size(Y,1)
+@test size(Z,2) == size(X,2) + size(Y,2)
+
+Z = merge(X, Y)
+@test size(Z,1) == size(X,1) + size(Y,1)
+@test size(Z,2) == size(X,2) + size(Y,2)
+
+Z = ijoin(X, Y)
+@test size(Z,2) == size(X,2) + size(Y,2)
+
+Z = rjoin(X, Y)
+@test size(Z,1) == size(X,1)
+
+Z = ljoin(X,Y)
+@test size(Z,1) == size(Y,1)
