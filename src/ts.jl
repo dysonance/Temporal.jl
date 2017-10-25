@@ -1,4 +1,4 @@
-import Base: size, length, show, start, next, done, endof, isempty, convert, ndims, float, eltype
+import Base: size, length, show, start, next, done, endof, isempty, convert, ndims, float, eltype, copy
 using Base.Dates
 
 ################################################################################
@@ -112,5 +112,6 @@ endof(x::TS) = endof(x.values)
 ndims(::TS) = 2
 float(x::TS) = ts(float(x.values), x.index, x.fields)
 eltype(x::TS) = eltype(x.values)
-# round(x::TS) = ts(round(x.values), x.index, x.fields)
-# int(x::TS) = ts(round(Int64,x.values), x.index, x.fields)
+copy(x::TS) = TS(x.values, x.index, x.fields)
+# round(V::Type, x::TS) = TS(round(V, x.values), x.index, x.fields)
+
