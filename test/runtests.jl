@@ -2,14 +2,14 @@ using Temporal
 using Base.Test
 using Base.Dates
 
-n = 100                                                 # number of observations
-k = 4                                                   # number of variables
-data = cumsum(randn(n,k), 1)                            # toy random data
-dates = collect(today()-Week(n-1):Week(1):today())      # range of Date
-times = collect(now():Hour(1):now()+Hour(n-1))          # range of DateTime
-fields = ["Field $i" for i=1:k]                         # array of String field names
-X = ts(data, dates)                                     # auto-generate field names
-Y = ts(data, times, fields)                             # specify field names
+N = 100                                                 # number of observations
+K = 4                                                   # number of variables
+data = cumsum(randn(N,K), 1)                            # toy random data
+dates = collect(today()-Week(N-1):Week(1):today())      # range of Date
+times = collect(now():Hour(1):now()+Hour(N-1))          # range of DateTime
+fields = ["Field $i" for i=1:K]                         # array of String field names
+X = TS(data, dates)                                     # auto-generate field names
+Y = TS(data, times, fields)                             # specify field names
 
 # indexing variables
 int = 1
@@ -26,7 +26,7 @@ time_rng = times[1]:Hour(1):times[2]
     @testset "Initialization" begin
         @test isa(X, TS)
         @test isa(Y, TS)
-        @test size(X) == size(Y) == (n, k)
+        @test size(X) == size(Y) == (N, K)
         @test X.values == Y.values == data
     end
     @testset "Indexing" begin
@@ -115,28 +115,30 @@ time_rng = times[1]:Hour(1):times[2]
         end
     end
     @testset "Combining" begin
-        Y.index = X.index
+        X1 = copy(X)
+        X2 = TS(Y.values, X1.index, Y.fields)
+        X2.index = X2.index + Day(fld(N,2))
         # hcat
-        Z = [X Y]
-        @test size(Z,1) == size(X,1) + size(Y,1)
-        @test size(Z,2) == size(X,2) + size(Y,2)
+        Z = [X1 X2]
+        @test size(Z,1) == length(union(X1.index, X2.index))
+        @test size(Z,2) == size(X1,2) + size(X2,2)
         # outer joins
-        Z = ojoin(X, Y)
-        @test size(Z,1) == size(X,1) + size(Y,1)
-        @test size(Z,2) == size(X,2) + size(Y,2)
+        Z = ojoin(X1, X2)
+        @test size(Z,1) == size(X1,1) + size(X2,1)
+        @test size(Z,2) == size(X1,2) + size(X2,2)
         # merges
-        Z = merge(X, Y)
-        @test size(Z,1) == size(X,1) + size(Y,1)
-        @test size(Z,2) == size(X,2) + size(Y,2)
+        Z = merge(X1, X2)
+        @test size(Z,1) == size(X1,1) + size(X2,1)
+        @test size(Z,2) == size(X1,2) + size(X2,2)
         # inner joins
-        Z = ijoin(X, Y)
-        @test size(Z,2) == size(X,2) + size(Y,2)
+        Z = ijoin(X1, X2)
+        @test size(Z,2) == size(X1,2) + size(X2,2)
         # right joins
-        Z = rjoin(X, Y)
-        @test size(Z,1) == size(X,1)
+        Z = rjoin(X1, X2)
+        @test size(Z,1) == size(X1,1)
         # left joins
-        Z = ljoin(X,Y)
-        @test size(Z,1) == size(Y,1)
+        Z = ljoin(X1,X2)
+        @test size(Z,1) == size(X2,1)
     end
     @testset "Operations" begin
         x = X[:,1]
