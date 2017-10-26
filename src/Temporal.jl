@@ -9,7 +9,7 @@ using RecipesBase
 
 export
     # Foundational
-    TS, ts, size, overlaps,
+    TS, ts, overlaps,
     # Merging/Joining
     ojoin, ijoin, ljoin, rjoin, merge, hcat, vcat, head, tail,
     # Missing Data
