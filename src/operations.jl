@@ -5,6 +5,7 @@ Operations on TS objects
 # TODO: increase efficiency running these operations
 import Base: ones, zeros, trues, falses, isnan, sum, mean, maximum, minimum, round,
 prod, cumsum, cumprod, diff, all, any, countnz, sign, find, findfirst, log
+import Base.broadcast
 importall Base.Operators
 
 islogical(fun::Function) = fun in (<, <=, >, >=, ==, !=, !)
@@ -147,76 +148,76 @@ end
 # Artithmetic operators
 +(x::TS) = ts(+x.values, x.index, x.fields)
 -(x::TS) = ts(-x.values, x.index, x.fields)
-.+(x::TS, y::TS) = operation(x, y, +)
+broadcast(::typeof(+), x::TS, y::TS) = operation(x, y, +)
 +(x::TS, y::TS) = operation(x, y, +)
-.-(x::TS, y::TS) = operation(x, y, -)
+broadcast(::typeof(-), x::TS, y::TS) = operation(x, y, -)
 -(x::TS, y::TS) = operation(x, y, -)
-.*(x::TS, y::TS) = operation(x, y, .*)
+broadcast(::typeof(*), x::TS, y::TS) = operation(x, y, .*)
 *(x::TS, y::TS) = x .* y
-./(x::TS, y::TS) = operation(x, y, ./)
+broadcast(::typeof(/), x::TS, y::TS) = operation(x, y, ./)
 /(x::TS, y::TS) = x ./ y
-.^(x::TS, y::TS) = operation(x, y, .^)
+broadcast(::typeof(^), x::TS, y::TS) = operation(x, y, .^)
 ^(x::TS, y::TS) = x .^ y
-.%(x::TS, y::TS) = operation(x, y, .%)
+broadcast(::typeof(%), x::TS, y::TS) = operation(x, y, .%)
 %(x::TS, y::TS) = x .% y
 
-.+(x::TS, y::AbstractArray) = ts(x.values .+ y, x.index, x.fields)
+broadcast(::typeof(+), x::TS, y::AbstractArray) = ts(x.values .+ y, x.index, x.fields)
 +(x::TS, y::AbstractArray) = x .+ y
-.-(x::TS, y::AbstractArray) = ts(x.values .- y, x.index, x.fields)
+broadcast(::typeof(-), x::TS, y::AbstractArray) = ts(x.values .- y, x.index, x.fields)
 -(x::TS, y::AbstractArray) = x .- y
-.*(x::TS, y::AbstractArray) = ts(x.values .* y, x.index, x.fields)
+broadcast(::typeof(*), x::TS, y::AbstractArray) = ts(x.values .* y, x.index, x.fields)
 *(x::TS, y::AbstractArray) = x .* y
-./(x::TS, y::AbstractArray) = ts(x.values ./ y, x.index, x.fields)
+broadcast(::typeof(/), x::TS, y::AbstractArray) = ts(x.values ./ y, x.index, x.fields)
 /(x::TS, y::AbstractArray) = x ./ y
-.%(x::TS, y::AbstractArray) = ts(x.values .% y, x.index, x.fields)
+broadcast(::typeof(%), x::TS, y::AbstractArray) = ts(x.values .% y, x.index, x.fields)
 %(x::TS, y::AbstractArray) = x .% y
-.^(x::TS, y::AbstractArray) = ts(x.values .^ y, x.index, x.fields)
+broadcast(::typeof(^), x::TS, y::AbstractArray) = ts(x.values .^ y, x.index, x.fields)
 ^(x::TS, y::AbstractArray) = x .^ y
 
-.+(y::AbstractArray, x::TS) = x .+ y
+broadcast(::typeof(+), y::AbstractArray, x::TS) = x .+ y
 +(y::AbstractArray, x::TS) = x + y
-.-(y::AbstractArray, x::TS) = x .- y
+broadcast(::typeof(-), y::AbstractArray, x::TS) = x .- y
 -(y::AbstractArray, x::TS) = x - y
-.*(y::AbstractArray, x::TS) = ts(y .* x.values, x.index, x.fields)
+broadcast(::typeof(*), y::AbstractArray, x::TS) = ts(y .* x.values, x.index, x.fields)
 *(y::AbstractArray, x::TS) = y .* x
-./(y::AbstractArray, x::TS) = ts(y ./ x.values, x.index, x.fields)
+broadcast(::typeof(/), y::AbstractArray, x::TS) = ts(y ./ x.values, x.index, x.fields)
 /(y::AbstractArray, x::TS) = y ./ x
-.%(y::AbstractArray, x::TS) = ts(y .% x.values, x.index, x.fields)
+broadcast(::typeof(%), y::AbstractArray, x::TS) = ts(y .% x.values, x.index, x.fields)
 %(y::AbstractArray, x::TS) = y .% x
-.^(y::AbstractArray, x::TS) = ts(y .^ x.values, x.index, x.fields)
+broadcast(::typeof(^), y::AbstractArray, x::TS) = ts(y .^ x.values, x.index, x.fields)
 ^(y::AbstractArray, x::TS) = y .^ x
 
-.+(x::TS, y::Number) = ts(x.values .+ y, x.index, x.fields)
+broadcast(::typeof(+), x::TS, y::Number) = ts(x.values .+ y, x.index, x.fields)
 +(x::TS, y::Number) = ts(x.values + y, x.index, x.fields)
-.-(x::TS, y::Number) = ts(x.values .- y, x.index, x.fields)
+broadcast(::typeof(-), x::TS, y::Number) = ts(x.values .- y, x.index, x.fields)
 -(x::TS, y::Number) = ts(x.values - y, x.index, x.fields)
-.*(x::TS, y::Number) = ts(x.values .* y, x.index, x.fields)
+broadcast(::typeof(*), x::TS, y::Number) = ts(x.values .* y, x.index, x.fields)
 *(x::TS, y::Number) = ts(x.values * y, x.index, x.fields)
-./(x::TS, y::Number) = ts(x.values ./ y, x.index, x.fields)
+broadcast(::typeof(/), x::TS, y::Number) = ts(x.values ./ y, x.index, x.fields)
 /(x::TS, y::Number) = ts(x.values / y, x.index, x.fields)
-.%(x::TS, y::Number) = ts(x.values .% y, x.index, x.fields)
+broadcast(::typeof(%), x::TS, y::Number) = ts(x.values .% y, x.index, x.fields)
 %(x::TS, y::Number) = ts(x.values % y, x.index, x.fields)
-.^(x::TS, y::Number) = ts(x.values .^ y, x.index, x.fields)
+broadcast(::typeof(^), x::TS, y::Number) = ts(x.values .^ y, x.index, x.fields)
 ^(x::TS, y::Number) = ts(x.values ^ y, x.index, x.fields)
 
-.+(y::Number, x::TS) = ts(y .+ x.values, x.index, x.fields)
+broadcast(::typeof(+), y::Number, x::TS) = ts(y .+ x.values, x.index, x.fields)
 +(y::Number, x::TS) = x + y
-.-(y::Number, x::TS) = ts(y .- x.values, x.index, x.fields)
+broadcast(::typeof(-), y::Number, x::TS) = ts(y .- x.values, x.index, x.fields)
 -(y::Number, x::TS) = x - y
-.*(y::Number, x::TS) = ts(y .* x.values, x.index, x.fields)
+broadcast(::typeof(*), y::Number, x::TS) = ts(y .* x.values, x.index, x.fields)
 *(y::Number, x::TS) = x * y
-./(y::Number, x::TS) = ts(y ./ x.values, x.index, x.fields)
+broadcast(::typeof(/), y::Number, x::TS) = ts(y ./ x.values, x.index, x.fields)
 /(y::Number, x::TS) = x / y
-.%(y::Number, x::TS) = ts(y .% x.values, x.index, x.fields)
+broadcast(::typeof(%), y::Number, x::TS) = ts(y .% x.values, x.index, x.fields)
 %(y::Number, x::TS) = x % y
-.^(y::Number, x::TS) = ts(y .^ x.values, x.index, x.fields)
+broadcast(::typeof(^), y::Number, x::TS) = ts(y .^ x.values, x.index, x.fields)
 ^(y::Number, x::TS) = x ^ y
 
 # Logical operators
 all(x::TS) = all(x.values)
 any(x::TS) = any(x.values)
 
-.!(x::TS) = ts(.!x.values, x.index, x.fields)
+broadcast(::typeof(!), x::TS) = ts(.!x.values, x.index, x.fields)
 !(x::TS) = .!(x)
 
 function compare_elementwise(x::TS, y::TS, f::Function)
@@ -227,22 +228,22 @@ function compare_elementwise(x::TS, y::TS, f::Function)
     return ts(result, merged.index)
 end
 
-.==(x::TS, y::TS) = compare_elementwise(x, y, ==)
+broadcast(::typeof(==), x::TS, y::TS) = compare_elementwise(x, y, ==)
 ==(x::TS, y::TS) = x.values == y.values && x.index == y.index && x.fields == y.fields
 
-.!=(x::TS, y::TS) = compare_elementwise(x, y, !=)
+broadcast(::typeof(!=), x::TS, y::TS) = compare_elementwise(x, y, !=)
 !=(x::TS, y::TS) = !(x == y)
 
-.>(x::TS, y::TS) = compare_elementwise(x, y, >)
+broadcast(::typeof(>), x::TS, y::TS) = compare_elementwise(x, y, >)
 >(x::TS, y::TS) = x .> y
 
-.<(x::TS, y::TS) = compare_elementwise(x, y, <)
+broadcast(::typeof(<), x::TS, y::TS) = compare_elementwise(x, y, <)
 <(x::TS, y::TS) = x .< y
 
-.>=(x::TS, y::TS) = compare_elementwise(x, y, >=)
+broadcast(::typeof(>=), x::TS, y::TS) = compare_elementwise(x, y, >=)
 >=(x::TS, y::TS) = x .>= y
 
-.<=(x::TS, y::TS) = compare_elementwise(x, y, <=)
+broadcast(::typeof(<=), x::TS, y::TS) = compare_elementwise(x, y, <=)
 <=(x::TS, y::TS) = x .<= y
 
 # .==(x::TS, y::TS) = operation(x, y, .==)
