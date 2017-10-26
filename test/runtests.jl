@@ -2,6 +2,7 @@ using Temporal
 using Base.Test
 using Base.Dates
 
+# constant variables
 N = 100                                                 # number of observations
 K = 4                                                   # number of variables
 data = cumsum(randn(N,K), 1)                            # toy random data
@@ -114,10 +115,12 @@ time_rng = times[1]:Hour(1):times[2]
             @test Y[time_rng,rng].values == data[rng,rng]
         end
     end
+    X1 = copy(X)
+    X2 = TS(Y.values, X1.index, Y.fields)
+    X2.index = X2.index + Day(fld(N,2))
+    x1 = X1[:,1]
+    x2 = X1[:,1]
     @testset "Combining" begin
-        X1 = copy(X)
-        X2 = TS(Y.values, X1.index, Y.fields)
-        X2.index = X2.index + Day(fld(N,2))
         # hcat
         Z = [X1 X2]
         @test size(Z,1) == length(union(X1.index, X2.index))
@@ -141,18 +144,15 @@ time_rng = times[1]:Hour(1):times[2]
         @test size(Z,1) == size(X2,1)
     end
     @testset "Operations" begin
-        x = X[:,1]
-        y = Y[:,1]
-        y.index = x.index
         # arithmetic operations
-        z = x + y
-        @test z.values == x.values + y.values
-        z = x - y
-        @test z.values == x.values - y.values
-        z = x .* y
-        @test z.values == x.values .* y.values
-        z = x ./ y
-        @test z.values == x.values ./ y.values
+        z = x1 + x2
+        @test z.values == x1.values + x2.values
+        z = x1 - x2
+        @test z.values == x1.values - x2.values
+        z = x1 .* x2
+        @test z.values == x1.values .* x2.values
+        z = x1 ./ x2
+        @test z.values == x1.values ./ x2.values
     end
 end
 
