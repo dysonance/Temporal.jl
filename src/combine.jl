@@ -127,21 +127,37 @@ hcat(x::TS, y::AbstractArray)::TS = ojoin(x, ts(y, x.index))
 hcat(y::AbstractArray, x::TS)::TS = ojoin(ts(y, x.index), x)
 hcat(x::TS, y::Number)::TS = ojoin(x, ts(fill(y,size(x,1)), x.index))
 hcat(y::Number, x::TS)::TS = ojoin(ts(fill(y,size(x,1)), x.index), x)
-function hcat{V}(series::TS, arrs::AbstractArray{V}...)::TS
+
+function getmaxtype(arrs)::Type
+    result::Type = Any
+    @inbounds for k in 2:length(arrs)
+        result = eltype(promote(arrs[k-1][1], arrs[k][1]))
+    end
+    return result
+end
+
+function hcat(series::TS, arrs::AbstractArray...)::TS
     n = size(series,1)
-    k = length(arrs)
-    out = zeros(V, (n,k))
-    @inbounds for j in 1:k
-        out[:,j] = arrs[j]
+    cols = map(arr->size(arr,2), arrs)
+    rows = map(arr->size(arr,1), arrs)
+    @assert all(rows.==n) "All arrays must have same number of rows as TS object."
+    out = zeros(getmaxtype(arrs), (n, sum(cols)))
+    first_col, last_col = 0, 0
+    @inbounds for j in 1:length(arrs)
+        last_col = first_col + cols[j]
+        first_col = last_col - first_col
+        out[:,first_col:last_col] = arrs[j]
     end
     return [series out]
 end
-function hcat{V<:Number}(series::TS, nums::V...)::TS
+
+function hcat(series::TS, nums::Number...)::TS
     n = size(series,1)
     k = length(nums)
-    out = zeros(V, (n,k))
+    T::Type = getmaxtype(nums)
+    out = zeros(T, (n,k))
     @inbounds for j in 1:k
-        out[:,j] = fill(n, nums[j])
+        out[:,j] = ones(T,n) * nums[j]
     end
     return [series out]
 end
