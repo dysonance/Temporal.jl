@@ -222,7 +222,7 @@ broadcast(::typeof(!), x::TS) = ts(.!x.values, x.index, x.fields)
 
 function compare_elementwise(x::TS, y::TS, f::Function)
     x_cols = 1:size(x,2)
-    y_cols = size(x,2)+1:size(y)
+    y_cols = (1:size(y,2)) + size(x,2)
     merged = [x y]
     result = f.(merged.values[:,x_cols], merged.values[:,y_cols])
     return ts(result, merged.index)
