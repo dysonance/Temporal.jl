@@ -44,8 +44,7 @@ mutable struct TS{V,T}
     index::Vector{T}
     fields::Vector{Symbol}
     function TS{V,T}(values, index, fields) where {V,T<:TimeType}
-        @assert size(values,1)==length(index) "Length of index not equal to number of value rows."
-        @assert size(values,2)==length(fields) || (isempty(fields) && isempty(values)) "Length of fields not equal to number of columns in values."
+        @assert size(values,1)==length(index) && size(values,2)==length(fields) "Invalid dimensions between values, index, and fields arguments."
         order = sortperm(index)
         if size(values,2) == 1
             return new(values[order], index[order], namefix.(fields))
