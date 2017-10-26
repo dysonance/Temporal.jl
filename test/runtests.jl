@@ -171,15 +171,48 @@ time_rng = times[1]:Hour(1):times[2]
         end
     end
     @testset "Operations" begin
-        # arithmetic operations
-        z = x1 + x2
-        @test z.values == x1.values + x2.values
-        z = x1 - x2
-        @test z.values == x1.values - x2.values
-        z = x1 .* x2
-        @test z.values == x1.values .* x2.values
-        z = x1 ./ x2
-        @test z.values == x1.values ./ x2.values
+        @testset "Logical" begin
+            @test x1 == x2
+            @test all(trues(x1))
+            @test all(!falses(x2))
+            x1 += 1.0
+            @test all(x1 > x2)
+            @test all(x2 < x1)
+            @test all(x1 >= x2)
+            @test all(x2 <= x1)
+        end
+        @testset "Arithmetic" begin
+            z = x1 + x2
+            @test z.values == x1.values + x2.values
+            z = x1 - x2
+            @test z.values == x1.values - x2.values
+            z = x1 .* x2
+            @test z.values == x1.values .* x2.values
+            z = x1 ./ x2
+            @test z.values == x1.values ./ x2.values
+            z = x1 * 2.0
+            @test z.values == x1.values * 2.0
+            z = x1 / 2.0
+            @test z.values == x1.values / 2.0
+            z = x1 % 2.0
+            @test z.values == x1.values % 2.0
+            #FIXME: exponent operator not working
+        end
+        @testset "Statistics" begin
+            x = copy(x1)
+            x[1] = 0.0
+            @test prod(x) == prod(round(x)) == cumprod(x).values[end] == prod(x.values) == 0.0
+            @test cumsum(x).values[end] ≈ sum(x) ≈ sum(x.values)
+            @test mean(x) == mean(x.values)
+            dx = diff(x; pad=true, padval=NaN)
+            @test isnan(dx.values[1])
+            @test size(dx,1) == size(x,1)
+            @test size(dropnan(dx),1) == size(diff(x,pad=false),1)
+            bx = lag(x; pad=true, padval=NaN)
+            @test isnan(bx.values[1])
+            @test size(bx,1) == size(x,1)
+            @test size(dropnan(bx),1) == size(lag(x,pad=false),1)
+        end
     end
 end
 
