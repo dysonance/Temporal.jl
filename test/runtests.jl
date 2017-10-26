@@ -18,8 +18,8 @@ rng = 1:2
 arr = collect(rng)
 dstr_row = string(dates[int])
 tstr_row = string(times[int])
-dstr_rng = "$(string(dates[rng[int]]))/$(string(dates[rng[end]]))"
-tstr_rng = "$(string(times[rng[int]]))/$(string(times[rng[end]]))"
+dstr_rng = join(string.(dates[rng], '/'))[1:end-1]
+tstr_rng = join(string.(times[rng], '/'))[1:end-1]
 date_rng = dates[1]:Week(1):dates[2]
 time_rng = times[1]:Hour(1):times[2]
 
