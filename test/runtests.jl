@@ -171,6 +171,17 @@ time_rng = times[1]:Hour(1):times[2]
         end
     end
     @testset "Operations" begin
+        @testset "Utilities" begin
+            srand(1)
+            x = ts(cumsum(randn(N))) + N
+            dx = diff(log(x), pad=true, padval=NaN)
+            @test find(trues(x)) == collect(1:N)
+            @test findfirst(trues(x)) == 1
+            idx_nans = isnan(dx)
+            @test find(idx_nans) == [1]
+            @test findfirst(idx_nans) == 1
+            @test sign(dx[find(!idx_nans)]).values == sign(dx.values[!isnan(dx.values)])
+        end
         @testset "Logical" begin
             @test x1 == x2
             @test all(trues(x1))
