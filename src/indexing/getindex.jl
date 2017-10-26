@@ -17,7 +17,7 @@ getindex{C<:Vector{<:Integer}}(x::TS, ::Colon, c::C) = TS(x.values[:,c], x.index
 getindex{C<:AbstractVector{<:Integer}}(x::TS, ::Colon, c::C) = TS(x.values[:,c], x.index, x.fields[c])
 
 # row+column indexing
-getindex{R<:Integer,C<:Integer}(x::TS, r::R, c::C) = TS(x.values[[r],c], x.index[r], [x.fields[c]])
+getindex{R<:Integer,C<:Integer,V}(x::TS{V}, r::R, c::C)::V = x.values[r,c]
 getindex{R<:AbstractVector{<:Integer},C<:Integer}(x::TS, r::R, c::C) = TS(x.values[r,c], x.index[r], [x.fields[c]])
 getindex{R<:Integer,C<:AbstractVector{<:Integer}}(x::TS, r::R, c::C) = TS(x.values[[r],c], x.index[r], x.fields[c])
 getindex{R<:AbstractVector{<:Integer},C<:AbstractVector{<:Integer}}(x::TS, r::R, c::C) = TS(x.values[r,c], x.index[r], x.fields[c])
@@ -29,7 +29,7 @@ getindex{C<:Symbol}(x::TS, c::C) = x[:, x.fields.==c]
 getindex{C<:Symbol}(x::TS, ::Colon, c::C) = x[c]
 getindex{C<:AbstractVector{<:Symbol}}(x::TS, c::C) = x[:, overlaps(x.fields, c)]
 getindex{C<:AbstractVector{<:Symbol}}(x::TS, ::Colon, c::C) = x[c]
-getindex{R<:Integer,C<:Symbol}(x::TS, r::R, c::C) = x[r, x.fields.==c]
+getindex{R<:Integer,C<:Symbol,V}(x::TS{V}, r::R, c::C)::V = x.values[r, findfirst(x.fields.==c)]
 getindex{R<:Integer,C<:AbstractVector{<:Symbol}}(x::TS, r::R, c::C) = x[r, overlaps(x.fields, c)]
 getindex{R<:AbstractVector{<:Integer},C<:Symbol}(x::TS, r::R, c::C) = x[r, x.fields.==c]
 getindex{R<:AbstractVector{<:Integer},C<:AbstractVector{<:Symbol}}(x::TS, r::R, c::C) = x[r, overlaps(x.fields, c)]
