@@ -34,8 +34,8 @@ time_rng = times[1]:Hour(1):times[2]
         @testset "Single Row" begin
             @test X[int].values == data[int,:]'
             @test Y[int].values == data[int,:]'
-            @test X[int,int].values == [data[int,int]]
-            @test Y[int,int].values == [data[int,int]]
+            @test X[int,int] == data[int,int]
+            @test Y[int,int] == data[int,int]
             @test X[int,rng].values == data[int,rng]'
             @test Y[int,rng].values == data[int,rng]'
             @test X[int,arr].values == data[int,arr]'
