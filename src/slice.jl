@@ -40,8 +40,8 @@ function nancols(x::Array{Float64}; fun::Function=any)::BitVector
 	return cutcols
 end
 
-nanrows{V,T}(x::TS{V,T}) = ts(nanrows(x.values), x.index, x.fields)
-nancols(x::TS) = nancols(x.values)
+nanrows{V,T}(x::TS{V,T}; args...) = nanrows(x.values; args...)
+nancols{V,T}(x::TS{V,T}; args...) = nancols(x.values; args...)
 
 @doc """
 Drop missing (NaN) values from an Array
