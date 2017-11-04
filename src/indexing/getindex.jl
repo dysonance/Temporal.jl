@@ -17,7 +17,7 @@ getindex{C<:Integer,V,T}(x::TS{V,T}, ::Colon, c::AbstractVector{C}) = TS{V,T}(x.
 
 # row+column indexing
 getindex{R<:Int,C<:Int,V}(x::TS{V}, r::R, c::C)::V = x.values[r,c]
-getindex{R<:Int,C<:Integer,V,T}(x::TS{V,T}, r::R, c::AbstractVector{C}) = TS{V,T}(x.values[[r],c], x.index[r], x.fields[c])
+getindex{R<:Int,C<:Integer,V,T}(x::TS{V,T}, r::R, c::AbstractVector{C}) = TS{V,T}(x.values[[r],c], x.index[[r]], x.fields[c])
 getindex{R<:Integer,C<:Int,V,T}(x::TS{V,T}, r::AbstractVector{R}, c::C) = TS{V,T}(x.values[r,[c]], x.index[r], [x.fields[c]])
 getindex{R<:Integer,C<:Integer,V,T}(x::TS{V,T}, r::AbstractVector{R}, c::AbstractVector{C}) = TS{V,T}(x.values[r,c], x.index[r], x.fields[c])
 
