@@ -23,7 +23,7 @@ ones(x::TS) = ts(ones(x.values), x.index, x.fields)
 zeros(x::TS) = ts(zeros(x.values), x.index, x.fields)
 trues(x::TS) = ts(trues(x.values), x.index, x.fields)
 falses(x::TS) = ts(falses(x.values), x.index, x.fields)
-isnan(x::TS) = ts(isnan(x.values), x.index, x.fields)
+isnan(x::TS) = ts(isnan.(x.values), x.index, x.fields)
 countnz(x::TS) = countnz(x.values)
 sign(x::TS) = ts(sign(x.values), x.index, x.fields)
 log(x::TS) = ts(log(x.values), x.index, x.fields)
@@ -48,8 +48,8 @@ end
 operation{V,T}(x::TS{V,T}, fun::Function; args...) = ts(fun(x.values), x.index, x.fields; args...)
 
 # Number functions
-round{V}(x::TS{V}, n::Int=0)::TS{V} = ts(round(x.values,n), x.index, x.fields)
-round{R}(::Type{R}, x::TS) = ts(round(R, x.values), x.index, x.fields)
+round{V}(x::TS{V}, n::Int=0)::TS{V} = ts(round.(x.values,n), x.index, x.fields)
+round{R}(::Type{R}, x::TS) = ts(round.(R, x.values), x.index, x.fields)
 sum{V}(x::TS{V})::V = sum(x.values)
 sum{V}(x::TS{V}, dim::Int)::Array{V} = sum(x.values, dim)
 sum{V}(f::Function, x::TS{V})::V = sum(f, x.values)
@@ -148,17 +148,18 @@ end
 # Artithmetic operators
 +(x::TS) = ts(+x.values, x.index, x.fields)
 -(x::TS) = ts(-x.values, x.index, x.fields)
-broadcast(::typeof(+), x::TS, y::TS) = operation(x, y, +)
-+(x::TS, y::TS) = operation(x, y, +)
-broadcast(::typeof(-), x::TS, y::TS) = operation(x, y, -)
--(x::TS, y::TS) = operation(x, y, -)
-broadcast(::typeof(*), x::TS, y::TS) = operation(x, y, .*)
+
+broadcast(::typeof(+), x::TS, y::TS) = ts(x.values .+ y.values, x.index, x.fields)
++(x::TS, y::TS) = ts(x.values + y.values, x.index, x.fields)
+broadcast(::typeof(-), x::TS, y::TS) = ts(x.values .- y.values, x.index, x.fields)
+-(x::TS, y::TS) = ts(x.values - y.values, x.index, x.fields)
+broadcast(::typeof(*), x::TS, y::TS) = ts(x.values .* y.values, x.index, x.fields)
 *(x::TS, y::TS) = x .* y
-broadcast(::typeof(/), x::TS, y::TS) = operation(x, y, ./)
+broadcast(::typeof(/), x::TS, y::TS) = ts(x.values ./ y.values, x.index, x.fields)
 /(x::TS, y::TS) = x ./ y
-broadcast(::typeof(^), x::TS, y::TS) = operation(x, y, .^)
+broadcast(::typeof(^), x::TS, y::TS) = ts(x.values .^ y.values, x.index, x.fields)
 ^(x::TS, y::TS) = x .^ y
-broadcast(::typeof(%), x::TS, y::TS) = operation(x, y, .%)
+broadcast(::typeof(%), x::TS, y::TS) = ts(x.values .% y.values, x.index, x.fields)
 %(x::TS, y::TS) = x .% y
 
 broadcast(::typeof(+), x::TS, y::AbstractArray) = ts(x.values .+ y, x.index, x.fields)
@@ -245,37 +246,4 @@ broadcast(::typeof(>=), x::TS, y::TS) = compare_elementwise(x, y, >=)
 
 broadcast(::typeof(<=), x::TS, y::TS) = compare_elementwise(x, y, <=)
 <=(x::TS, y::TS) = x .<= y
-
-# .==(x::TS, y::TS) = operation(x, y, .==)
-# .>(x::TS, y::TS) = operation(x, y, .>)
-# .<(x::TS, y::TS) = operation(x, y, .<)
-# .!=(x::TS, y::TS) = operation(x, y, .!=)
-# .<=(x::TS, y::TS) = operation(x, y, .<=)
-# .>=(x::TS, y::TS) = operation(x, y, .>=)
-# 
-# .==(x::TS, y::Number) = ts(x.values .== y, x.index, x.fields)
-# .>(x::TS, y::Number) = ts(x.values .> y, x.index, x.fields)
-# .<(x::TS, y::Number) = ts(x.values .< y, x.index, x.fields)
-# .!=(x::TS, y::Number) = ts(x.values .!= y, x.index, x.fields)
-# .<=(x::TS, y::Number) = ts(x.values .<= y, x.index, x.fields)
-# .>=(x::TS, y::Number) = ts(x.values .>= y, x.index, x.fields)
-# .==(y::Number, x::TS) = ts(x.values .== y, x.index, x.fields)
-# .>(y::Number, x::TS) = ts(x.values .> y, x.index, x.fields)
-# .<(y::Number, x::TS) = ts(x.values .< y, x.index, x.fields)
-# .!=(y::Number, x::TS) = ts(x.values .!= y, x.index, x.fields)
-# .<=(y::Number, x::TS) = ts(x.values .<= y, x.index, x.fields)
-# .>=(y::Number, x::TS) = ts(x.values .>= y, x.index, x.fields)
-# 
-# .==(x::TS, y::AbstractArray) = ts(x.values .== y, x.index, x.fields)
-# .>(x::TS, y::AbstractArray) = ts(x.values .> y, x.index, x.fields)
-# .<(x::TS, y::AbstractArray) = ts(x.values .< y, x.index, x.fields)
-# .!=(x::TS, y::AbstractArray) = ts(x.values .!= y, x.index, x.fields)
-# .<=(x::TS, y::AbstractArray) = ts(x.values .<= y, x.index, x.fields)
-# .>=(x::TS, y::AbstractArray) = ts(x.values .>= y, x.index, x.fields)
-# .==(y::AbstractArray, x::TS) = ts(x.values .== y, x.index, x.fields)
-# .>(y::AbstractArray, x::TS) = ts(x.values .> y, x.index, x.fields)
-# .<(y::AbstractArray, x::TS) = ts(x.values .< y, x.index, x.fields)
-# .!=(y::AbstractArray, x::TS) = ts(x.values .!= y, x.index, x.fields)
-# .<=(y::AbstractArray, x::TS) = ts(x.values .<= y, x.index, x.fields)
-# .>=(y::AbstractArray, x::TS) = ts(x.values .>= y, x.index, x.fields)
 
