@@ -3,7 +3,7 @@ Operations on TS objects
 =#
 
 # TODO: increase efficiency running these operations
-import Base: ones, zeros, trues, falses, isnan, sum, mean, maximum, minimum, round,
+import Base: one, ones, zero, zeros, rand, randn, trues, falses, isnan, sum, mean, maximum, minimum, round,
 prod, cumsum, cumprod, diff, all, any, countnz, sign, find, findfirst, log
 import Base.broadcast
 importall Base.Operators
@@ -19,33 +19,32 @@ const arithmetics = Dict("+" => "Plus", ".+" => "Plus", "-" => "Minus", ".-" => 
 
 find(x::TS) = find(x.values)
 findfirst(x::TS) = findfirst(x.values)
-ones(x::TS) = ts(ones(x.values), x.index, x.fields)
-zeros(x::TS) = ts(zeros(x.values), x.index, x.fields)
+
+ones{V<:Real,T<:TimeType}(x::TS{V,T}) = TS{V,T}(ones(V, size(x)), x.index, x.fields)
+ones{V<:Real}(::Type{TS{V}}, n::Int) = TS{V}(ones(V, n))
+ones{V<:Real}(::Type{TS{V}}, dims::Tuple{Int,Int}) = TS{V}(ones(V, dims))
+ones{V<:Real}(::Type{TS{V}}, r::Int, c::Int) = TS{V}(ones(V, r, c))
+one{V<:Real}(x::TS{V})::V = one(V)
+one{V<:Real}(::Type{TS{V}})::V = one(V)
+
+zeros{V<:Real,T<:TimeType}(x::TS{V,T}) = TS{V,T}(zeros(x.values), x.index, x.fields)
+zeros{V<:Real}(::Type{TS{V}}, n::Int) = TS{V}(zeros(V, n))
+zeros{V<:Real}(::Type{TS{V}}, r::Int, c::Int) = TS{V}(zeros(V, r, c))
+zeros{V<:Real}(::Type{TS{V}}, dims::Tuple{Int,Int}) = TS{V}(zeros(V, dims))
+zero{V<:Real}(x::TS{V})::V = zero(V)
+zero{V<:Real}(::Type{TS{V}})::V = zero(V)
+
+rand(::Type{TS}, n::Int=1) = TS(rand(Float64, n))
+rand(::Type{TS}, r::Int, c::Int) = TS(rand(Float64, r, c))
+rand(::Type{TS}, dims::Tuple{Int,Int}) = TS(rand(Float64, dims))
+
 trues(x::TS) = ts(trues(x.values), x.index, x.fields)
 falses(x::TS) = ts(falses(x.values), x.index, x.fields)
 isnan(x::TS) = ts(isnan.(x.values), x.index, x.fields)
 countnz(x::TS) = countnz(x.values)
-sign(x::TS) = ts(sign(x.values), x.index, x.fields)
-log(x::TS) = ts(log(x.values), x.index, x.fields)
-log(b::Number, x::TS) = ts(log(b, x.values), x.index, x.fields)
-
-# Pass Array operators through to underlying TS values
-function  operation{V,T}(x::TS{V,T}, y::TS{V,T}, fun::Function; args...)
-    if islogical(fun)
-        fldstr = "$(string(x.fields[1]))$(logicals[string(fun)])$(string(y.fields[1]))"
-    elseif isarithmetic(fun)
-        fldstr = "$(string(x.fields[1]))$(arithmetics[string(fun)])$(string(y.fields[1]))"
-    else
-        fldstr = ucfirst(string(fun))
-    end
-    fldsym = Symbol(fldstr)
-    if x.index == y.index
-        return ts(fun(x.values, y.values; args...), x.index, fldsym)
-    end
-    idx = intersect(x.index, y.index)
-    return ts(fun(x[idx].values, y[idx].values; args...), idx, fldsym)
-end
-operation{V,T}(x::TS{V,T}, fun::Function; args...) = ts(fun(x.values), x.index, x.fields; args...)
+sign(x::TS) = ts(sign.(x.values), x.index, x.fields)
+log(x::TS) = ts(log.(x.values), x.index, x.fields)
+log(b::Number, x::TS) = ts(log.(b, x.values), x.index, x.fields)
 
 # Number functions
 round{V}(x::TS{V}, n::Int=0)::TS{V} = ts(round.(x.values,n), x.index, x.fields)
@@ -189,17 +188,17 @@ broadcast(::typeof(^), y::AbstractArray, x::TS) = ts(y .^ x.values, x.index, x.f
 ^(y::AbstractArray, x::TS) = y .^ x
 
 broadcast(::typeof(+), x::TS, y::Number) = ts(x.values .+ y, x.index, x.fields)
-+(x::TS, y::Number) = ts(x.values + y, x.index, x.fields)
++(x::TS, y::Number) = ts(x.values .+ y, x.index, x.fields)
 broadcast(::typeof(-), x::TS, y::Number) = ts(x.values .- y, x.index, x.fields)
--(x::TS, y::Number) = ts(x.values - y, x.index, x.fields)
+-(x::TS, y::Number) = ts(x.values .- y, x.index, x.fields)
 broadcast(::typeof(*), x::TS, y::Number) = ts(x.values .* y, x.index, x.fields)
-*(x::TS, y::Number) = ts(x.values * y, x.index, x.fields)
+*(x::TS, y::Number) = ts(x.values .* y, x.index, x.fields)
 broadcast(::typeof(/), x::TS, y::Number) = ts(x.values ./ y, x.index, x.fields)
-/(x::TS, y::Number) = ts(x.values / y, x.index, x.fields)
+/(x::TS, y::Number) = ts(x.values ./ y, x.index, x.fields)
 broadcast(::typeof(%), x::TS, y::Number) = ts(x.values .% y, x.index, x.fields)
-%(x::TS, y::Number) = ts(x.values % y, x.index, x.fields)
+%(x::TS, y::Number) = ts(x.values .% y, x.index, x.fields)
 broadcast(::typeof(^), x::TS, y::Number) = ts(x.values .^ y, x.index, x.fields)
-^(x::TS, y::Number) = ts(x.values ^ y, x.index, x.fields)
+^{B<:Real,E<:Real}(x::TS{B}, y::E) = ts(x.values .^ y, x.index, x.fields)
 
 broadcast(::typeof(+), y::Number, x::TS) = ts(y .+ x.values, x.index, x.fields)
 +(y::Number, x::TS) = x + y
