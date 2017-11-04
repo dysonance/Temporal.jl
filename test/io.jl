@@ -4,7 +4,7 @@ using Base.Test, Base.Dates, Temporal
 
 @testset "Input/Output" begin
     @testset "Sample Data" begin
-        corn = tsread("$(Pkg.dir("Temporal"))/data/corn.csv")
+        corn = tsread("$(Pkg.dir("Temporal"))/data/Corn.csv", header=true, eol='\n')
         @test size(corn, 2) == 8
         @test size(cl(corn), 2) == 1
     end
