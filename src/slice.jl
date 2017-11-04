@@ -64,11 +64,11 @@ Drop missing (NaN) values from a TS object
 function dropnan{V,T}(x::TS{V,T}; dim::Int=1, fun::Function=any)
 	@assert dim == 1 || dim == 2 || dim == 3 "Argument `dim` must be 1 (rows), 2 (columns), or 3 (both)."
 	if dim == 1
-		return x[!nanrows(x.values, fun=fun)]
+		return x[.!nanrows(x.values, fun=fun)]
 	elseif dim == 2
-		return x[:,!nancols(x.values, fun=fun)]
+		return x[:,.!nancols(x.values, fun=fun)]
 	elseif dim == 3
-		return x[!nanrows(x.values, fun=fun), !nancols(x.values, fun=fun)]
+		return x[.!nanrows(x.values, fun=fun), .!nancols(x.values, fun=fun)]
 	end
 end
 
