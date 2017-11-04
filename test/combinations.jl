@@ -1,4 +1,4 @@
-module TestCombinations
+# module TestCombinations
 
 using Base.Test, Base.Dates, Temporal
 
@@ -58,4 +58,4 @@ x2 = X1[:,1]
     end
 end
 
-end
+# end
