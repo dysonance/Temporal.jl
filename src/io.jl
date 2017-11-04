@@ -57,7 +57,7 @@ function tsread(file::String; dlm::Char=',', header::Bool=true, eol::Char='\n', 
         s[s.==""] = "NaN"
         arr[i,:] = float(s)
     end
-    return ts(arr, indextype(idx), fields)
+    return TS(arr, indextype(idx), fields)
 end
 
 @doc doc"""
@@ -65,7 +65,7 @@ Write TS object to a text file.
 
 `tswrite(x::TS, file::String; dlm::Char=',', header::Bool=true, eol::Char='\\n')`
 """ ->
-function tswrite(x::TS, file::String; dlm::Char=',', header::Bool=true, eol::Char='\n')
+function tswrite(x::TS, file::String; dlm::Char=',', header::Bool=true, eol::Char='\n')::Void
     outfile = open(file, "w")
     if header
         write(outfile, "Index$(dlm)$(join(x.fields, dlm))$(eol)")
@@ -86,7 +86,7 @@ end
 #     Dates.datetime2unix(Dates.DateTime(s))
 # end
 
-function isdate(t::Vector{DateTime})
+function isdate{T<:TimeType}(t::AbstractVector{T})::Bool
     h = Dates.hour.(t)
     m = Dates.minute.(t)
     s = Dates.second.(t)
@@ -94,7 +94,7 @@ function isdate(t::Vector{DateTime})
     return all(h.==h[1]) && all(m.==m[1]) && all(s.==s[1]) && all(ms.==ms[1])
 end
 
-function csvresp(resp; sort::Char='d')
+function csvresp(resp::Requests.Response; sort::Char='d')
     @assert resp.status == 200 "Error in download request."
     rowdata = Vector{String}(split(readstring(resp), '\n'))
     header = Vector{String}(split(shift!(rowdata), ','))
@@ -117,7 +117,7 @@ function csvresp(resp; sort::Char='d')
         format = Dates.DateFormat("yyyy-mm-dd")
         t = map(s -> Dates.DateTime(s[1]), v)
     end
-    Temporal.isdate(t) ? t = Date.(t) : nothing
+    isdate(t) ? t = Date.(t) : nothing
     data = zeros(Float64, (N,k-1))
     if length(header) == 2 && header[2] == "Stock Splits"
         # Logic to be applied for stock splits for Yahoo Finance downloads
@@ -230,7 +230,7 @@ function quandl(code::String;
         url = "$QUANDL_URL/$code.csv?&rows=$rows&order=$sort_arg&collapse=$freq_arg&transform=$calc&api_key=$auth"
     end
     indata = csvresp(get(url), sort=sort)
-    return ts(indata[1], indata[2], indata[3][2:end])
+    return TS(indata[1], indata[2], indata[3][2:end])
 end
 
 @doc doc"""
@@ -314,7 +314,7 @@ function yahoo(symb::String;
     urlstr = "$(YAHOO_URL)/$(symb)?period1=$(period1)&period2=$(period2)&interval=1$(freq)&events=$(event)&crumb=$(crumb_tuple[1])"
     response = Requests.get(urlstr, cookies=crumb_tuple[2])
     indata = Temporal.csvresp(response)
-    return ts(indata[1], indata[2], indata[3][2:end])
+    return TS(indata[1], indata[2], indata[3][2:end])
 end
 
 function yahoo(syms::Vector{String};
@@ -376,5 +376,5 @@ function google(symb::String;
                  "+$(Dates.year(thru_date))&output=csv")
     response = Requests.get(url)
     indata = Temporal.csvresp(response)
-    return ts(indata[1], indata[2], indata[3][2:end])
+    return TS(indata[1], indata[2], indata[3][2:end])
 end
