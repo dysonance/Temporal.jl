@@ -13,12 +13,14 @@ using Base.Test, Base.Dates, Temporal
         @test length(saturdays(x)) == 1
         @test length(sundays(x)) == 1
         x = TS(rand(252*5))
+        @test all(boy(boy(x).index)[2:end])
+        @test all(eoy(eoy(x).index)[1:end-1])
+        @test all(boq(boq(x).index)[2:end])
+        @test all(eoq(eoq(x).index)[1:end-1])
+        @test all(bom(bom(x).index)[2:end])
+        @test all(eom(eom(x).index)[1:end-1])
         @test length(bow(x)) == length(mondays(x))
         @test length(eow(x)) == length(sundays(x))
-        @test length(bom(x)) in length(unique(map(s->s[1:7], string.(x.index)))) - [1,0]
-        @test length(eom(x)) in length(unique(map(s->s[1:7], string.(x.index)))) - [1,0]
-        @test length(boy(x)) in length(unique(Base.Dates.year(x.index))) - [1,0]
-        @test length(eoy(x)) in length(unique(Base.Dates.year(x.index))) - [1,0]
     end
     @testset "Aggregation" begin
         X = TS(rand(252*5,4))
