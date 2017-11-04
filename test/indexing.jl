@@ -3,6 +3,11 @@
 using Base.Test, Base.Dates, Temporal
 
 @testset "Indexing" begin
+    @testset "Identity" begin
+        @test X[] == X
+        @test X[:] == X
+        @test X[:,:] == X
+    end
     @testset "Single Row" begin
         @test X[int].values == data[int,:]'
         @test Y[int].values == data[int,:]'
@@ -14,6 +19,9 @@ using Base.Test, Base.Dates, Temporal
         @test Y[int,arr].values == data[int,arr]'
     end
     @testset "String Row Indexing" begin
+        test_year = Dates.year(Dates.today())
+        test_month = 
+        @test X[dstr_row].values[:] == data[int,:]
         @test X[dstr_row,int].values[:] == [data[int,int]]
         @test X[dstr_row,rng].values == data[int,rng]'
         @test X[dstr_row,arr].values == data[int,rng]'
@@ -79,12 +87,17 @@ using Base.Test, Base.Dates, Temporal
         @test Y[collect(times[rng]),arr].values == data[rng,rng]
     end
     @testset "Date/DateTime Step Range Row Indexing" begin
-        @test X[date_rng].values == data[rng,:]
-        @test Y[time_rng].values == data[rng,:]
-        @test X[date_rng,int].values[:] == data[rng,int]
-        @test Y[time_rng,int].values[:] == data[rng,int]
-        @test X[date_rng,rng].values == data[rng,rng]
-        @test Y[time_rng,rng].values == data[rng,rng]
+        @test X[dates[rng]].values == data[rng,:]
+        @test Y[times[rng]].values == data[rng,:]
+        @test X[dates[rng],int].values[:] == data[rng,int]
+        @test Y[times[rng],int].values[:] == data[rng,int]
+        @test X[dates[rng],rng].values == data[rng,rng]
+        @test Y[times[rng],rng].values == data[rng,rng]
+    end
+    @testset "Symbol Column Indexing" begin
+        @test X[:A] == X[:,1] == X[:,:A]
+        @test X[1,:A] == X[1,1] == X.values[1,1]
+        @test X[[:A,:B]] == X[:,1:2] == X[:,[:A,:B]]
     end
 end
 
