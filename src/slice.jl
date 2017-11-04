@@ -15,11 +15,11 @@ tail{V,T}(x::TS{V,T}, n::Int=5) = x[end-n+1:end,:]
 @doc """
 Get the indexes of all rows in an Array containing NaN values
 """ ->
-function nanrows(x::Array{Float64}; fun::Function=any)
+function nanrows(x::Array{Float64}; fun::Function=any)::BitVector
 	@assert fun == any || fun == all "Argument `fun` must be either `any` or `all`"
 	cutrows = falses(size(x,1))
 	@inbounds for i = 1:size(x,1)
-		if fun(isnan(x[i,:]))
+		if fun(isnan.(x[i,:]))
 			cutrows[i] = true
 		end
 	end
@@ -29,11 +29,11 @@ end
 @doc """
 Get the indexes of all columns in an Array containing NaN values
 """ ->
-function nancols(x::Array{Float64}; fun::Function=any)
+function nancols(x::Array{Float64}; fun::Function=any)::BitVector
 	@assert fun == any || fun == all "Argument `fun` must be either `any` or `all`"
 	cutcols = falses(size(x,2))
 	@inbounds for j = 1:size(x,2)
-		if fun(isnan(x[:,j]))
+		if fun(isnan.(x[:,j]))
 			cutcols[j] = true
 		end
 	end
@@ -73,7 +73,7 @@ function dropnan{V,T}(x::TS{V,T}; dim::Int=1, fun::Function=any)
 end
 
 function ffill!{Float64}(x::AbstractArray{Float64,1})
-	i = findfirst(!isnan(x))
+	i = findfirst(!isnan.(x))
 	@inbounds for i = i+1:size(x,1)
 		isnan(x[i]) ? x[i] = x[i-1] : nothing
 	end
@@ -87,7 +87,7 @@ function ffill!{Float64}(x::AbstractArray{Float64,2})
 end
 
 function bfill!{Float64}(x::AbstractArray{Float64,1})
-	i = findlast(!isnan(x))
+	i = findlast(!isnan.(x))
 	@inbounds for i = i-1:-1:1
 		isnan(x[i]) ? x[i] = x[i+1] : nothing
 	end
@@ -110,7 +110,7 @@ end
 
 function linterp!{Float64}(x::AbstractArray{Float64,1})
 	@assert size(x,1) > 3 "Must have 3 or more elements to interpolate."
-	isval = !isnan(x)
+	isval = .!isnan.(x)
 	if all(isval)
 		return x
 	end
