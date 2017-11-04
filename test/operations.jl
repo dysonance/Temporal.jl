@@ -13,18 +13,23 @@ using Base.Test, Base.Dates, Temporal
         @test find(idx_nans) == [1]
         @test findfirst(idx_nans) == 1
         @test sign(dx[find(!idx_nans)]).values[:] == sign(dx.values[!isnan(dx.values)])
+        x = ts(rand(N))
+        @test round(Int,x).values == round.(Int,round(x).values)
     end
     @testset "Logical" begin
         @test x1 == x2
         @test all(trues(x1))
         @test all(!falses(x2))
         x1 += 1.0
+        @test x1 != x2
         @test all(x1 > x2)
         @test all(x2 < x1)
         @test all(x1 >= x2)
         @test all(x2 <= x1)
     end
     @testset "Arithmetic" begin
+        x1 = TS(rand(100))
+        x2 = TS(rand(100))
         z = x1 + x2
         @test z.values == x1.values + x2.values
         z = x1 - x2
