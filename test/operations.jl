@@ -12,7 +12,7 @@ using Base.Test, Base.Dates, Temporal
         idx_nans = isnan(dx)
         @test find(idx_nans) == [1]
         @test findfirst(idx_nans) == 1
-        @test sign(dx[find(!idx_nans)]).values == sign(dx.values[!isnan(dx.values)])
+        @test sign(dx[find(!idx_nans)]).values[:] == sign(dx.values[!isnan(dx.values)])
     end
     @testset "Logical" begin
         @test x1 == x2
