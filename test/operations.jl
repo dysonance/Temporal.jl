@@ -12,9 +12,12 @@ using Base.Test, Base.Dates, Temporal
         idx_nans = isnan(dx)
         @test find(idx_nans) == [1]
         @test findfirst(idx_nans) == 1
-        @test sign(dx[find(!idx_nans)]).values[:] == sign(dx.values[!isnan(dx.values)])
+        @test sign(dx[find(.!idx_nans)]).values[:] == sign.(dx.values[.!isnan.(dx.values)])
         x = ts(rand(N))
         @test round(Int,x).values == round.(Int,round(x).values)
+        @test ones(x).values == ones(eltype(x), size(x))
+        @test zeros(x).values == zeros(eltype(x), size(x))
+        @test length(rand(TS,N)) == N
     end
     @testset "Logical" begin
         @test x1 == x2
@@ -43,8 +46,9 @@ using Base.Test, Base.Dates, Temporal
         z = x1 / 2.0
         @test z.values == x1.values / 2.0
         z = x1 % 2.0
-        @test z.values == x1.values % 2.0
-        #FIXME: exponent operator not working
+        @test z.values == x1.values .% 2.0
+        @test x1 + x1.values == x1 * 2
+        @test x2 - x2.values == zeros(x2)
     end
     @testset "Statistics" begin
         x = copy(x1)
