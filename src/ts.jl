@@ -39,11 +39,11 @@ Time series type aimed at efficiency and simplicity.
 
 Motivated by the `xts` package in R and the `pandas` package in Python.
 """ ->
-mutable struct TS{V,T}
+mutable struct TS{V<:Real,T<:TimeType}
     values::Array{V}
     index::Vector{T}
     fields::Vector{Symbol}
-    function TS{V,T}(values, index, fields) where {V,T<:TimeType}
+    function TS{V,T}(values, index, fields) where {V<:Real,T<:TimeType}
         @assert size(values,1)==length(index) "Length of index not equal to number of value rows."
         @assert size(values,2)==length(fields) || (isempty(fields) && isempty(values)) "Length of fields not equal to number of columns in values."
         order = sortperm(index)
