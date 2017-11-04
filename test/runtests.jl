@@ -25,10 +25,10 @@ time_rng = times[1]:Hour(1):times[2]
 
 test_scripts = ["basic.jl",
                 "indexing.jl",
-                "operations.jl",
                 "combinations.jl",
+                "operations.jl",
                 # "io.jl",
-                "collapse.jl"]
+                "aggregation.jl"]
 
 for test_script in test_scripts
     try

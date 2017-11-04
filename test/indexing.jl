@@ -1,4 +1,4 @@
-module TestIndexing
+# module TestIndexing
 
 using Base.Test, Base.Dates, Temporal
 
@@ -88,4 +88,4 @@ using Base.Test, Base.Dates, Temporal
     end
 end
 
-end
+# end
