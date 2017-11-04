@@ -31,12 +31,6 @@ test_scripts = ["basic.jl",
                 "aggregation.jl"]
 
 for test_script in test_scripts
-    try
-        include(test_script)
-        println("\t\033[1m\033[32mPASSED\033[0m: $(test_script)")
-    catch e
-        anyerrors = true
-        println("\t\033[1m\033[31mFAILED\033[0m: $(test_script)")
-    end
+    include(test_script)
 end
 
