@@ -275,6 +275,9 @@ function fromthru(from::AbstractString, thru::AbstractString, t::Vector{DateTime
 end
 
 function dtidx(s::AbstractString, t::Vector{Date})
+    if s == "/" || s == ""
+        return trues(t)
+    end
     @assert !in('T', s) "Cannot index Date type with sub-daily frequency."
     bds = split(s, RNG_DLM)
     if length(bds) == 1  # single date
@@ -297,6 +300,9 @@ function dtidx(s::AbstractString, t::Vector{Date})
 end
 
 function dtidx(s::AbstractString, t::Vector{DateTime})
+    if s == "/" || s == ""
+        return trues(t)
+    end
     bds = split(s, RNG_DLM)
     if length(bds) == 1  # single date
         return thisdt(s, t)

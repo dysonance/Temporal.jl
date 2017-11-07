@@ -19,8 +19,6 @@ using Base.Test, Base.Dates, Temporal
         @test Y[int,arr].values == data[int,arr]'
     end
     @testset "String Row Indexing" begin
-        test_year = Dates.year(Dates.today())
-        test_month = 
         @test X[dstr_row].values[:] == data[int,:]
         @test X[dstr_row,int].values[:] == [data[int,int]]
         @test X[dstr_row,rng].values == data[int,rng]'
@@ -34,6 +32,23 @@ using Base.Test, Base.Dates, Temporal
         @test Y[tstr_rng,int].values[:] == data[rng,int]
         @test Y[tstr_rng,rng].values == data[rng,rng]
         @test Y[tstr_rng,arr].values == data[rng,arr]
+        y1 = string(year(today()) - 1)
+        y2 = string(year(today()))
+        m1 = string(month(today() - Month(1)))
+        m2 = string(month(today()))
+        d1 = string(day(today()-Day(1)))
+        d2 = string(day(today()))
+        m1 = length(m1)==1 ? "0$m1" : m1
+        m2 = length(m2)==1 ? "0$m2" : m2
+        d1 = length(d1)==1 ? "0$d1" : d1
+        d2 = length(d2)==1 ? "0$d2" : d2
+        @test X["/"] == X[""] == X
+        @test Y["/"] == Y[""] == Y
+        @test size(X["$y2/"],1) >= size(X["$y2-$m2/"],1) >= size(X["$y2-$m2-$d2/"],1)
+        @test size(X["/$y2"],1) >= size(X["/$y2-$m2"],1) >= size(X["/$y2-$m2-$d2"],1)
+        @test size(X["$y1/$y2",1],1) <= size(X,1)
+        @test size(X["$y1-$m1/$y2-$m2"],1) <= size(X,1)
+        @test size(X["$y1-$m1-$d1/$y2-$m2-$d2"],1) <= size(X,1)
     end
     @testset "Single Date/DateTime Row Indexing" begin
         @test X[dates[int]].values == data[int,:]'
