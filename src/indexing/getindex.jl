@@ -12,27 +12,27 @@ getindex(x::TS, ::Colon, ::Colon) =
 getindex{R<:Int,V,T}(x::TS{V,T}, r::R) =
     x[[r]]
 getindex{R<:Int,V,T}(x::TS{V,T}, r::R, ::Colon) =
-    TS{V,T}(x.values[r,:], x.index[r], x.fields)
+    TS((x.values[r,:][:,:]'), x.index[r], x.fields)
 getindex{R<:Integer,V,T}(x::TS{V,T}, r::AbstractVector{R}) =
-    TS{V,T}(x.values[r,:], x.index[r], x.fields)
+    TS(x.values[r,:], x.index[r], x.fields)
 getindex{R<:Integer,V,T}(x::TS{V,T}, r::AbstractVector{R}, ::Colon) =
-    TS{V,T}(x.values[r,:], x.index[r], x.fields)
+    TS(x.values[r,:], x.index[r], x.fields)
 
 # int/bool column indexing
 getindex{C<:Int}(x::TS, ::Colon, c::C) =
     TS(x.values[:,[c]], x.index, x.fields[c])
 getindex{C<:Integer,V,T}(x::TS{V,T}, ::Colon, c::AbstractVector{C}) =
-    TS{V,T}(x.values[:,c], x.index, x.fields[c])
+    TS(x.values[:,c], x.index, x.fields[c])
 
 # row+column indexing
 getindex{R<:Int,C<:Int,V}(x::TS{V}, r::R, c::C)::V =
     x.values[r,c]
 getindex{R<:Int,C<:Integer,V,T}(x::TS{V,T}, r::R, c::AbstractVector{C}) =
-    TS{V,T}(x.values[[r],c], x.index[[r]], x.fields[c])
+    TS(x.values[[r],c], x.index[[r]], x.fields[c])
 getindex{R<:Integer,C<:Int,V,T}(x::TS{V,T}, r::AbstractVector{R}, c::C) =
-    TS{V,T}(x.values[r,[c]], x.index[r], [x.fields[c]])
+    TS(x.values[r,[c]], x.index[r], [x.fields[c]])
 getindex{R<:Integer,C<:Integer,V,T}(x::TS{V,T}, r::AbstractVector{R}, c::AbstractVector{C}) =
-    TS{V,T}(x.values[r,c], x.index[r], x.fields[c])
+    TS(x.values[r,c], x.index[r], x.fields[c])
 
 # symbol column indexing
 getindex{C<:AbstractVector{Symbol}}(x::TS, c::C) =
@@ -55,20 +55,6 @@ getindex{R<:AbstractVector{<:Integer},C<:Symbol}(x::TS, r::R, c::C) =
     x[r, x.fields.==c]
 getindex{R<:AbstractVector{<:Integer},C<:AbstractVector{<:Symbol}}(x::TS, r::R, c::C) =
     x[r, overlaps(x.fields, c)]
-
-# boolean time series indexing
-getindex(x::TS, r::TS{Bool}) =
-    x[r.index[overlaps(r.index,x.index).*r.values]]
-getindex(x::TS, r::TS{Bool}, ::Colon) =
-    x[r.index[overlaps(r.index,x.index).*r.values]]
-getindex{C<:Symbol}(x::TS, r::TS{Bool}, c::C) =
-    x[r.index[overlaps(r.index,x.index).*r.values],c]
-getindex{C<:AbstractVector{<:Symbol}}(x::TS, r::TS{Bool}, c::C) =
-    x[r.index[overlaps(r.index,x.index).*r.values],c]
-getindex{C<:Int}(x::TS, r::TS{Bool}, c::C) =
-    x[r.index[overlaps(r.index,x.index).*r.values],c]
-getindex{C<:AbstractVector{<:Integer}}(x::TS, r::TS{Bool}, c::C) =
-    x[r.index[overlaps(r.index,x.index).*r.values],c]
 
 # timetype row indexing
 getindex{V,T<:TimeType}(x::TS{V,T}, t::T) =
