@@ -49,6 +49,11 @@ using Base.Test, Base.Dates, Temporal
         @test size(X["$y1/$y2",1],1) <= size(X,1)
         @test size(X["$y1-$m1/$y2-$m2"],1) <= size(X,1)
         @test size(X["$y1-$m1-$d1/$y2-$m2-$d2"],1) <= size(X,1)
+        @test size(Y["$y2/"],1) >= size(Y["$y2-$m2/"],1) >= size(Y["$y2-$m2-$d2/"],1)
+        @test size(Y["/$y2"],1) >= size(Y["/$y2-$m2"],1) >= size(Y["/$y2-$m2-$d2"],1)
+        @test size(Y["$y1/$y2",1],1) <= size(Y,1)
+        @test size(Y["$y1-$m1/$y2-$m2"],1) <= size(Y,1)
+        @test size(Y["$y1-$m1-$d1/$y2-$m2-$d2"],1) <= size(Y,1)
     end
     @testset "Single Date/DateTime Row Indexing" begin
         @test X[dates[int]].values == data[int,:]'
