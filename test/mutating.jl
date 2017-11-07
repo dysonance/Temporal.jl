@@ -4,6 +4,14 @@ using Base.Test, Base.Dates, Temporal
 
 @testset "Mutating" begin
     @testset "Single-Element Mutations" begin
+        A[1,1] = 1.0
+        @test A.values[1,1] == 1.0
+        A[1, :B] = 2.0
+        @test A.values[1,2] == 2.0
+        A[string(today()), 3] = 3.0
+        @test A.values[end,3] == 3.0
+        A[string(today()), :D] = 4.0
+        @test A.values[end,end] == 4.0
     end
     @testset "Column Mutations" begin
         A = TS(rand(N,K))
