@@ -48,7 +48,9 @@ function getwidths{V,T}(io::IO, x::TS{V,T})::Vector{Int}
     widths = [T==Date?10:19; str_width.(x.fields)]
     toprows, botrows = getshowrows(io, x)
     vals = [x.values[toprows,:]; x.values[botrows,:]]
-    if V <: Number
+    if V <: Bool
+        widths[2:end] = 5
+    elseif V <: Number
         @inbounds for j in 1:size(x,2)
             widths[j+1] = max(widths[j+1], maximum(str_width.(round.(vals[:,j],DECIMALS))))
         end
@@ -71,7 +73,9 @@ end
 print_header(x::TS, widths::Vector{Int}, negs::Vector{Bool})::String = prod(rpad.(["Index"; lpad.(string.(x.fields), str_width.(x.fields).+negs)], widths))
 
 function print_row{V,T}(x::TS{V,T}, row::Int, widths::Vector{Int}, negs::Vector{Bool})::String
-    if V <: Number
+    if V <: Bool
+        return prod(rpad.([string(x.index[row]); [" "].^(negs.*(x.values[row,:].>=0.0)) .* string.(x.values[row,:])], widths))
+    elseif V <: Number
         return prod(rpad.([string(x.index[row]); [" "].^(negs.*(x.values[row,:].>=0.0)) .* string.(round.(x.values[row,:],DECIMALS))], widths))
     else
         return prod(rpad.([string(x.index[row]); string.(x.values[row,:])], widths))
