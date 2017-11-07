@@ -1,8 +1,8 @@
-# module TestIndexing
+# module TestSubsetting
 
 using Base.Test, Base.Dates, Temporal
 
-@testset "Indexing" begin
+@testset "Subsetting" begin
     @testset "Identity" begin
         @test X[] == X
         @test X[:] == X

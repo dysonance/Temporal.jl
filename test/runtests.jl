@@ -21,7 +21,8 @@ dstr_rng = join(string.(dates[rng], '/'))[1:end-1]
 tstr_rng = join(string.(times[rng], '/'))[1:end-1]
 
 test_scripts = ["basic.jl",
-                "indexing.jl",
+                "subsetting.jl",
+                "mutating.jl",
                 "combinations.jl",
                 "operations.jl",
                 "io.jl",
