@@ -100,6 +100,7 @@ done(x::TS, i::Int) = (i > size(x,1))
 isempty(x::TS) = (isempty(x.index) && isempty(x.values))
 first(x::TS) = x[1]
 last(x::TS) = x[end]
+#FIXME: should interface with indexing (changing this messed with show method)
 endof(x::TS) = endof(x.values)
 ndims(::TS) = 2
 float(x::TS) = ts(float(x.values), x.index, x.fields)

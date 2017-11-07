@@ -4,6 +4,7 @@ using Base.Test, Base.Dates, Temporal
 
 @testset "Mutating" begin
     @testset "Single-Element Mutations" begin
+        A = TS(rand(N,K))
         A[1,1] = 1.0
         @test A.values[1,1] == 1.0
         A[1, :B] = 2.0
