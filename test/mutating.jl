@@ -3,16 +3,27 @@
 using Base.Test, Base.Dates, Temporal
 
 @testset "Mutating" begin
+    @testset "General" begin
+        A = TS(rand(N,K))
+        A[:] = 0
+        @test all(A.values .== 0)
+    end
     @testset "Single-Element Mutations" begin
         A = TS(rand(N,K))
         A[1,1] = 1.0
         @test A.values[1,1] == 1.0
         A[1, :B] = 2.0
+        s = string(today())
         @test A.values[1,2] == 2.0
-        A[string(today()), 3] = 3.0
+        A[s, 3] = 3.0
         @test A.values[end,3] == 3.0
-        A[string(today()), :D] = 4.0
+        A[s, :D] = 4.0
         @test A.values[end,end] == 4.0
+        t = A.index[1]
+        A[t, 1] = 1
+        @test A.values[1,1] == 1
+        A[t, :A] = 2
+        @test A.values[1,1] == 2
     end
     @testset "Column Mutations" begin
         A = TS(rand(N,K))
@@ -28,6 +39,14 @@ using Base.Test, Base.Dates, Temporal
         @test all(A.values .== 5.0)
         A[:,1:2] = 0.0
         @test all(A.values[:,1:2] .== 0.0)
+        A[[:A,:B]] = -1.0
+        @test all(A.values[:,1:2] .== -1.0)
+        A[:,[:A,:B]] = -2.0
+        @test all(A.values[:,1:2] .== -2.0)
+        idx = falses(K)
+        idx[1] = true
+        X[:,idx] = -3.0
+        @test all(X.values[:,1] .== -3.0)
     end
     @testset "Row Mutations" begin
         A = TS(rand(N,K))
@@ -54,6 +73,11 @@ using Base.Test, Base.Dates, Temporal
         @test all(A.values[1:2,:] .== 100.0)
         A[1:2] = -100.0
         @test all(A.values[1:2,:] .== -100.0)
+        t = A.index[1]
+        A[t] = 0.0
+        @test all(A.values[1,:] .== 0.0)
+        A[t,:] = 1.0
+        @test all(A.values[1,:] .== 1.0)
     end
     @testset "Row+Column Mutations" begin
     end
