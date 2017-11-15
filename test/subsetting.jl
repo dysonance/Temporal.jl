@@ -25,32 +25,30 @@ using Base.Test, Base.Dates, Temporal
         end
         @testset "Single Observation" begin
             @testset "Date" begin
-                s = string(X.index[1])
-                @test X[s] == X[1]
-                @test X[s,1].values[:] == [data[1,1]]
-                @test X[s,1:2].values == data[1,1:2]'
-                @test X[s,[1,2]].values == data[1,1:2]'
+                for i in Temporal.DATE_STRING_LENGTHS
+                    s = string(X.index[1])[1:i]
+                    @test X[s] != 0
+                end
             end
             @testset "Time" begin
-                s = string(Y.index[1])
-                @test Y[s] == Y[1]
-                @test Y[s,1].values[:] == [data[1,1]]
-                @test Y[s,1:2].values == data[1,1:2]'
-                @test Y[s,[1,2]].values == data[1,1:2]'
+                for i in Temporal.DATETIME_STRING_LENGTHS
+                    s = string(Y.index[1])[1:i]
+                    @test Y[s] != 0
+                end
             end
         end
         @testset "Range" begin
             from_string = string(Y.index[1])
             thru_string = string(Y.index[end])
             @testset "Date" begin
-                for i in Temporal.DATE_STRING_LENGTHS 
+                for i in Temporal.DATE_STRING_LENGTHS
                     s1 = from_string[1:i]
                     s2 = thru_string[1:i]
                     @test X["$s1/$s2"] != 0
                 end
             end
             @testset "Time" begin
-                for i in Temporal.DATETIME_STRING_LENGTHS 
+                for i in Temporal.DATETIME_STRING_LENGTHS
                     s1 = from_string[1:i]
                     s2 = thru_string[1:i]
                     @test Y["$s1/$s2"] != 0
