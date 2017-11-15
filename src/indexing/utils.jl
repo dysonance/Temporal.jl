@@ -1,8 +1,15 @@
-findcolumns{C<:Symbol}(c::C, x::TS) = x.fields .== c
-findcolumns{C<:Symbol}(c::AbstractVector{C}, x::TS) = collect(f in c for f=x.fields)
+# column finding
+findcols{C<:Symbol}(c::C, x::TS) = x.fields .== c
+findcols{C<:AbstractVector{<:Symbol}}(c::C, x::TS) = map(sym->sym in c, x.fields)
+findcols{C<:Int}(c::C, x::TS) = c
+findcols{C<:AbstractVector{<:Integer}}(c::C, x::TS) = c
 
-findrows{T<:TimeType}(t::AbstractVector{T}, r::AbstractVector{T})::Vector{Bool} = [ti in r for ti=t]
-findrows{T<:TimeType}(t::AbstractVector{T}, r::T)::Vector{Bool} = r.==t
+# row finding
+findrows{T<:AbstractVector{<:TimeType}}(t::T, x::TS) = map(ti->ti in t, x.index)
+findrows{T<:TimeType}(t::T, x::TS) = x.index .== t
+findrows{S<:AbstractString}(s::S, x::TS) = [t in x[s].index for t in x.index]
+findrows{R<:Int}(r::R, x::TS) = r
+findrows{R<:AbstractVector{<:Integer}}(r::R, x::TS) = r
 
 function overlaps(x::AbstractArray, y::AbstractArray, n::Int=1)::Vector{Bool}
     @assert n == 1 || n == 2
