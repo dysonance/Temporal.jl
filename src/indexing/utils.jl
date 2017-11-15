@@ -1,15 +1,15 @@
 # column finding
-findcols{C<:Symbol}(c::C, x::TS) = x.fields .== c
-findcols{C<:AbstractVector{<:Symbol}}(c::C, x::TS) = map(sym->sym in c, x.fields)
-findcols{C<:Int}(c::C, x::TS) = c
+findcols{C<:Symbol}(c::C, x::TS)                    = x.fields .== c
+findcols{C<:AbstractVector{<:Symbol}}(c::C, x::TS)  = map(sym->sym in c, x.fields)
+findcols{C<:Int}(c::C, x::TS)                       = [c]
 findcols{C<:AbstractVector{<:Integer}}(c::C, x::TS) = c
 
 # row finding
 findrows{T<:AbstractVector{<:TimeType}}(t::T, x::TS) = map(ti->ti in t, x.index)
-findrows{T<:TimeType}(t::T, x::TS) = x.index .== t
-findrows{S<:AbstractString}(s::S, x::TS) = [t in x[s].index for t in x.index]
-findrows{R<:Int}(r::R, x::TS) = r
-findrows{R<:AbstractVector{<:Integer}}(r::R, x::TS) = r
+findrows{T<:TimeType}(t::T, x::TS)                   = x.index .== t
+findrows{R<:Int}(r::R, x::TS)                        = [r]
+findrows{R<:AbstractVector{<:Integer}}(r::R, x::TS)  = r
+findrows{S<:AbstractString}(s::S, x::TS)             = dtidx(s, x.index)
 
 function overlaps(x::AbstractArray, y::AbstractArray, n::Int=1)::Vector{Bool}
     @assert n == 1 || n == 2

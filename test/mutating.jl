@@ -78,8 +78,9 @@ using Base.Test, Base.Dates, Temporal
         @test all(A.values[1,:] .== 0.0)
         A[t,:] = 1.0
         @test all(A.values[1,:] .== 1.0)
-    end
-    @testset "Row+Column Mutations" begin
+        t = A.index[1:2]
+        A[t] = 3.0
+        @test all(A.values[1:2,:] .== 3.0)
     end
 end
 
