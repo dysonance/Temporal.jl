@@ -11,15 +11,6 @@ times = DateTime(dates[1]):Hour(1):DateTime(dates[1])+Hour(N-1)
 X = TS(data, dates)
 Y = TS(data, times)
 
-# indexing variables
-int = 1
-rng = 1:2
-arr = collect(rng)
-dstr_row = string(dates[int])
-tstr_row = string(times[int])
-dstr_rng = join(string.(dates[rng], '/'))[1:end-1]
-tstr_rng = join(string.(times[rng], '/'))[1:end-1]
-
 test_scripts = ["basic.jl",
                 "subsetting.jl",
                 "mutating.jl",
