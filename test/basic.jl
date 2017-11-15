@@ -19,6 +19,7 @@ using Base.Test, Base.Dates, Temporal
     @test TS(X.values[1,:]', X.index[1], X.fields) == X[1]
     @test size(TS()) == (0,0)
     show(STDOUT, TS(rand(252,4)))
+    print("\n")
 end
 
 # end
