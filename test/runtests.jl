@@ -26,6 +26,7 @@ test_scripts = ["basic.jl",
                 "combinations.jl",
                 "operations.jl",
                 "io.jl",
+                "slice.jl",
                 "aggregation.jl"]
 
 for test_script in test_scripts
