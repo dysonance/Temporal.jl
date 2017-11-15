@@ -1,21 +1,30 @@
-#=
-Operations on TS objects
-=#
-
-# TODO: increase efficiency running these operations
-import Base: one, ones, zero, zeros, rand, randn, trues, falses, isnan, sum, mean, maximum, minimum, round,
-prod, cumsum, cumprod, diff, all, any, countnz, sign, find, findfirst, log
-import Base.broadcast
 importall Base.Operators
-
-islogical(fun::Function) = fun in (<, <=, >, >=, ==, !=, !)
-isarithmetic(fun::Function) = fun in (+, -, *, /, %, ^, \)
-const logicals = Dict("<" => "LessThan", ".<" => "LessThan", "<=" => "LessThanEqual", ".<=" => "LessThanEqual",
-                      ">" => "GreaterThan", ".>" => "GreaterThan", ">=" => "GreaterThanEqual", ".>=" => "GreaterThanEqual",
-                      "==" => "Equal", ".==" => "Equal", "!=" => "NotEqual", ".!=" => "NotEqual", "!" => "Not")
-const arithmetics = Dict("+" => "Plus", ".+" => "Plus", "-" => "Minus", ".-" => "Minus",
-                         "*" => "Times", ".*" => "Times", "/" => "Over", "./" => "Over",
-                         "%" => "Mod", ".%" => "Mod", "^" => "Power", ".^" => "Power", "\\" => "Inverse", ".\\" => "Under")
+import Base: one,
+             ones,
+             zero,
+             zeros,
+             rand,
+             randn,
+             trues,
+             falses,
+             isnan,
+             sum,
+             mean,
+             maximum,
+             minimum,
+             round,
+             prod,
+             cumsum,
+             cumprod,
+             diff,
+             all,
+             any,
+             countnz,
+             sign,
+             find,
+             findfirst,
+             log,
+             broadcast
 
 find(x::TS) = find(x.values)
 findfirst(x::TS) = findfirst(x.values)
@@ -228,21 +237,34 @@ function compare_elementwise(x::TS, y::TS, f::Function)
     return ts(result, merged.index)
 end
 
-broadcast(::typeof(==), x::TS, y::TS) = compare_elementwise(x, y, ==)
+# compared to another ts object
 ==(x::TS, y::TS) = x.values == y.values && x.index == y.index && x.fields == y.fields
+!=(x::TS, y::TS) = !(x == y)
+>(x::TS, y::TS) = x .> y
+<(x::TS, y::TS) = x .< y
+>=(x::TS, y::TS) = x .>= y
+<=(x::TS, y::TS) = x .<= y
 
 broadcast(::typeof(!=), x::TS, y::TS) = compare_elementwise(x, y, !=)
-!=(x::TS, y::TS) = !(x == y)
-
+broadcast(::typeof(==), x::TS, y::TS) = compare_elementwise(x, y, ==)
 broadcast(::typeof(>), x::TS, y::TS) = compare_elementwise(x, y, >)
->(x::TS, y::TS) = x .> y
-
 broadcast(::typeof(<), x::TS, y::TS) = compare_elementwise(x, y, <)
-<(x::TS, y::TS) = x .< y
-
 broadcast(::typeof(>=), x::TS, y::TS) = compare_elementwise(x, y, >=)
->=(x::TS, y::TS) = x .>= y
-
 broadcast(::typeof(<=), x::TS, y::TS) = compare_elementwise(x, y, <=)
-<=(x::TS, y::TS) = x .<= y
+
+# compared to singleton numebrs
+#TODO/FIXME: elementwise comparison against a Real number
+# ==(x::TS, y::Real) = x.values == y
+# !=(x::TS, y::Real) = x.values != y
+# >(x::TS, y::Real) = all(x.values .> y)
+# <(x::TS, y::Real) = all(x.values .< y)
+# >=(x::TS, y::Real) = all(x.values .>= y)
+# <=(x::TS, y::Real) = all(x.values .<= y)
+# 
+# broadcast(::typeof(==), x::TS, y::Real) = TS{Bool}(x.values .== y, x.index, x.fields)
+# broadcast(::typeof(!=), x::TS, y::Real) = TS{Bool}(x.values .!= y, x.index, x.fields)
+# broadcast(::typeof(>), x::TS, y::Real) = TS{Bool}(x.values .> y, x.index, x.fields)
+# broadcast(::typeof(<), x::TS, y::Real) = TS{Bool}(x.values .< y, x.index, x.fields)
+# broadcast(::typeof(>=), x::TS, y::Real) = TS{Bool}(x.values .>= y, x.index, x.fields)
+# broadcast(::typeof(<=), x::TS, y::Real) = TS{Bool}(x.values .<= y, x.index, x.fields)
 

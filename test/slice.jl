@@ -6,8 +6,8 @@ using Base.Test, Base.Dates, Temporal
     @testset "Head/Tail" begin
         X = TS(cumsum(randn(100,5))) + 100
         n = 5
-        @test head(X, n).values = X.values[1:n,:]
-        @test tail(X, n).values = X.values[end-5+1:end,:]
+        @test head(X, n).values == X.values[1:n,:]
+        @test tail(X, n).values == X.values[end-5+1:end,:]
     end
     @testset "NaN Removal" begin
         @testset "Rows" begin
