@@ -49,12 +49,12 @@ Drop missing (NaN) values from an Array
 function dropnan(x::Array{Float64}; dim::Int=1, fun::Function=any)
 	@assert dim == 1 || dim == 2 || dim == 3 "Argument `dim` must be 1 (rows), 2 (cols), or 3 (both)."
 	if dim == 1  # rows only
-		return x[!nanrows(x, fun=fun),:]
+		return x[.!nanrows(x, fun=fun),:]
 	elseif dim == 2  # columns only
-		return x[:,!nancols(x, fun=fun)]
+		return x[:,.!nancols(x, fun=fun)]
 	elseif dim == 3  # rows and columns
-		c = !nancols(x, fun=fun)
-		return x[!nanrows(x[:,c], fun=fun),:]
+		c = .!nancols(x, fun=fun)
+		return x[.!nanrows(x[:,c], fun=fun),:]
 	end
 end
 
@@ -72,8 +72,13 @@ function dropnan{V,T}(x::TS{V,T}; dim::Int=1, fun::Function=any)
 	end
 end
 
+function dropnan!(x::TS; dim::Int=1, fun::Function=any)::Void
+    x = dropnan(x, dim=dim, fun=fun)
+    return nothing
+end
+
 function ffill!{Float64}(x::AbstractArray{Float64,1})
-	i = findfirst(!isnan.(x))
+	i = findfirst(.!isnan.(x))
 	@inbounds for i = i+1:size(x,1)
 		isnan(x[i]) ? x[i] = x[i-1] : nothing
 	end
@@ -84,10 +89,11 @@ function ffill!{Float64}(x::AbstractArray{Float64,2})
 	@inbounds for j = 1:size(x,2)
 		x[:,j] = ffill!(x[:,j])
 	end
+    return nothing
 end
 
 function bfill!{Float64}(x::AbstractArray{Float64,1})
-	i = findlast(!isnan.(x))
+	i = findlast(.!isnan.(x))
 	@inbounds for i = i-1:-1:1
 		isnan(x[i]) ? x[i] = x[i+1] : nothing
 	end
@@ -116,12 +122,10 @@ function linterp!{Float64}(x::AbstractArray{Float64,1})
 	end
 	@assert sum(isval) > 2 "Must have at least 2 non-missing values to interpolate."
 	idx = find(isval)
-	a = idx[1]
-	b = idx[2]
-	@inbounds for i = 2:size(idx,1)
+	@inbounds for i = 1:size(idx,1)-1
+        a = idx[i]
+        b = idx[i+1]
 		x[a:b] = interpolate(a, b, x[a], x[b])
-		a = b
-		b = idx[i+1]
 	end
 	return x
 end
@@ -160,7 +164,7 @@ end
 @doc """
 Replace missing (NaN) values from a TS object with filled values.
 """ ->
-function fillnan!{V,T}(x::TS{V,T}, method::Symbol=:ffill)
+function fillnan!{V,T}(x::TS{V,T}, method::Symbol=:ffill)::Void
     c = nancols(x.values)
     if !any(c)
         return x
@@ -174,6 +178,7 @@ function fillnan!{V,T}(x::TS{V,T}, method::Symbol=:ffill)
         linterp!(v)
     # elseif method == :spline
     end
-    return ts(v, x.index, x.fields)
+    x[:] = v
+    return nothing
 end
 
