@@ -1,7 +1,11 @@
 const RNG_DLM = '/'
 
+const DATE_STRING_LENGTHS = [4, 7, 10]
+const DATETIME_STRING_LENGTHS = [4, 7, 10, 13, 16, 19]
+
 function thrudt(s::AbstractString, t::Vector{Date})
     n = length(s)
+    @assert n in DATE_STRING_LENGTHS "Invalid indexing string: Unable to parse $s"
     if n == 4  # yyyy given
         y = parse(Int, s)
         ymd = Date(y, 12, 31)
@@ -16,14 +20,13 @@ function thrudt(s::AbstractString, t::Vector{Date})
         m = parse(Int, a[2])
         d = parse(Int, a[3])
         ymd = Date(y, m, d)
-    else
-        error("Unable to parse date string $s.")
     end
     return t .<= ymd
 end
 
 function fromdt(s::AbstractString, t::Vector{Date})
     n = length(s)
+    @assert n in DATE_STRING_LENGTHS "Invalid indexing string: Unable to parse $s"
     if n == 4  # yyyy given
         y = parse(Int, s)
         ymd = Date(y, 1, 1)
@@ -38,14 +41,13 @@ function fromdt(s::AbstractString, t::Vector{Date})
         m = parse(Int, a[2])
         d = parse(Int, a[3])
         ymd = Date(y, m, d)
-    else
-        error("Unable to parse date string $s.")
     end
     return t .>= ymd
 end
 
 function thisdt(s::AbstractString, t::Vector{Date})
     n = length(s)
+    @assert n in DATE_STRING_LENGTHS "Invalid indexing string: Unable to parse $s"
     if n == 4  # yyyy given
         y = parse(Int, s)
         return year.(t) .== y
@@ -60,8 +62,6 @@ function thisdt(s::AbstractString, t::Vector{Date})
         m = parse(Int, a[2])
         d = parse(Int, a[3])
         return (year.(t) .== y) .* (month.(t) .== m) .* day.(t) .== d
-    else
-        error("Unable to parse date string $s.")
     end
 end
 
@@ -73,6 +73,7 @@ end
 
 function thrudt(s::AbstractString, t::Vector{DateTime})
     n = length(s)
+    @assert n in DATETIME_STRING_LENGTHS || n >= 20 "Invalid indexing string: Unable to parse $s"
     if n == 4  # yyyy given
         y = parse(Int, s)
         ymdhms = DateTime(y, 12, 31)
@@ -133,14 +134,13 @@ function thrudt(s::AbstractString, t::Vector{DateTime})
         sec = parse(Int, f[1])
         milli = parse(Int, f[2])
         ymdhms = DateTime(y, m, d, hr, min, sec, milli)
-    else
-        error("Unable to parse date string $s.")
     end
     return t .<= ymdhms
 end
 
 function fromdt(s::AbstractString, t::Vector{DateTime})
     n = length(s)
+    @assert n in DATETIME_STRING_LENGTHS || n >= 20 "Invalid indexing string: Unable to parse $s"
     if n == 4  # yyyy given
         y = parse(Int, s)
         ymdhms = DateTime(y)
@@ -163,7 +163,7 @@ function fromdt(s::AbstractString, t::Vector{DateTime})
         m = parse(Int, b[2])
         d = parse(Int, b[3])
         hr = parse(Int, c[1])
-        ymdhms = DateTime(y, m, d, hr, min, sec)
+        ymdhms = DateTime(y, m, d, hr)
     elseif n == 16  # yyyy-mm-ddTHH:MM given
         a = split(s, 'T')
         b = split(a[1], '-')
@@ -173,7 +173,7 @@ function fromdt(s::AbstractString, t::Vector{DateTime})
         d = parse(Int, b[3])
         hr = parse(Int, c[1])
         min = parse(Int, c[2])
-        ymdhms = DateTime(y, m, d, hr, min, sec)
+        ymdhms = DateTime(y, m, d, hr, min)
     elseif n == 19  # yyyy-mm-ddTHH:MM:SS given
         a = split(s, 'T')
         b = split(a[1], '-')
@@ -198,8 +198,6 @@ function fromdt(s::AbstractString, t::Vector{DateTime})
         sec = parse(Int, f[1])
         milli = parse(Int, f[2])
         ymdhms = DateTime(y, m, d, hr, min, sec, milli)
-    else
-        error("Unable to parse date string $s.")
     end
     return t .>= ymdhms
 end
@@ -263,8 +261,6 @@ function thisdt(s::AbstractString, t::Vector{DateTime})
         sec = parse(Int, f[1])
         milli = parse(Int, f[2])
         return (year.(t) .== y) .* (month.(t) .== m) .* (day.(t) .== d) .* (hour.(t) .== hr) .* (minute.(t) .== min) .* (second.(t) .== sec) .* (millisecond.(t) .== milli)
-    else
-        error("Unable to parse date string $s.")
     end
 end
 
@@ -280,6 +276,7 @@ function dtidx(s::AbstractString, t::Vector{Date})
     end
     @assert !in('T', s) "Cannot index Date type with sub-daily frequency."
     bds = split(s, RNG_DLM)
+    @assert length(bds) in [1,2]
     if length(bds) == 1  # single date
         return thisdt(s, t)
     elseif length(bds) == 2  # date range
@@ -291,11 +288,7 @@ function dtidx(s::AbstractString, t::Vector{Date})
             return fromdt(bds[1], t)
         elseif n1 != 0 && n2 != 0  # from and thru date given
             return fromthru(bds[1], bds[2], t)
-        else
-            error("Invalid indexing string: Unable to parse $s")
         end
-    else
-        error("Invalid indexing string: Unable to parse $s")
     end
 end
 
@@ -304,6 +297,7 @@ function dtidx(s::AbstractString, t::Vector{DateTime})
         return trues(t)
     end
     bds = split(s, RNG_DLM)
+    @assert length(bds) in [1,2]
     if length(bds) == 1  # single date
         return thisdt(s, t)
     elseif length(bds) == 2  # date range
@@ -315,11 +309,7 @@ function dtidx(s::AbstractString, t::Vector{DateTime})
             return fromdt(bds[1], t)
         elseif n1 != 0 && n2 != 0  # from and thru date given
             return fromthru(bds[1], bds[2], t)
-        else
-            error("Invalid indexing string: Unable to parse $s")
         end
-    else
-        error("Invalid indexing string: Unable to parse $s")
     end
 end
 
