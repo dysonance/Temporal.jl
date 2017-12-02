@@ -4,7 +4,13 @@ using Base.Dates
 ################################################################################
 # TYPE DEFINITION ##############################################################
 ################################################################################
-findalphanum(s::AbstractString)::Vector{Int} = union(find(isalpha,s), find(isnumber,s))
+function findalphanum(s::AbstractString, drop_underscores::Bool=false)::Vector{Int}
+    if drop_underscores
+        return sort(union(find(isalpha,s), find(isnumber,s)))
+    else
+        return sort(union(union(find(isalpha,s), find(isnumber,s)), find(c->c=='_', s)))
+    end
+end
 # findalphanum(s::String)::Vector{Int} = find(isalpha.(split(s,"")).+isnumber.(split(s,"")))
 namefix(s::AbstractString)::AbstractString = s[findalphanum(s)]
 namefix(s::Symbol)::Symbol = Symbol(namefix(string(s)))
