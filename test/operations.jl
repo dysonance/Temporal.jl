@@ -20,9 +20,9 @@ using Base.Test, Base.Dates, Temporal
         @test length(rand(TS,N)) == N
         x = ts(-1.0 .* rand(N))
         y = +x
-        @test all(y.values .< 0.0)
+        @test all(y.values .<= 0.0)
         y = -x
-        @test all(y.values .> 0.0)
+        @test all(y.values .>= 0.0)
     end
     @testset "Logical" begin
         @test x1 == x2
@@ -65,10 +65,17 @@ using Base.Test, Base.Dates, Temporal
         @test isnan(dx.values[1])
         @test size(dx,1) == size(x,1)
         @test size(dropnan(dx),1) == size(diff(x,pad=false),1)
-        bx = lag(x; pad=true, padval=NaN)
+        dx = pct_change(x)
+        @test size(dx,1) == size(x,1)-1
+        dx = pct_change(x, continuous=false, pad=false)
+        @test size(dx,1) == size(x,1)-1
+        dx = pct_change(x, continuous=false, pad=true)
+        @test size(dx,1) == size(x,1)
+        bx = lag(x, pad=true, padval=NaN)
         @test isnan(bx.values[1])
         @test size(bx,1) == size(x,1)
         @test size(dropnan(bx),1) == size(lag(x,pad=false),1)
+        @test dropnan(bx) == dropnan(shift(x, pad=true, padval=NaN))
     end
 end
 
