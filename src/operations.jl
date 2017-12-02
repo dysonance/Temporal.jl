@@ -77,6 +77,7 @@ cumprod(x::TS, dim::Int=1) = ts(cumprod(x.values, dim), x.index, x.fields)
 
 nans(r::Int, c::Int) = fill(NaN, 1, 2)
 nans(dims::Tuple{Int,Int}) = fill(NaN, dims)
+
 function rowdx!{T,N}(dx::AbstractArray{T,N}, x::AbstractArray{T,N}, n::Int, r::Int=size(x,1))
     idx = n > 0 ? (n+1:r) : (1:r+n)
     @inbounds for i=idx
@@ -84,6 +85,7 @@ function rowdx!{T,N}(dx::AbstractArray{T,N}, x::AbstractArray{T,N}, n::Int, r::I
     end
     nothing
 end
+
 function coldx!{T,N}(dx::AbstractArray{T,N}, x::AbstractArray{T,N}, n::Int, c::Int=size(x,2))
     idx = n > 0 ? (n+1:c) : (1:c+n)
     @inbounds for j=idx
@@ -91,6 +93,7 @@ function coldx!{T,N}(dx::AbstractArray{T,N}, x::AbstractArray{T,N}, n::Int, c::I
     end
     nothing
 end
+
 function diffn{T<:Number,N}(x::Array{T,N}, dim::Int=1, n::Int=1)
     @assert dim == 1 || dim == 2 "Argument `dim` must be 1 (rows) or 2 (columns)."
     @assert abs(n) < size(x,dim) "Argument `n` out of bounds."
@@ -105,6 +108,7 @@ function diffn{T<:Number,N}(x::Array{T,N}, dim::Int=1, n::Int=1)
     end
     return dx
 end
+
 function diff{V,T}(x::TS{V,T}, n::Int=1; dim::Int=1, pad::Bool=false, padval::V=zero(V))
     @assert dim == 1 || dim == 2 "Argument dim must be either 1 (rows) or 2 (columns)."
     r = size(x, 1)
@@ -130,6 +134,7 @@ function diff{V,T}(x::TS{V,T}, n::Int=1; dim::Int=1, pad::Bool=false, padval::V=
         end
     end
 end
+
 function lag{V,T}(x::TS{V,T}, n::Int=1; pad::Bool=false, padval::V=zero(V))
 	@assert abs(n) < size(x,1) "Argument `n` out of bounds."
 	if n == 0
@@ -150,6 +155,20 @@ function lag{V,T}(x::TS{V,T}, n::Int=1; pad::Bool=false, padval::V=zero(V))
     else
         idx = n > 0 ? (n+1:r) : (1:r+n)
         return ts(out[idx,:], x.index[idx], x.fields)
+    end
+end
+
+const shift = lag
+
+function pct_change{V}(x::TS{V}, n::Int=1; continuous::Bool=true, pad::Bool=false, padval::V=zero(V))
+    if continuous
+        return diff(log(x), n; pad=pad, padval=padval)
+    else
+        if pad
+            return diff(x, n, pad=pad, padval=padval) ./ x
+        else
+            return diff(x, n) ./ x[n+1:end,:]
+        end
     end
 end
 
