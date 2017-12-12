@@ -47,6 +47,10 @@ rand(::Type{TS}, n::Int=1) = TS(rand(Float64, n))
 rand(::Type{TS}, r::Int, c::Int) = TS(rand(Float64, r, c))
 rand(::Type{TS}, dims::Tuple{Int,Int}) = TS(rand(Float64, dims))
 
+randn(::Type{TS}, n::Int=1) = TS(randn(Float64, n))
+randn(::Type{TS}, r::Int, c::Int) = TS(randn(Float64, r, c))
+randn(::Type{TS}, dims::Tuple{Int,Int}) = TS(randn(Float64, dims))
+
 trues(x::TS) = ts(trues(x.values), x.index, x.fields)
 falses(x::TS) = ts(falses(x.values), x.index, x.fields)
 isnan(x::TS) = ts(isnan.(x.values), x.index, x.fields)

@@ -18,6 +18,11 @@ using Base.Test, Base.Dates, Temporal
         @test ones(x).values == ones(eltype(x), size(x))
         @test zeros(x).values == zeros(eltype(x), size(x))
         @test length(rand(TS,N)) == N
+        @test length(rand(TS,N,K)) == N*K
+        @test length(rand(TS,(N,K))) == N*K
+        @test length(randn(TS,N)) == N
+        @test length(randn(TS,N,K)) == N*K
+        @test length(randn(TS,(N,K))) == N*K
         x = ts(-1.0 .* rand(N))
         y = +x
         @test all(y.values .<= 0.0)
