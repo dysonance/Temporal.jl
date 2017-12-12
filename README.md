@@ -14,18 +14,180 @@ julia> Pkg.add("Temporal")
 julia> using Temporal
 ````
 
-# Examples
+# Introduction
+
+## The `TS` Type
+
+### Member Variables/Fields
+`TS` objects store three member variables to facilitate data manipulation and analysis.
+- `values`: an `Array` of the values of the time series data
+- `index`: a `Vector` whose elements are either of type `Date` or `DateTime` indexing the values of the time series
+- `fields`: a `Vector` whose elements are of type `Symbol` representing the column names of the time series data
+
+### Construction
+The `TS` object type can be created in a number of ways. One thing to note is that when constructing the `TS` object, passing only the `Array` of `values` will automatically create the `index` and the `fields` members. When not passed explicitly, the `index` defaults to a series of dates that ends with today's date, and begins `N-1` days before (where `N` is the number of rows of the `values`). The `fields` (or column names) are automatically set in a similar fashion as Excel when not given explicitly (A, B, C, ..., X, Y, Z, AA, AB, ...).
+
+```julia
+julia> using Temporal, Base.Dates
+
+julia> N, K = (100, 4);
+
+julia> srand(1);
+
+julia> v = rand(N, K);
+
+julia> t = today()-Day(N-1):Day(1):today();
+
+julia> f = [:A, :B, :C, :D];
+
+julia> X = TS(v, t, f)
+100x4 Temporal.TS{Float64,Date}: 2017-09-04 to 2017-12-12
+Index       A       B       C       D
+2017-09-04  0.236   0.1388  0.4772  0.7447
+2017-09-05  0.3465  0.4564  0.6376  0.1576
+2017-09-06  0.3127  0.7399  0.7372  0.6183
+2017-09-07  0.0079  0.816   0.5519  0.5728
+2017-09-08  0.4886  0.1145  0.9235  0.9118
+2017-09-09  0.211   0.7489  0.8129  0.9637
+2017-09-10  0.9519  0.8781  0.1854  0.993
+2017-09-11  0.9999  0.9305  0.2054  0.1472
+2017-09-12  0.2517  0.8963  0.0881  0.3861
+⋮
+2017-12-03  0.2252  0.6282  0.8959  0.8017
+2017-12-04  0.2862  0.4877  0.9903  0.0679
+2017-12-05  0.3091  0.9275  0.2702  0.6226
+2017-12-06  0.1704  0.1498  0.4109  0.1568
+2017-12-07  0.1472  0.6123  0.0298  0.6805
+2017-12-08  0.2301  0.7761  0.1264  0.2814
+2017-12-09  0.0929  0.364   0.3715  0.8623
+2017-12-10  0.6814  0.2873  0.1037  0.9424
+2017-12-11  0.7623  0.2587  0.1146  0.329
+2017-12-12  0.3391  0.5304  0.2895  0.7789
+```
+
+Equivalently, one can construct a TS object using the standard `rand` construction approach.
+
+```julia
+julia> srand(1);
+
+julia> Y = rand(TS, (N,K))
+100x4 Temporal.TS{Float64,Date}: 2017-09-04 to 2017-12-12
+Index       A       B       C       D
+2017-09-04  0.236   0.1388  0.4772  0.7447
+2017-09-05  0.3465  0.4564  0.6376  0.1576
+2017-09-06  0.3127  0.7399  0.7372  0.6183
+2017-09-07  0.0079  0.816   0.5519  0.5728
+2017-09-08  0.4886  0.1145  0.9235  0.9118
+2017-09-09  0.211   0.7489  0.8129  0.9637
+2017-09-10  0.9519  0.8781  0.1854  0.993
+2017-09-11  0.9999  0.9305  0.2054  0.1472
+2017-09-12  0.2517  0.8963  0.0881  0.3861
+⋮
+2017-12-03  0.2252  0.6282  0.8959  0.8017
+2017-12-04  0.2862  0.4877  0.9903  0.0679
+2017-12-05  0.3091  0.9275  0.2702  0.6226
+2017-12-06  0.1704  0.1498  0.4109  0.1568
+2017-12-07  0.1472  0.6123  0.0298  0.6805
+2017-12-08  0.2301  0.7761  0.1264  0.2814
+2017-12-09  0.0929  0.364   0.3715  0.8623
+2017-12-10  0.6814  0.2873  0.1037  0.9424
+2017-12-11  0.7623  0.2587  0.1146  0.329
+2017-12-12  0.3391  0.5304  0.2895  0.7789
+
+julia> X == Y
+true
+```
+
+### Operations
+
+The standard operations that apply to `Array` objects will generally also work for `TS` objects. (If there is an operation that does *not* have a method defined for the `TS` type that you feel is missing, please don't hesitate to submit an [issue](https://github.com/dysonance/Temporal.jl/issues) and we will get it added ASAP.)
+
+```julia
+julia> cumsum(X)
+100x4 Temporal.TS{Float64,Date}: 2017-09-04 to 2017-12-12
+Index       A        B        C        D
+2017-09-04  0.236    0.1388   0.4772   0.7447
+2017-09-05  0.5826   0.5952   1.1148   0.9023
+2017-09-06  0.8953   1.3351   1.8519   1.5206
+2017-09-07  0.9032   2.1511   2.4038   2.0934
+2017-09-08  1.3918   2.2657   3.3273   3.0052
+2017-09-09  1.6027   3.0146   4.1402   3.9688
+2017-09-10  2.5547   3.8927   4.3256   4.9618
+2017-09-11  3.5546   4.8232   4.531    5.109
+2017-09-12  3.8062   5.7195   4.6192   5.4952
+⋮
+2017-12-03  45.6641  47.0947  45.9392  49.4234
+2017-12-04  45.9502  47.5824  46.9295  49.4913
+2017-12-05  46.2594  48.5099  47.1997  50.1139
+2017-12-06  46.4298  48.6597  47.6107  50.2707
+2017-12-07  46.5769  49.272   47.6404  50.9512
+2017-12-08  46.807   50.0481  47.7669  51.2326
+2017-12-09  46.8999  50.4121  48.1384  52.0949
+2017-12-10  47.5813  50.6995  48.2421  53.0373
+2017-12-11  48.3436  50.9581  48.3567  53.3663
+2017-12-12  48.6827  51.4885  48.6462  54.1452
+
+julia> cumprod(1 + diff(log(Y)))
+99x4 Temporal.TS{Float64,Date}: 2017-09-05 to 2017-12-12
+Index        A         B         C        D
+2017-09-05   1.384     2.1907    1.2898  -0.5532
+2017-09-06   1.2419    3.249     1.477   -1.3097
+2017-09-07  -3.3248    3.567     1.0494  -1.2095
+2017-09-08  -17.0346  -3.4371    1.5897  -1.7717
+2017-09-09  -2.7279   -9.8914    1.3868  -1.8699
+2017-09-10  -6.8382   -11.4654  -0.6628  -1.9258
+2017-09-11  -7.1745   -12.1296  -0.7305   1.7501
+2017-09-12   2.7232   -11.6755  -0.1125   3.4375
+2017-09-13   6.4438   -8.158    -0.3416   5.583
+⋮
+2017-12-03   0.0012    0.0543    0.0      0.0103
+2017-12-04   0.0015    0.0406    0.0     -0.0151
+2017-12-05   0.0016    0.0667   -0.0     -0.0486
+2017-12-06   0.0007   -0.0549   -0.0      0.0184
+2017-12-07   0.0006   -0.1321    0.0      0.0455
+2017-12-08   0.0008   -0.1635    0.0      0.0053
+2017-12-09   0.0001   -0.0397    0.0      0.0113
+2017-12-10   0.0002   -0.0303   -0.0      0.0123
+2017-12-11   0.0003   -0.0271   -0.0     -0.0006
+2017-12-12   0.0      -0.0466   -0.0     -0.0012
+
+julia> X .* Y
+100x4 Temporal.TS{Float64,Date}: 2017-09-04 to 2017-12-12
+Index       A       B       C       D
+2017-09-04  0.0557  0.0193  0.2277  0.5546
+2017-09-05  0.1201  0.2083  0.4065  0.0248
+2017-09-06  0.0978  0.5475  0.5434  0.3823
+2017-09-07  0.0001  0.6659  0.3046  0.3281
+2017-09-08  0.2387  0.0131  0.8528  0.8313
+2017-09-09  0.0445  0.5609  0.6607  0.9287
+2017-09-10  0.9061  0.7711  0.0344  0.986
+2017-09-11  0.9998  0.8658  0.0422  0.0217
+2017-09-12  0.0633  0.8033  0.0078  0.1491
+⋮
+2017-12-03  0.0507  0.3947  0.8027  0.6427
+2017-12-04  0.0819  0.2378  0.9807  0.0046
+2017-12-05  0.0956  0.8603  0.073   0.3876
+2017-12-06  0.029   0.0224  0.1689  0.0246
+2017-12-07  0.0217  0.3749  0.0009  0.4631
+2017-12-08  0.0529  0.6023  0.016   0.0792
+2017-12-09  0.0086  0.1325  0.138   0.7435
+2017-12-10  0.4643  0.0825  0.0108  0.8881
+2017-12-11  0.5811  0.0669  0.0131  0.1083
+2017-12-12  0.115   0.2813  0.0838  0.6066
+```
+
+# Usage
 
 ## Data Input/Output
 There are currently several options for how to get time series data into the Julia environment as `Temporal.TS` objects.
 - Data Vendor Downloads
-    - Quandl
-    - Yahoo! Finance
-    - Google Finance
+    - [Quandl](https://www.quandl.com/)
+    - [Yahoo! Finance](https://finance.yahoo.com/)
+    - [Google Finance](https://finance.google.com)
 - Local Flat Files (CSV, TSV, etc.)
 
-
 ### Quandl Data Downloads
+
 ````julia
 julia> Crude = quandl("CHRIS/CME_CL1", from="2010-06-09", thru=string(Dates.today()), freq='w')  # Download weekly WTI crude oil price data
 366x8 Temporal.TS{Float64,Date}: 2010-06-13 to 2017-06-11
@@ -54,6 +216,7 @@ Index       Open   High   Low    Last   Change  Settle  Volume     PreviousDayOp
 ````
 
 ### Yahoo! Finance Downloads
+
 ````julia
 julia> Snapchat = yahoo("SNAP", from="2017-03-03")  # Download historical prices for Snapchat since its IPO date
 64x6 Temporal.TS{Float64,Date}: 2017-03-03 to 2017-06-02
@@ -116,6 +279,7 @@ Index       Dividends
 ````
 
 ### Google Finance Downloads
+
 ````julia
 julia> Apple = google("AAPL", from="2006-01-01", thru="2010-01-01")  # Let's see how Apple's stock navigated through the financial crisis
 1007x5 Temporal.TS{Float64,Date}: 2006-01-03 to 2009-12-31
