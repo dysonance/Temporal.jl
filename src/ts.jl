@@ -4,16 +4,16 @@ using Base.Dates
 ################################################################################
 # TYPE DEFINITION ##############################################################
 ################################################################################
-function findalphanum(s::AbstractString, drop_underscores::Bool=false)::Vector{Int}
-    if drop_underscores
-        return sort(union(find(isalpha,s), find(isnumber,s)))
-    else
-        return sort(union(union(find(isalpha,s), find(isnumber,s)), find(c->c=='_', s)))
-    end
-end
+#function findalphanum(s::AbstractString, drop_underscores::Bool=false)::Vector{Int}
+#    if drop_underscores
+#        return sort(union(find(isalpha,s), find(isnumber,s)))
+#    else
+#        return sort(union(union(find(isalpha,s), find(isnumber,s)), find(c->c=='_', s)))
+#    end
+#end
 # findalphanum(s::String)::Vector{Int} = find(isalpha.(split(s,"")).+isnumber.(split(s,"")))
-namefix(s::AbstractString)::AbstractString = s[findalphanum(s)]
-namefix(s::Symbol)::Symbol = Symbol(namefix(string(s)))
+#namefix(s::AbstractString)::AbstractString = s[findalphanum(s)]
+#namefix(s::Symbol)::Symbol = Symbol(namefix(string(s)))
 
 # abstract AbstractTS
 # 
@@ -53,7 +53,7 @@ mutable struct TS{V<:Real,T<:TimeType}
         @assert size(values,1)==length(index) "Length of index not equal to number of value rows."
         @assert size(values,2)==length(fields) "Length of fields not equal to number of columns in values."
         order = sortperm(index)
-        return new(values[order,:], index[order], namefix.(fields))
+        return new(values[order,:], index[order], fields)
     end
 end
 
