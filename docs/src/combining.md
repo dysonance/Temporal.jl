@@ -2,7 +2,7 @@
 
 ## Outer Joins
 
-One can perform a full outer join on the time `index`es of two `TS` objects $$x$$ and $$y$$ in the following ways:
+One can perform a full outer join on the time `index`es of two `TS` objects $x$ and $y$ in the following ways:
 - `merge(x, y)`
 - `ojoin(x, y)`
 - `[x y]`
