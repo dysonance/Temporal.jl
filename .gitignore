@@ -3,4 +3,5 @@
 *.jl.mem
 *.swp
 
-docs/build/*
+docs/build/
+docs/site/
