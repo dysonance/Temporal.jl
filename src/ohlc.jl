@@ -1,19 +1,23 @@
 # Methods to more easily handle financial data
 
 # Check for various key financial field names
-has_open(x::TS)::Bool = any(x.fields .== :Open)
-has_high(x::TS)::Bool = any(x.fields .== :High)
-has_low(x::TS)::Bool = any(x.fields .== :Low)
-has_volume(x::TS)::Bool = any(x.fields .== :Volume)
+has_open(x::TS)::Bool = any(ismatch.(r"(op)"i, String.(x.fields)))
+has_high(x::TS)::Bool = any(ismatch.(r"(hi)"i, String.(x.fields)))
+has_low(x::TS)::Bool = any(ismatch.(r"(lo)"i, String.(x.fields)))
+has_volume(x::TS)::Bool = any(ismatch.(r"(vo)"i, String.(x.fields)))
 function has_close(x::TS; allow_settle::Bool=true, allow_last::Bool=true)::Bool
-    if any(x.fields .== :Close)
-        return true
+    columns = String.(x.fields)
+    if allow_settle && allow_last
+        return any(ismatch.(r"(cl)|(last)|(settle)"i, columns))
     end
-    if allow_settle && any(x.fields .== :Settle)
-        return true
+    if allow_last && !allow_settle
+        return any(ismatch.(r"(cl)|(last)"i, columns))
     end
-    if allow_last && any(x.fields .== :Last)
-        return true
+    if allow_settle && !allow_last
+        return any(ismatch.(r"(cl)|(settle)"i, columns))
+    end
+    if !allow_last && !allow_settle
+        return any(ismatch.(r"(cl)"i, columns))
     end
     return false
 end
@@ -23,33 +27,36 @@ is_ohlc(x::TS)::Bool = has_open(x) && has_high(x) && has_low(x) && has_close(x)
 is_ohlcv(x::TS)::Bool = is_ohlc(x) && has_volume(x)
 
 # Extractor functions
-op(x::TS)::TS = x[:,:Open]
-hi(x::TS)::TS = x[:,:High]
-lo(x::TS)::TS = x[:,:Low]
-vo(x::TS)::TS = x[:,:Volume]
+op(x::TS)::TS = x[:,findfirst(ismatch.(r"(op)"i, String.(x.fields)))]
+hi(x::TS)::TS = x[:,findfirst(ismatch.(r"(hi)"i, String.(x.fields)))]
+lo(x::TS)::TS = x[:,findfirst(ismatch.(r"(lo)"i, String.(x.fields)))]
+vo(x::TS)::TS = x[:,findfirst(ismatch.(r"(vo)"i, String.(x.fields)))]
 function cl(x::TS; use_adj::Bool=true, allow_settle::Bool=true, allow_last::Bool=true)::TS
+    columns = String.(x.fields)
     if use_adj
-        out = x[:AdjClose]
-    end
-    if !use_adj || size(out,2) == 0
-        out = x[:,:Close]
-    end
-    if size(out,2) > 0
-        return out
+        j = findfirst(ismatch.(r"(adj((usted)|\s|)+)(cl)"i, columns))
+        if j != 0
+            return x[:,j]
+        end
+    else
+        j = findfirst(ismatch.(r"^((?!adj).)*(cl(ose|))"i, columns))
+        if j != 0
+            return x[:,j]
+        end
     end
     if allow_settle
-        out = x[:,:Settle]
-        if size(out,2) > 0
-            return out
+        j = findfirst(ismatch.(r"(settle)"i, columns))
+        if j != 0
+            return x[:,j]
         end
     end
     if allow_last
-        out = x[:,:Last]
-        if size(out,2) > 0
-            return out
+        j = findfirst(ismatch.(r"(last)"i, columns))
+        if j != 0
+            return x[:,j]
         end
     end
-    return out
+    error("No closing prices found.")
 end
 ohlc(x::TS)::TS = [op(x) hi(x) lo(x) cl(x)]
 ohlcv(x::TS)::TS = [op(x) hi(x) lo(x) cl(x) vo(x)]
