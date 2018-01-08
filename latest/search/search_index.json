@@ -2,7 +2,7 @@
     "docs": [
         {
             "location": "/", 
-            "text": "Temporal.jl Documentation\n\n\n\n\nIndex\n\n\n\n\nTemporal.TS\n\n\nBase.merge\n\n\nTemporal.google\n\n\nTemporal.ijoin\n\n\nTemporal.ljoin\n\n\nTemporal.ojoin\n\n\nTemporal.quandl\n\n\nTemporal.quandl_auth\n\n\nTemporal.quandl_meta\n\n\nTemporal.quandl_search\n\n\nTemporal.rjoin\n\n\nTemporal.tsread\n\n\nTemporal.tswrite\n\n\nTemporal.yahoo\n\n\n\n\n#\n\n\nTemporal.TS\n \n \nType\n.\n\n\nTime series type aimed at efficiency and simplicity.\n\n\nMotivated by the \nxts\n package in R and the \npandas\n package in Python.\n\n\nsource\n\n\n#\n\n\nTemporal.google\n \n \nMethod\n.\n\n\nDownload stock price data from Google Finance into a TS object.\n\n\ngoogle(symb::String; from::String=\"2000-01-01\", thru::String=string(Dates.today()))::TS\n\n\nArguments\n\n\n\n\nsymb\n ticker symbol of the stock\n\n\nfrom\n starting date of the historical data request (string formatted as yyyy-mm-dd)\n\n\nthru\n ending date of the historical data request (string formatted as yyyy-mm-dd)\n\n\n\n\nExample\n\n\njulia\n google(\nIBM\n, from=\n2010-06-09\n, thru=string(Dates.today()))\n1756x5 Temporal.TS{Float64,Date}: 2010-06-09 to 2017-05-30\nIndex       Open    High    Low     Close   Volume\n2010-06-09  124.83  125.84  123.58  123.9   7.800309e6\n2010-06-10  125.99  128.22  125.8   127.68  7.47961e6\n2010-06-11  126.73  128.8   126.44  128.45  5.827093e6\n2010-06-14  128.5   129.97  128.49  128.5   6.753113e6\n2010-06-15  128.93  129.95  128.37  129.79  6.652612e6\n\u22ee\n2017-05-23  152.57  153.68  151.92  152.03  2.564503e6\n2017-05-24  152.21  152.76  151.23  152.51  3.732399e6\n2017-05-25  153.25  153.73  152.95  153.2   2.582815e6\n2017-05-26  152.85  153.0   152.06  152.49  2.443507e6\n2017-05-30  151.95  152.67  151.59  151.73  3.666032e6\n\n\n\n\nsource\n\n\n#\n\n\nTemporal.quandl\n \n \nMethod\n.\n\n\nDownload time series data from Quandl as a TS object.\n\n\nquandl(code::String;\n       from::String=\n,\n       thru::String=\n,\n       freq::Char='d',\n       calc::String=\nnone\n,\n       sort::Char='a',\n       rows::Int=0,\n       auth::String=quandl_auth())::TS\n\n\n\n\nExample\n\n\njulia\n quandl(\nCHRIS/CME_CL1\n, from=\n2010-01-01\n, thru=string(Dates.today()), freq='a')\n8x8 Temporal.TS{Float64,Date}: 2010-12-31 to 2017-12-31\nIndex       Open   High    Low    Last   Change  Settle  Volume    PreviousDayOpenInterest\n2010-12-31  89.67  92.06   89.05  91.38  NaN     91.38   171010.0  311738.0\n2011-12-31  99.78  100.16  98.61  98.83  NaN     98.83   151380.0  233377.0\n2012-12-31  90.41  91.99   90.0   91.82  NaN     91.82   107767.0  277570.0\n2013-12-31  99.25  99.39   98.15  98.42  NaN     98.42   100104.0  259878.0\n2014-12-31  53.87  54.02   52.44  53.27  0.85    53.27   247510.0  309473.0\n2015-12-31  36.81  37.79   36.22  37.07  0.44    37.04   279553.0  436421.0\n2016-12-31  53.87  54.09   53.41  53.89  0.05    53.72   266762.0  457983.0\n2017-12-31  48.47  49.63   48.38  49.6   1.14    49.51   540748.0  606895.0\n\n\n\n\nsource\n\n\n#\n\n\nTemporal.quandl_auth\n \n \nMethod\n.\n\n\nSet up Quandl user account authorization. Run once passing your Quandl API key, and it will be saved for future use.\n\n\nquandl_auth{T\n:String}(key::T=\"\")::String\n\n\nExample\n\n\njulia\n quandl_auth(\nYour_API_Key\n)\n\nYour_API_Key\n\n\njulia\n quandl_auth()\n\nYour_API_Key\n\n\n\n\n\nsource\n\n\n#\n\n\nTemporal.quandl_meta\n \n \nMethod\n.\n\n\nDownload Quandl metadata for a database and dataset into a Julia Dict object.\n\n\nquandl_meta(database::String, dataset::String)\n\n\nsource\n\n\n#\n\n\nTemporal.quandl_search\n \n \nMethod\n.\n\n\nSearch Quandl for data in a given database, \ndb\n, or matching a given query, \nqry\n.\n\n\nquandl_search(;db::String=\"\", qry::String=\"\", perpage::Int=1, pagenum::Int=1)\n\n\nsource\n\n\n#\n\n\nTemporal.tsread\n \n \nMethod\n.\n\n\nRead contents from a text file into a TS object.\n\n\ntsread(file::String; dlm::Char=',', header::Bool=true, eol::Char='\\n', indextype::Type=Date, format::String=\"yyyy-mm-dd\")\n\n\nExample\n\n\njulia\n tsread(Pkg.dir(\nTemporal\n) * \n/data/corn.csv\n)\n14396x8 Temporal.TS{Float64,Date}: 1959-07-01 to 2016-08-30\nIndex       Open    High    Low     Last    Change  Settle  Volume    OpenInterest\n1959-07-01  120.2   120.3   119.6   119.7   NaN     119.7   3952.0    13997.0\n1959-07-02  119.6   120.0   119.2   119.6   NaN     119.6   2223.0    14047.0\n1959-07-06  119.4   119.5   117.7   118.0   NaN     118.0   3121.0    14206.0\n1959-07-07  118.1   118.5   118.0   118.3   NaN     118.3   3540.0    14142.0\n1959-07-08  118.4   118.5   117.3   117.3   NaN     117.3   2922.0    14353.0\n1959-07-09  117.2   118.3   116.6   118.2   NaN     118.2   3479.0    15051.0\n\u22ee\n2016-08-24  328.25  330.5   325.5   327.0   1.0     327.5   59855.0   178092.0\n2016-08-25  327.0   328.5   322.25  323.0   4.0     323.5   73826.0   163255.0\n2016-08-26  323.5   325.25  315.75  316.0   7.25    316.25  73781.0   144554.0\n2016-08-29  316.25  318.75  310.75  312.0   4.5     311.75  111379.0  94676.0\n2016-08-30  311.75  312.75  303.5   304.0   7.75    304.0   123102.0  66033.0\n\n\n\n\nsource\n\n\n#\n\n\nTemporal.tswrite\n \n \nMethod\n.\n\n\nWrite TS object to a text file.\n\n\ntswrite(x::TS, file::String; dlm::Char=',', header::Bool=true, eol::Char='\\\\n')\n\n\nsource\n\n\n#\n\n\nTemporal.yahoo\n \n \nMethod\n.\n\n\nDownload stock price data from Yahoo! Finance into a TS object.\n\n\nyahoo(symb::String; from::String=\"1900-01-01\", thru::String=string(Dates.today()), freq::String=\"d\", event::String=\"history\", crumb_tuple::Tuple{SubString{String}, Dict{String, Requests.HttpCommon.Cookie}}=yahoo_get_crumb())::TS\n\n\nArguments\n\n\n\n\nsymb\n ticker symbol of the stock\n\n\nfrom\n starting date of the historical data request (string formatted as yyyy-mm-dd)\n\n\nthru\n ending date of the historical data request (string formatted as yyyy-mm-dd)\n\n\nfreq\n frequency interval of the requested dowload (valid options are \"d\" for daily, \"wk\" for weekly, and \"mo\" for monthly)\n\n\nevent\n type of data download to request (valid options are \"history\" for standard historical price data, \"div\" for dividend payments, and \"split\" for stock splits)\n\n\ncrumb_tuple\n workaround to provide crumbs/cookies for the new Yahoo Finance portal (which requires such data to fulfill the requests)\n\n\n\n\nExample\n\n\njulia\n yahoo(\nAAPL\n, from=\n2010-06-09\n, thru=string(Dates.today()), freq=\nwk\n)\n356x6 Temporal.TS{Float64,Date}: 2010-06-09 to 2017-03-27\nIndex       Open    High    Low     Close   Volume      AdjClose\n2010-06-09  251.47  253.86  242.2   253.51  1.813954e8  32.8446\n2010-06-14  255.96  275.0   254.01  274.07  1.814594e8  35.5084\n2010-06-21  277.69  279.01  265.81  266.7   1.763214e8  34.5535\n2010-06-28  266.93  269.75  243.2   246.94  2.087241e8  31.9934\n2010-07-06  251.0   262.9   246.16  259.62  1.525786e8  33.6362\n\u22ee\n2017-02-27  137.14  140.28  136.28  139.78  2.54267e7   139.78\n2017-03-06  139.37  139.98  137.05  139.14  1.97315e7   139.14\n2017-03-13  138.85  141.02  138.82  139.99  2.41057e7   139.99\n2017-03-20  140.4   142.8   139.73  140.64  2.54857e7   140.64\n2017-03-27  139.39  144.49  138.62  144.12  2.86449e7   144.12\n\n\n\n\nsource\n\n\n#\n\n\nBase.merge\n \n \nMethod\n.\n\n\nMerge two TS objects by index.\n\n\nThe \njoin\n argument specifies the logic used to perform the merge, and may take on the values 'o' (outer join), 'i' (inner join), 'l' (left join), or 'r' (right join). Defaults to outer join, whose result is the same as \nhcat(x, y)\n or \n[x y]\n.\n\n\nmerge(x::TS, y::TS; join::Char='o')::TS\n\n\nsource\n\n\n#\n\n\nTemporal.ijoin\n \n \nMethod\n.\n\n\nInner join two TS objects by index.\n\n\nEquivalent to \nx\n INNER JOIN \ny\n on \nx.index\n = \ny.index\n.\n\n\nijoin(x::TS, y::TS)::TS\n\n\nsource\n\n\n#\n\n\nTemporal.ljoin\n \n \nMethod\n.\n\n\nLeft join two TS objects by index.\n\n\nEquivalent to \nx\n LEFT JOIN \ny\n ON \nx.index\n = \ny.index\n.\n\n\nljoin(x::TS, y::TS)::TS\n\n\nsource\n\n\n#\n\n\nTemporal.ojoin\n \n \nMethod\n.\n\n\nOuter join two TS objects by index.\n\n\nEquivalent to \nx\n OUTER JOIN \ny\n ON \nx.index\n = \ny.index\n.\n\n\nojoin(x::TS, y::TS)::TS\n\n\nsource\n\n\n#\n\n\nTemporal.rjoin\n \n \nMethod\n.\n\n\nRight join two TS objects by index.\n\n\nEquivalent to \nx\n RIGHT JOIN \ny\n ON \nx.index\n = \ny.index\n.\n\n\nrjoin(x::TS, y::TS)::TS\n\n\nsource", 
+            "text": "Temporal.jl Documentation\n\n\n\n\nTopics\n\n\n\n\nConstruction\n\n\nBasic\n\n\nArithmetic\n\n\nLogical\n\n\nNumerical Indexing\n\n\nInteger\n\n\nBoolean\n\n\nArrays \n Ranges\n\n\n\n\n\n\nSymbol Indexing\n\n\nString Indexing\n\n\nJoins\n\n\nOuter Joins\n\n\nInner Joins\n\n\nLeft Joins\n\n\nRight Joins\n\n\n\n\n\n\nTemporal Aggregation\n\n\nTime Period Sampling Methods\n\n\nCollapsing \n Summarizing\n\n\n\n\n\n\nData Readers\n\n\nGoogle\n\n\nYahoo\n\n\nQuandl\n\n\nFlat Files", 
             "title": "Home"
         }, 
         {
@@ -11,9 +11,124 @@
             "title": "Temporal.jl Documentation"
         }, 
         {
-            "location": "/#index", 
-            "text": "Temporal.TS  Base.merge  Temporal.google  Temporal.ijoin  Temporal.ljoin  Temporal.ojoin  Temporal.quandl  Temporal.quandl_auth  Temporal.quandl_meta  Temporal.quandl_search  Temporal.rjoin  Temporal.tsread  Temporal.tswrite  Temporal.yahoo   #  Temporal.TS     Type .  Time series type aimed at efficiency and simplicity.  Motivated by the  xts  package in R and the  pandas  package in Python.  source  #  Temporal.google     Method .  Download stock price data from Google Finance into a TS object.  google(symb::String; from::String=\"2000-01-01\", thru::String=string(Dates.today()))::TS  Arguments   symb  ticker symbol of the stock  from  starting date of the historical data request (string formatted as yyyy-mm-dd)  thru  ending date of the historical data request (string formatted as yyyy-mm-dd)   Example  julia  google( IBM , from= 2010-06-09 , thru=string(Dates.today()))\n1756x5 Temporal.TS{Float64,Date}: 2010-06-09 to 2017-05-30\nIndex       Open    High    Low     Close   Volume\n2010-06-09  124.83  125.84  123.58  123.9   7.800309e6\n2010-06-10  125.99  128.22  125.8   127.68  7.47961e6\n2010-06-11  126.73  128.8   126.44  128.45  5.827093e6\n2010-06-14  128.5   129.97  128.49  128.5   6.753113e6\n2010-06-15  128.93  129.95  128.37  129.79  6.652612e6\n\u22ee\n2017-05-23  152.57  153.68  151.92  152.03  2.564503e6\n2017-05-24  152.21  152.76  151.23  152.51  3.732399e6\n2017-05-25  153.25  153.73  152.95  153.2   2.582815e6\n2017-05-26  152.85  153.0   152.06  152.49  2.443507e6\n2017-05-30  151.95  152.67  151.59  151.73  3.666032e6  source  #  Temporal.quandl     Method .  Download time series data from Quandl as a TS object.  quandl(code::String;\n       from::String= ,\n       thru::String= ,\n       freq::Char='d',\n       calc::String= none ,\n       sort::Char='a',\n       rows::Int=0,\n       auth::String=quandl_auth())::TS  Example  julia  quandl( CHRIS/CME_CL1 , from= 2010-01-01 , thru=string(Dates.today()), freq='a')\n8x8 Temporal.TS{Float64,Date}: 2010-12-31 to 2017-12-31\nIndex       Open   High    Low    Last   Change  Settle  Volume    PreviousDayOpenInterest\n2010-12-31  89.67  92.06   89.05  91.38  NaN     91.38   171010.0  311738.0\n2011-12-31  99.78  100.16  98.61  98.83  NaN     98.83   151380.0  233377.0\n2012-12-31  90.41  91.99   90.0   91.82  NaN     91.82   107767.0  277570.0\n2013-12-31  99.25  99.39   98.15  98.42  NaN     98.42   100104.0  259878.0\n2014-12-31  53.87  54.02   52.44  53.27  0.85    53.27   247510.0  309473.0\n2015-12-31  36.81  37.79   36.22  37.07  0.44    37.04   279553.0  436421.0\n2016-12-31  53.87  54.09   53.41  53.89  0.05    53.72   266762.0  457983.0\n2017-12-31  48.47  49.63   48.38  49.6   1.14    49.51   540748.0  606895.0  source  #  Temporal.quandl_auth     Method .  Set up Quandl user account authorization. Run once passing your Quandl API key, and it will be saved for future use.  quandl_auth{T :String}(key::T=\"\")::String  Example  julia  quandl_auth( Your_API_Key ) Your_API_Key \n\njulia  quandl_auth() Your_API_Key   source  #  Temporal.quandl_meta     Method .  Download Quandl metadata for a database and dataset into a Julia Dict object.  quandl_meta(database::String, dataset::String)  source  #  Temporal.quandl_search     Method .  Search Quandl for data in a given database,  db , or matching a given query,  qry .  quandl_search(;db::String=\"\", qry::String=\"\", perpage::Int=1, pagenum::Int=1)  source  #  Temporal.tsread     Method .  Read contents from a text file into a TS object.  tsread(file::String; dlm::Char=',', header::Bool=true, eol::Char='\\n', indextype::Type=Date, format::String=\"yyyy-mm-dd\")  Example  julia  tsread(Pkg.dir( Temporal ) *  /data/corn.csv )\n14396x8 Temporal.TS{Float64,Date}: 1959-07-01 to 2016-08-30\nIndex       Open    High    Low     Last    Change  Settle  Volume    OpenInterest\n1959-07-01  120.2   120.3   119.6   119.7   NaN     119.7   3952.0    13997.0\n1959-07-02  119.6   120.0   119.2   119.6   NaN     119.6   2223.0    14047.0\n1959-07-06  119.4   119.5   117.7   118.0   NaN     118.0   3121.0    14206.0\n1959-07-07  118.1   118.5   118.0   118.3   NaN     118.3   3540.0    14142.0\n1959-07-08  118.4   118.5   117.3   117.3   NaN     117.3   2922.0    14353.0\n1959-07-09  117.2   118.3   116.6   118.2   NaN     118.2   3479.0    15051.0\n\u22ee\n2016-08-24  328.25  330.5   325.5   327.0   1.0     327.5   59855.0   178092.0\n2016-08-25  327.0   328.5   322.25  323.0   4.0     323.5   73826.0   163255.0\n2016-08-26  323.5   325.25  315.75  316.0   7.25    316.25  73781.0   144554.0\n2016-08-29  316.25  318.75  310.75  312.0   4.5     311.75  111379.0  94676.0\n2016-08-30  311.75  312.75  303.5   304.0   7.75    304.0   123102.0  66033.0  source  #  Temporal.tswrite     Method .  Write TS object to a text file.  tswrite(x::TS, file::String; dlm::Char=',', header::Bool=true, eol::Char='\\\\n')  source  #  Temporal.yahoo     Method .  Download stock price data from Yahoo! Finance into a TS object.  yahoo(symb::String; from::String=\"1900-01-01\", thru::String=string(Dates.today()), freq::String=\"d\", event::String=\"history\", crumb_tuple::Tuple{SubString{String}, Dict{String, Requests.HttpCommon.Cookie}}=yahoo_get_crumb())::TS  Arguments   symb  ticker symbol of the stock  from  starting date of the historical data request (string formatted as yyyy-mm-dd)  thru  ending date of the historical data request (string formatted as yyyy-mm-dd)  freq  frequency interval of the requested dowload (valid options are \"d\" for daily, \"wk\" for weekly, and \"mo\" for monthly)  event  type of data download to request (valid options are \"history\" for standard historical price data, \"div\" for dividend payments, and \"split\" for stock splits)  crumb_tuple  workaround to provide crumbs/cookies for the new Yahoo Finance portal (which requires such data to fulfill the requests)   Example  julia  yahoo( AAPL , from= 2010-06-09 , thru=string(Dates.today()), freq= wk )\n356x6 Temporal.TS{Float64,Date}: 2010-06-09 to 2017-03-27\nIndex       Open    High    Low     Close   Volume      AdjClose\n2010-06-09  251.47  253.86  242.2   253.51  1.813954e8  32.8446\n2010-06-14  255.96  275.0   254.01  274.07  1.814594e8  35.5084\n2010-06-21  277.69  279.01  265.81  266.7   1.763214e8  34.5535\n2010-06-28  266.93  269.75  243.2   246.94  2.087241e8  31.9934\n2010-07-06  251.0   262.9   246.16  259.62  1.525786e8  33.6362\n\u22ee\n2017-02-27  137.14  140.28  136.28  139.78  2.54267e7   139.78\n2017-03-06  139.37  139.98  137.05  139.14  1.97315e7   139.14\n2017-03-13  138.85  141.02  138.82  139.99  2.41057e7   139.99\n2017-03-20  140.4   142.8   139.73  140.64  2.54857e7   140.64\n2017-03-27  139.39  144.49  138.62  144.12  2.86449e7   144.12  source  #  Base.merge     Method .  Merge two TS objects by index.  The  join  argument specifies the logic used to perform the merge, and may take on the values 'o' (outer join), 'i' (inner join), 'l' (left join), or 'r' (right join). Defaults to outer join, whose result is the same as  hcat(x, y)  or  [x y] .  merge(x::TS, y::TS; join::Char='o')::TS  source  #  Temporal.ijoin     Method .  Inner join two TS objects by index.  Equivalent to  x  INNER JOIN  y  on  x.index  =  y.index .  ijoin(x::TS, y::TS)::TS  source  #  Temporal.ljoin     Method .  Left join two TS objects by index.  Equivalent to  x  LEFT JOIN  y  ON  x.index  =  y.index .  ljoin(x::TS, y::TS)::TS  source  #  Temporal.ojoin     Method .  Outer join two TS objects by index.  Equivalent to  x  OUTER JOIN  y  ON  x.index  =  y.index .  ojoin(x::TS, y::TS)::TS  source  #  Temporal.rjoin     Method .  Right join two TS objects by index.  Equivalent to  x  RIGHT JOIN  y  ON  x.index  =  y.index .  rjoin(x::TS, y::TS)::TS  source", 
-            "title": "Index"
+            "location": "/#topics", 
+            "text": "Construction  Basic  Arithmetic  Logical  Numerical Indexing  Integer  Boolean  Arrays   Ranges    Symbol Indexing  String Indexing  Joins  Outer Joins  Inner Joins  Left Joins  Right Joins    Temporal Aggregation  Time Period Sampling Methods  Collapsing   Summarizing    Data Readers  Google  Yahoo  Quandl  Flat Files", 
+            "title": "Topics"
+        }, 
+        {
+            "location": "/ts/", 
+            "text": "Construction\n\n\n\n\nTemporal.TS\n\n\n\n\n#\n\n\nTemporal.TS\n \n \nType\n.\n\n\nTime series type aimed at efficiency and simplicity.\n\n\nMotivated by the \nxts\n package in R and the \npandas\n package in Python.\n\n\nsource", 
+            "title": "TS"
+        }, 
+        {
+            "location": "/ts/#construction", 
+            "text": "Temporal.TS   #  Temporal.TS     Type .  Time series type aimed at efficiency and simplicity.  Motivated by the  xts  package in R and the  pandas  package in Python.  source", 
+            "title": "Construction"
+        }, 
+        {
+            "location": "/operations/", 
+            "text": "Basic\n\n\n\n\nArithmetic\n\n\n\n\nLogical", 
+            "title": "Operations"
+        }, 
+        {
+            "location": "/operations/#basic", 
+            "text": "", 
+            "title": "Basic"
+        }, 
+        {
+            "location": "/operations/#arithmetic", 
+            "text": "", 
+            "title": "Arithmetic"
+        }, 
+        {
+            "location": "/operations/#logical", 
+            "text": "", 
+            "title": "Logical"
+        }, 
+        {
+            "location": "/indexing/", 
+            "text": "Numerical Indexing\n\n\n\n\nInteger\n\n\n\n\nBoolean\n\n\n\n\nArrays \n Ranges\n\n\n\n\nSymbol Indexing\n\n\n\n\nString Indexing", 
+            "title": "Indexing"
+        }, 
+        {
+            "location": "/indexing/#numerical-indexing", 
+            "text": "", 
+            "title": "Numerical Indexing"
+        }, 
+        {
+            "location": "/indexing/#integer", 
+            "text": "", 
+            "title": "Integer"
+        }, 
+        {
+            "location": "/indexing/#boolean", 
+            "text": "", 
+            "title": "Boolean"
+        }, 
+        {
+            "location": "/indexing/#arrays-ranges", 
+            "text": "", 
+            "title": "Arrays &amp; Ranges"
+        }, 
+        {
+            "location": "/indexing/#symbol-indexing", 
+            "text": "", 
+            "title": "Symbol Indexing"
+        }, 
+        {
+            "location": "/indexing/#string-indexing", 
+            "text": "", 
+            "title": "String Indexing"
+        }, 
+        {
+            "location": "/combining/", 
+            "text": "Joins\n\n\n\n\nOuter Joins\n\n\nOne can perform a full outer join on the time \nindex\nes of two \nTS\n objects $x$ and $y$ in the following ways:\n\n\n\n\nmerge(x, y)\n\n\nojoin(x, y)\n\n\n[x y]\n\n\n\n\nWhere there are dates in the \nindex\n of one that do not exist in the other, values will be filled with \nNaN\n objects. As the \nmissing\n functionality matures in Julia's base syntax, it will eventually replace \nNaN\n in this context, since unfortunately \nNaN\n is only applicable for \nFloat64\n element types.\n\n\n\n\nInner Joins\n\n\n\n\nLeft Joins\n\n\n\n\nRight Joins", 
+            "title": "Combining"
+        }, 
+        {
+            "location": "/combining/#joins", 
+            "text": "", 
+            "title": "Joins"
+        }, 
+        {
+            "location": "/combining/#outer-joins", 
+            "text": "One can perform a full outer join on the time  index es of two  TS  objects $x$ and $y$ in the following ways:   merge(x, y)  ojoin(x, y)  [x y]   Where there are dates in the  index  of one that do not exist in the other, values will be filled with  NaN  objects. As the  missing  functionality matures in Julia's base syntax, it will eventually replace  NaN  in this context, since unfortunately  NaN  is only applicable for  Float64  element types.", 
+            "title": "Outer Joins"
+        }, 
+        {
+            "location": "/combining/#inner-joins", 
+            "text": "", 
+            "title": "Inner Joins"
+        }, 
+        {
+            "location": "/combining/#left-joins", 
+            "text": "", 
+            "title": "Left Joins"
+        }, 
+        {
+            "location": "/combining/#right-joins", 
+            "text": "", 
+            "title": "Right Joins"
+        }, 
+        {
+            "location": "/aggregation/", 
+            "text": "Temporal Aggregation\n\n\n\n\nTime Period Sampling Methods\n\n\nSummarize by day of the week:\n\n\n\n\nmondays\n\n\ntuesdays\n\n\nwednesdays\n\n\nthursdays\n\n\nfridays\n\n\nsaturdays\n\n\nsundays\n\n\n\n\nSummarize by beginnings and endings of weeks, months, quarters, or years:\n\n\n\n\nbow\n\n\neow\n\n\nbom\n\n\neom\n\n\nboq\n\n\neoq\n\n\nboy\n\n\neoy\n\n\nbow\n\n\neow\n\n\nbom\n\n\neom\n\n\nboq\n\n\neoq\n\n\nboy\n\n\neoy\n\n\n\n\n\n\nCollapsing \n Summarizing\n\n\n\n\ncollapse\n\n\napply", 
+            "title": "Aggregation"
+        }, 
+        {
+            "location": "/aggregation/#temporal-aggregation", 
+            "text": "", 
+            "title": "Temporal Aggregation"
+        }, 
+        {
+            "location": "/aggregation/#time-period-sampling-methods", 
+            "text": "Summarize by day of the week:   mondays  tuesdays  wednesdays  thursdays  fridays  saturdays  sundays   Summarize by beginnings and endings of weeks, months, quarters, or years:   bow  eow  bom  eom  boq  eoq  boy  eoy  bow  eow  bom  eom  boq  eoq  boy  eoy", 
+            "title": "Time Period Sampling Methods"
+        }, 
+        {
+            "location": "/aggregation/#collapsing-summarizing", 
+            "text": "collapse  apply", 
+            "title": "Collapsing &amp; Summarizing"
         }
     ]
 }
