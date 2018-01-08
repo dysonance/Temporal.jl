@@ -12,3 +12,7 @@ makedocs(modules=[Temporal],
                                               "combining.md",
                                               "aggregation.md"]])
 
+deploydocs(deps=Deps.pip("mkdocs", "python-markdown-math"),
+           repo="github.com/dysonance/Temporal.jl.git",
+           julia="0.6")
+
