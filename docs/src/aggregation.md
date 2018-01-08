@@ -32,3 +32,5 @@ Summarize by beginnings and endings of weeks, months, quarters, or years:
 ## Collapsing & Summarizing
 - `collapse`
 - `apply`
+
+
