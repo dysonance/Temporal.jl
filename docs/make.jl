@@ -8,6 +8,7 @@ makedocs(modules=[Temporal],
          pages=Any["Home" => "index.md",
                    "TS Object" => "ts.md",
                    "Operations" => "operations.md",
+                   "Data Access" => "io.md",
                    "Data Manipulation" => Any["indexing.md",
                                               "combining.md",
                                               "aggregation.md"]])

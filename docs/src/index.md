@@ -1,13 +1,13 @@
 # Temporal.jl Documentation
 
-## Index
-
-```@index
+```@meta
+CurrentModule = Temporal
 ```
 
-```@autodocs
-Modules = [Temporal]
-Order = [:type, :function, :constant, :macro, :module]
-Pages = ["ts.jl", "io.jl", "combine.jl", "collapse.jl", "operations.jl"]
+## Topics
+
+```@contents
+Pages = ["ts.md", "operations.md", "indexing.md", "combining.md", "aggregation.md", "io.md"]
+Depth = 3
 ```
 
