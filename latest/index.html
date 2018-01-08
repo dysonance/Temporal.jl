@@ -124,7 +124,7 @@
 <strong><code>Temporal.TS</code></strong> &mdash; <em>Type</em>.</p>
 <p>Time series type aimed at efficiency and simplicity.</p>
 <p>Motivated by the <code>xts</code> package in R and the <code>pandas</code> package in Python.</p>
-<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/533a3be46249d445174af77f71851c208f649b19/src/ts.jl#L43' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/4fce27e99c715b52fcedd8b7b209cf6cd6592e84/src/ts.jl#L43' class='documenter-source'>source</a><br></p>
 <p><a id='Temporal.google-Tuple{String}' href='#Temporal.google-Tuple{String}'>#</a>
 <strong><code>Temporal.google</code></strong> &mdash; <em>Method</em>.</p>
 <p>Download stock price data from Google Finance into a TS object.</p>
@@ -152,7 +152,7 @@ Index       Open    High    Low     Close   Volume
 2017-05-30  151.95  152.67  151.59  151.73  3.666032e6
 </code></pre>
 
-<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/533a3be46249d445174af77f71851c208f649b19/src/io.jl#L336' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/4fce27e99c715b52fcedd8b7b209cf6cd6592e84/src/io.jl#L336' class='documenter-source'>source</a><br></p>
 <p><a id='Temporal.quandl-Tuple{String}' href='#Temporal.quandl-Tuple{String}'>#</a>
 <strong><code>Temporal.quandl</code></strong> &mdash; <em>Method</em>.</p>
 <p>Download time series data from Quandl as a TS object.</p>
@@ -180,7 +180,7 @@ Index       Open   High    Low    Last   Change  Settle  Volume    PreviousDayOp
 2017-12-31  48.47  49.63   48.38  49.6   1.14    49.51   540748.0  606895.0
 </code></pre>
 
-<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/533a3be46249d445174af77f71851c208f649b19/src/io.jl#L175' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/4fce27e99c715b52fcedd8b7b209cf6cd6592e84/src/io.jl#L175' class='documenter-source'>source</a><br></p>
 <p><a id='Temporal.quandl_auth-Union{Tuple{T}, Tuple{T}, Tuple{}} where T<:String' href='#Temporal.quandl_auth-Union{Tuple{T}, Tuple{T}, Tuple{}} where T<:String'>#</a>
 <strong><code>Temporal.quandl_auth</code></strong> &mdash; <em>Method</em>.</p>
 <p>Set up Quandl user account authorization. Run once passing your Quandl API key, and it will be saved for future use.</p>
@@ -193,17 +193,17 @@ julia&gt; quandl_auth()
 &quot;Your_API_Key&quot;
 </code></pre>
 
-<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/533a3be46249d445174af77f71851c208f649b19/src/io.jl#L145' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/4fce27e99c715b52fcedd8b7b209cf6cd6592e84/src/io.jl#L145' class='documenter-source'>source</a><br></p>
 <p><a id='Temporal.quandl_meta-Tuple{String,String}' href='#Temporal.quandl_meta-Tuple{String,String}'>#</a>
 <strong><code>Temporal.quandl_meta</code></strong> &mdash; <em>Method</em>.</p>
 <p>Download Quandl metadata for a database and dataset into a Julia Dict object.</p>
 <p><code>quandl_meta(database::String, dataset::String)</code></p>
-<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/533a3be46249d445174af77f71851c208f649b19/src/io.jl#L236' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/4fce27e99c715b52fcedd8b7b209cf6cd6592e84/src/io.jl#L236' class='documenter-source'>source</a><br></p>
 <p><a id='Temporal.quandl_search-Tuple{}' href='#Temporal.quandl_search-Tuple{}'>#</a>
 <strong><code>Temporal.quandl_search</code></strong> &mdash; <em>Method</em>.</p>
 <p>Search Quandl for data in a given database, <code>db</code>, or matching a given query, <code>qry</code>.</p>
 <p><code>quandl_search(;db::String="", qry::String="", perpage::Int=1, pagenum::Int=1)</code></p>
-<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/533a3be46249d445174af77f71851c208f649b19/src/io.jl#L247' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/4fce27e99c715b52fcedd8b7b209cf6cd6592e84/src/io.jl#L247' class='documenter-source'>source</a><br></p>
 <p><a id='Temporal.tsread-Tuple{String}' href='#Temporal.tsread-Tuple{String}'>#</a>
 <strong><code>Temporal.tsread</code></strong> &mdash; <em>Method</em>.</p>
 <p>Read contents from a text file into a TS object.</p>
@@ -226,12 +226,12 @@ Index       Open    High    Low     Last    Change  Settle  Volume    OpenIntere
 2016-08-30  311.75  312.75  303.5   304.0   7.75    304.0   123102.0  66033.0
 </code></pre>
 
-<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/533a3be46249d445174af77f71851c208f649b19/src/io.jl#L9-L34' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/4fce27e99c715b52fcedd8b7b209cf6cd6592e84/src/io.jl#L9-L34' class='documenter-source'>source</a><br></p>
 <p><a id='Temporal.tswrite-Tuple{Temporal.TS,String}' href='#Temporal.tswrite-Tuple{Temporal.TS,String}'>#</a>
 <strong><code>Temporal.tswrite</code></strong> &mdash; <em>Method</em>.</p>
 <p>Write TS object to a text file.</p>
 <p><code>tswrite(x::TS, file::String; dlm::Char=',', header::Bool=true, eol::Char='\\n')</code></p>
-<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/533a3be46249d445174af77f71851c208f649b19/src/io.jl#L63' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/4fce27e99c715b52fcedd8b7b209cf6cd6592e84/src/io.jl#L63' class='documenter-source'>source</a><br></p>
 <p><a id='Temporal.yahoo-Tuple{String}' href='#Temporal.yahoo-Tuple{String}'>#</a>
 <strong><code>Temporal.yahoo</code></strong> &mdash; <em>Method</em>.</p>
 <p>Download stock price data from Yahoo! Finance into a TS object.</p>
@@ -262,37 +262,37 @@ Index       Open    High    Low     Close   Volume      AdjClose
 2017-03-27  139.39  144.49  138.62  144.12  2.86449e7   144.12
 </code></pre>
 
-<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/533a3be46249d445174af77f71851c208f649b19/src/io.jl#L270' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/4fce27e99c715b52fcedd8b7b209cf6cd6592e84/src/io.jl#L270' class='documenter-source'>source</a><br></p>
 <p><a id='Base.merge-Tuple{Temporal.TS,Temporal.TS}' href='#Base.merge-Tuple{Temporal.TS,Temporal.TS}'>#</a>
 <strong><code>Base.merge</code></strong> &mdash; <em>Method</em>.</p>
 <p>Merge two TS objects by index.</p>
 <p>The <code>join</code> argument specifies the logic used to perform the merge, and may take on the values 'o' (outer join), 'i' (inner join), 'l' (left join), or 'r' (right join). Defaults to outer join, whose result is the same as <code>hcat(x, y)</code> or <code>[x y]</code>.</p>
 <p><code>merge(x::TS, y::TS; join::Char='o')::TS</code></p>
-<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/533a3be46249d445174af77f71851c208f649b19/src/combine.jl#L103-L109' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/4fce27e99c715b52fcedd8b7b209cf6cd6592e84/src/combine.jl#L103-L109' class='documenter-source'>source</a><br></p>
 <p><a id='Temporal.ijoin-Tuple{Temporal.TS,Temporal.TS}' href='#Temporal.ijoin-Tuple{Temporal.TS,Temporal.TS}'>#</a>
 <strong><code>Temporal.ijoin</code></strong> &mdash; <em>Method</em>.</p>
 <p>Inner join two TS objects by index.</p>
 <p>Equivalent to <code>x</code> INNER JOIN <code>y</code> on <code>x.index</code> = <code>y.index</code>.</p>
 <p><code>ijoin(x::TS, y::TS)::TS</code></p>
-<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/533a3be46249d445174af77f71851c208f649b19/src/combine.jl#L38-L44' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/4fce27e99c715b52fcedd8b7b209cf6cd6592e84/src/combine.jl#L38-L44' class='documenter-source'>source</a><br></p>
 <p><a id='Temporal.ljoin-Tuple{Temporal.TS,Temporal.TS}' href='#Temporal.ljoin-Tuple{Temporal.TS,Temporal.TS}'>#</a>
 <strong><code>Temporal.ljoin</code></strong> &mdash; <em>Method</em>.</p>
 <p>Left join two TS objects by index.</p>
 <p>Equivalent to <code>x</code> LEFT JOIN <code>y</code> ON <code>x.index</code> = <code>y.index</code>.</p>
 <p><code>ljoin(x::TS, y::TS)::TS</code></p>
-<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/533a3be46249d445174af77f71851c208f649b19/src/combine.jl#L57-L63' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/4fce27e99c715b52fcedd8b7b209cf6cd6592e84/src/combine.jl#L57-L63' class='documenter-source'>source</a><br></p>
 <p><a id='Temporal.ojoin-Tuple{Temporal.TS,Temporal.TS}' href='#Temporal.ojoin-Tuple{Temporal.TS,Temporal.TS}'>#</a>
 <strong><code>Temporal.ojoin</code></strong> &mdash; <em>Method</em>.</p>
 <p>Outer join two TS objects by index.</p>
 <p>Equivalent to <code>x</code> OUTER JOIN <code>y</code> ON <code>x.index</code> = <code>y.index</code>.</p>
 <p><code>ojoin(x::TS, y::TS)::TS</code></p>
-<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/533a3be46249d445174af77f71851c208f649b19/src/combine.jl#L13-L19' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/4fce27e99c715b52fcedd8b7b209cf6cd6592e84/src/combine.jl#L13-L19' class='documenter-source'>source</a><br></p>
 <p><a id='Temporal.rjoin-Tuple{Temporal.TS,Temporal.TS}' href='#Temporal.rjoin-Tuple{Temporal.TS,Temporal.TS}'>#</a>
 <strong><code>Temporal.rjoin</code></strong> &mdash; <em>Method</em>.</p>
 <p>Right join two TS objects by index.</p>
 <p>Equivalent to <code>x</code> RIGHT JOIN <code>y</code> ON <code>x.index</code> = <code>y.index</code>.</p>
 <p><code>rjoin(x::TS, y::TS)::TS</code></p>
-<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/533a3be46249d445174af77f71851c208f649b19/src/combine.jl#L68-L74' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/4fce27e99c715b52fcedd8b7b209cf6cd6592e84/src/combine.jl#L68-L74' class='documenter-source'>source</a><br></p>
               
             </div>
           </div>
@@ -337,5 +337,5 @@ Index       Open    High    Low     Close   Volume      AdjClose
 
 <!--
 MkDocs version : 0.17.2
-Build Date UTC : 2018-01-08 06:45:19
+Build Date UTC : 2018-01-08 06:55:35
 -->
