@@ -4,39 +4,6 @@ using Base.Dates
 ################################################################################
 # TYPE DEFINITION ##############################################################
 ################################################################################
-#function findalphanum(s::AbstractString, drop_underscores::Bool=false)::Vector{Int}
-#    if drop_underscores
-#        return sort(union(find(isalpha,s), find(isnumber,s)))
-#    else
-#        return sort(union(union(find(isalpha,s), find(isnumber,s)), find(c->c=='_', s)))
-#    end
-#end
-# findalphanum(s::String)::Vector{Int} = find(isalpha.(split(s,"")).+isnumber.(split(s,"")))
-#namefix(s::AbstractString)::AbstractString = s[findalphanum(s)]
-#namefix(s::Symbol)::Symbol = Symbol(namefix(string(s)))
-
-# abstract AbstractTS
-# 
-# @doc doc"""
-# Time series type aimed at efficiency and simplicity.
-# 
-# Motivated by the `xts` package in R and the `pandas` package in Python.
-# """ ->
-# type TS{V<:Any, T<:TimeType} <: AbstractTS
-#     values::AbstractArray{V}
-#     index::Vector{T}
-#     fields::Vector{Symbol}
-#     function TS(values, index, fields)
-#         @assert size(values,1) == length(index) "Length of index not equal to number of value rows."
-#         @assert (isempty(values) && isempty(fields)) || (size(values,2) == length(fields)) "Length of fields not equal to number of columns in values."
-#         order = sortperm(index)
-#         if size(values,2) == 1
-#             return new(values[order], index[order], namefix.(fields))
-#         else
-#             return new(values[order,:], index[order], namefix.(fields))
-#         end
-#     end
-# end
 
 abstract type AbstractTS end
 
@@ -53,27 +20,9 @@ mutable struct TS{V<:Real,T<:TimeType}
         @assert size(values,1)==length(index) "Length of index not equal to number of value rows."
         @assert size(values,2)==length(fields) "Length of fields not equal to number of columns in values."
         order = sortperm(index)
-        return new(values[order,:], index[order], fields)
+        return new(values[order,:], index[order], SANITIZE_NAMES ? namefix.(fields) : fields)
     end
 end
-
-function autocol(col::Int)::Symbol
-    @assert col >= 1 "Invalid column number $col - cannot generate column name"
-    if col <= 26
-        return Symbol(Char(64 + col))
-    end
-    colname = ""
-    modulo = 0
-    dividend = col
-    while dividend > 0
-        modulo = (dividend - 1) % 26
-        colname = string(Char(65 + modulo)) * colname
-        dividend = Int(round((dividend - modulo) / 26))
-    end
-    return Symbol(colname)
-end
-autocol(cols::AbstractArray{Int,1})::Vector{Symbol} = autocol.(cols)
-autoidx(n::Int; dt::Period=Day(1), from::Date=today()-(n-1)*dt, thru::Date=from+(n-1)*dt) = collect(from:dt:thru)
 
 TS{V,T}(v::AbstractArray{V}, t::AbstractVector{T}, f::Union{Symbol,String,Char}) = TS{V,T}(v, t, [Symbol(f)])
 TS{V,T}(v::AbstractArray{V}, t::AbstractVector{T}, f::Union{AbstractVector{Symbol},AbstractVector{String},AbstractVector{Char}}) = TS{V,T}(v, t, Symbol.(f))
