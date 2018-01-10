@@ -31,7 +31,7 @@ export
     op, hi, lo, cl, vo, ohlc, ohlcv, hlc, hl, hl2, hlc3, ohlc4,
     # Utilities
     namefix, namefix!, autoidx, findalphanum,
-    SANITIZE_NAMES, RANGE_DELIMITER, set_sanitize_names_option!, set_range_delimiter_option!,
+    SANITIZE_NAMES, RANGE_DELIMITER, set_sanitize_names_option, set_range_delimiter_option,
     # Modeling
     acf
 
