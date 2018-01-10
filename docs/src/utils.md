@@ -1,25 +1,19 @@
 # Package Options
-There are main package options that can be adjusted to change the way that Temporal behaves.
+There are two package options that can be adjusted to change the way that Temporal behaves.
 
 ## Range Delimiter
 The `RANGE_DELIMITER` option specifies what value should separate the `String`s when indexing a `TS` object's rows using the `String` indexing syntax.
 
-By default, `RANGE_DELIMITER` is set to '/', and can be changed dynamically using the function `set_range_delimiter_option`.
+By default, `RANGE_DELIMITER` is set to `'/'`, and can be changed dynamically using the function `set_range_delimiter_option`.
 
-```@example
+```@repl
 using Temporal, Base.Dates;
-index = Date("2017-01-01"):Day(1):Date(2017-12-31);
-values = cumsum(randn(length(index), 4));
-X = TS(values, index)
-
-X["2017-03-15/"]
-
+t = Date("2017-01-01"):Day(1):Date("2017-12-31");
+vals = rand(length(t), 4);
+X = TS(vals, t)
+X["2017-03-15/2017-06-15"]
 set_range_delimiter_option("::")
-
 X["2017-03-15::2017-06-15"]
-
-# fails since the RANGE_DELIMITER package option was changed above
-X["2017-03-15/"]
 ```
 
 ## Name Sanitization
@@ -27,8 +21,11 @@ The `SANITIZE_NAMES` option is a boolean value indicating whether the column nam
 
 By default, `SANITIZE_NAMES` is set to `false`, so that generally speaking the raw user input data is used. This option can be changed with the `set_sanitize_names_option` function.
 
-```@example
+Notice in the sample below how the `Adj Close` column name becomes `AdjClose` after changing the setting to `true`.
+
+```@repl
 using Temporal, Base.Dates;
+isalpha("Hi mom")  # hide
 A = tsread(Pkg.dir("Temporal", "data", "XOM.csv"))
 set_sanitize_names_option(true)
 B = tsread(Pkg.dir("Temporal", "data", "XOM.csv"))
