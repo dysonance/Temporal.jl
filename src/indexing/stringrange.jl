@@ -1,6 +1,6 @@
 global RANGE_DELIMITER = '/'
 
-function set_range_delimiter_option!(value = '/')
+function set_range_delimiter_option(value = '/')
     global RANGE_DELIMITER
     RANGE_DELIMITER = value
 end
