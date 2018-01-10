@@ -5,11 +5,10 @@ using Base.Dates
 using Requests
 using JSON
 using RecipesBase
-#using Plots
 
 export
     # Foundational
-    TS, ts, overlaps,
+    TS, ts,
     # Merging/Joining
     ojoin, ijoin, ljoin, rjoin, merge, hcat, vcat, head, tail,
     # Missing Data
@@ -30,10 +29,11 @@ export
     # Financial
     has_open, has_high, has_low, has_close, has_volume, is_ohlc, is_ohlcv,
     op, hi, lo, cl, vo, ohlc, ohlcv, hlc, hl, hl2, hlc3, ohlc4,
-    # Visualization
-    #plot, plot!, scatter, scatter!, histogram, histogram!, bar, bar!,
+    # Utilities
+    namefix, namefix!, autoidx, findalphanum,
+    SANITIZE_NAMES, RANGE_DELIMITER, set_sanitize_names_option!, set_range_delimiter_option!,
     # Modeling
-    acf#, fit, fitted_values, resid, indvar, depvar, AR_Model
+    acf
 
 include("ts.jl")
 include("show.jl")
@@ -50,4 +50,4 @@ include("io.jl")
 include("ohlc.jl")
 include("viz.jl")
 
-end # module
+end

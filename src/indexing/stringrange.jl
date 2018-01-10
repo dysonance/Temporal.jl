@@ -1,4 +1,9 @@
-const RNG_DLM = '/'
+global RANGE_DELIMITER = '/'
+
+function set_range_delimiter_option!(value = '/')
+    global RANGE_DELIMITER
+    RANGE_DELIMITER = value
+end
 
 const DATE_STRING_LENGTHS = [4, 7, 10]
 const DATETIME_STRING_LENGTHS = [4, 7, 10, 13, 16, 19]
@@ -275,7 +280,7 @@ function dtidx(s::AbstractString, t::Vector{Date})
         return trues(t)
     end
     @assert !in('T', s) "Cannot index Date type with sub-daily frequency."
-    bds = split(s, RNG_DLM)
+    bds = split(s, RANGE_DELIMITER)
     @assert length(bds) in [1,2]
     if length(bds) == 1  # single date
         return thisdt(s, t)
@@ -296,7 +301,7 @@ function dtidx(s::AbstractString, t::Vector{DateTime})
     if s == "/" || s == ""
         return trues(t)
     end
-    bds = split(s, RNG_DLM)
+    bds = split(s, RANGE_DELIMITER)
     @assert length(bds) in [1,2]
     if length(bds) == 1  # single date
         return thisdt(s, t)
