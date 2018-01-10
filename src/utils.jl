@@ -1,6 +1,6 @@
 global SANITIZE_NAMES = false
 
-function set_sanitize_names_option!(value::Bool = false)::Void
+function set_sanitize_names_option(value::Bool = false)::Void
     global SANITIZE_NAMES
     SANITIZE_NAMES = value
     return nothing
