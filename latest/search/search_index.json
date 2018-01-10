@@ -2,7 +2,7 @@
     "docs": [
         {
             "location": "/", 
-            "text": "Temporal.jl Documentation\n\n\n\n\nTopics\n\n\n\n\nConstruction\n\n\nBasic\n\n\nArithmetic\n\n\nLogical\n\n\nNumerical Indexing\n\n\nInteger\n\n\nBoolean\n\n\nArrays \n Ranges\n\n\n\n\n\n\nSymbol Indexing\n\n\nString Indexing\n\n\nJoins\n\n\nOuter Joins\n\n\nInner Joins\n\n\nLeft Joins\n\n\nRight Joins\n\n\n\n\n\n\nTemporal Aggregation\n\n\nTime Period Sampling Methods\n\n\nCollapsing \n Summarizing\n\n\n\n\n\n\nData Readers\n\n\nGoogle\n\n\nYahoo\n\n\nQuandl\n\n\nFlat Files", 
+            "text": "Temporal.jl Documentation\n\n\n\n\nTopics\n\n\n\n\nConstruction\n\n\nBasic\n\n\nArithmetic\n\n\nLogical\n\n\nNumerical Indexing\n\n\nInteger\n\n\nBoolean\n\n\nArrays \n Ranges\n\n\n\n\n\n\nSymbol Indexing\n\n\nString Indexing\n\n\nJoins\n\n\nOuter Joins\n\n\nInner Joins\n\n\nLeft Joins\n\n\nRight Joins\n\n\n\n\n\n\nTemporal Aggregation\n\n\nTime Period Sampling Methods\n\n\nCollapsing \n Summarizing\n\n\n\n\n\n\nData Readers\n\n\nGoogle\n\n\nYahoo\n\n\nQuandl\n\n\nFlat Files\n\n\n\n\n\n\nPackage Options\n\n\nRange Delimiter\n\n\nName Sanitization", 
             "title": "Home"
         }, 
         {
@@ -12,7 +12,7 @@
         }, 
         {
             "location": "/#topics", 
-            "text": "Construction  Basic  Arithmetic  Logical  Numerical Indexing  Integer  Boolean  Arrays   Ranges    Symbol Indexing  String Indexing  Joins  Outer Joins  Inner Joins  Left Joins  Right Joins    Temporal Aggregation  Time Period Sampling Methods  Collapsing   Summarizing    Data Readers  Google  Yahoo  Quandl  Flat Files", 
+            "text": "Construction  Basic  Arithmetic  Logical  Numerical Indexing  Integer  Boolean  Arrays   Ranges    Symbol Indexing  String Indexing  Joins  Outer Joins  Inner Joins  Left Joins  Right Joins    Temporal Aggregation  Time Period Sampling Methods  Collapsing   Summarizing    Data Readers  Google  Yahoo  Quandl  Flat Files    Package Options  Range Delimiter  Name Sanitization", 
             "title": "Topics"
         }, 
         {
