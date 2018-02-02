@@ -61,24 +61,34 @@ autocol(cols::AbstractArray{Int,1})::Vector{Symbol} = autocol.(cols)
 # Automatically generate an `index` vector of `Date`/`DateTime` values from today's date back through $n$ days
 autoidx(n::Int; dt::Period=Day(1), from::Date=today()-(n-1)*dt, thru::Date=from+(n-1)*dt) = collect(from:dt:thru)
 
+# default placeholders for singleton types to be replaced by missing's
 
-# function overlaps(x::AbstractArray, y::AbstractArray, n::Int=1)::Vector{Bool}
-#     @assert n == 1 || n == 2
-#     if n == 1
-#         xx = falses(x)
-#         @inbounds for i = 1:size(x,1), j = 1:size(y,1)
-#             if x[i] == y[j]
-#                 xx[i] = true
-#             end
-#         end
-#         return xx
-#     elseif n == 2
-#         yy = falses(y)
-#         @inbounds for i = 1:size(x,1), j = 1:size(y,1)
-#             if x[i] == y[j]
-#                 yy[i] = true
-#             end
-#         end
-#         return yy
-#     end
-# end
+function default(v::V) where {V<:DataType}
+    try
+        return v()
+    catch
+        try
+            return zero(v)
+        catch
+            try
+                return eval(parse(lowercase(string(v))))()
+            catch
+                try
+                    return v
+                catch
+                    error("No viable default method for type $v found.")
+                end
+            end
+        end
+    end
+end
+
+function clean_values{V}(x::TS{V})::Tuple
+    idx_missing = ismissing.(x.values)
+    x.values[idx_missing] = default(V)
+    cleaned_values = Matrix{V}(x.values)
+    x.values[idx_missing] = missing
+    return (cleaned_values, idx_missing)
+end
+
+# isabstract{V<:DataType}(::V) = isempty(subtypes(T))
