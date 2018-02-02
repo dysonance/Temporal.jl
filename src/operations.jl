@@ -43,9 +43,9 @@ zeros{V<:Real}(::Type{TS{V}}, dims::Tuple{Int,Int}) = TS{V}(zeros(V, dims))
 zero{V<:Real}(x::TS{V})::V = zero(V)
 zero{V<:Real}(::Type{TS{V}})::V = zero(V)
 
-rand(::Type{TS}, n::Int=1) = TS(rand(Float64, n))
-rand(::Type{TS}, r::Int, c::Int) = TS(rand(Float64, r, c))
-rand(::Type{TS}, dims::Tuple{Int,Int}) = TS(rand(Float64, dims))
+rand{V}(::Type{TS{V}}, n::Int=1) = TS{V}(rand(V, n))
+rand{V}(::Type{TS{V}}, r::Int, c::Int) = TS{V}(rand(V, r, c))
+rand{V}(::Type{TS{V}}, dims::Tuple{Int,Int}) = TS{V}(rand(V, dims))
 
 randn(::Type{TS}, n::Int=1) = TS(randn(Float64, n))
 randn(::Type{TS}, r::Int, c::Int) = TS(randn(Float64, r, c))
