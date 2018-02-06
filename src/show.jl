@@ -1,6 +1,4 @@
 # const SHOWROWS = 5  # number of rows to print at beginning and end
-using Missings
-
 const DECIMALS = 4  # the maximum number of decimals to show
 const PADDING = 2  # number of spaces minimum between fields
 const SHOWINT = false  # whether to format integer columns without decimals
@@ -24,7 +22,6 @@ str_width(n::Number)::Int = strwidth(string(n))
 str_width(f::Function)::Int = strwidth(string(f))
 str_width(b::Bool)::Int = b ? 4 : 5
 str_width(c::Char)::Int = 1
-str_width(m::Missing)::Int = 7
 
 function print_summary{V,T}(io::IO, x::TS{V,T})::Int
     if isempty(x)
@@ -69,18 +66,17 @@ hasnegs{T}(v::Vector{T})::Bool = T<:Number ? any(v.<zero(T)) : false
 
 function getnegs(io::IO, x::TS)::Vector{Bool}
     toprows, botrows = getshowrows(io, x)
+    idx = [toprows; botrows]
     return [hasnegs(x.values[:,j]) for j in 1:size(x,2)]
 end
 
 print_header(x::TS, widths::Vector{Int}, negs::Vector{Bool})::String = prod(rpad.(["Index"; lpad.(string.(x.fields), str_width.(x.fields).+negs)], widths))
 
 function print_row{V,T}(x::TS{V,T}, row::Int, widths::Vector{Int}, negs::Vector{Bool})::String
-    ^(s::String, ::Missing)::String = ""
-    ^(s::String, b::Bool)::String = b ? " " : ""
     if V <: Bool
-        return prod(rpad.([string(x.index[row]); [" "].^(negs.*(x.values[row,:].>=zero(V))) .* string.(x.values[row,:])], widths))
+        return prod(rpad.([string(x.index[row]); [" "].^(negs.*(x.values[row,:].>=0.0)) .* string.(x.values[row,:])], widths))
     elseif V <: Number
-        return prod(rpad.([string(x.index[row]); [" "].^(negs.*(x.values[row,:].>=zero(V))) .* string.(round.(x.values[row,:],DECIMALS))], widths))
+        return prod(rpad.([string(x.index[row]); [" "].^(negs.*(x.values[row,:].>=0.0)) .* string.(round.(x.values[row,:],DECIMALS))], widths))
     else
         return prod(rpad.([string(x.index[row]); string.(x.values[row,:])], widths))
     end
