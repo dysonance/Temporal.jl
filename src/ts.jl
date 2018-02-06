@@ -1,6 +1,5 @@
 import Base: size, length, show, start, next, done, endof, isempty, convert, ndims, float, eltype, copy
 using Base.Dates
-using Missings
 
 ################################################################################
 # TYPE DEFINITION ##############################################################
@@ -13,11 +12,11 @@ Time series type aimed at efficiency and simplicity.
 
 Motivated by the `xts` package in R and the `pandas` package in Python.
 """ ->
-mutable struct TS{V,T<:TimeType}
-    values::Matrix{Union{V,Missing}}
+mutable struct TS{V<:Real,T<:TimeType}
+    values::Matrix{V}
     index::Vector{T}
     fields::Vector{Symbol}
-    function TS{V,T}(values::AbstractArray{V}, index::AbstractVector{T}, fields::Vector{Symbol}) where {V,T<:TimeType}
+    function TS{V,T}(values::AbstractArray{V}, index::AbstractVector{T}, fields::Vector{Symbol}) where {V<:Real,T<:TimeType}
         @assert size(values,1)==length(index) "Length of index not equal to number of value rows."
         @assert size(values,2)==length(fields) "Length of fields not equal to number of columns in values."
         order = sortperm(index)
@@ -38,7 +37,7 @@ TS() = TS{Float64,Date}(Matrix{Float64}(0,0), Date[], Symbol[])
 # Conversions ------------------------------------------------------------------
 convert(::Type{TS{Float64}}, x::TS{Bool}) = TS{Float64}(map(Float64, x.values), x.index, x.fields)
 convert(::Type{TS{Int}}, x::TS{Bool}) = TS{Int}(map(Int, x.values), x.index, x.fields)
-convert{V}(::Type{TS{Bool}}, x::TS{V}) = TS{Bool}(map(V, x.values), x.index, x.fields)
+convert{V<:Real}(::Type{TS{Bool}}, x::TS{V}) = TS{Bool}(map(V, x.values), x.index, x.fields)
 convert(x::TS{Bool}) = convert(TS{Int}, x::TS{Bool})
 # convert{V}(::Type{TS}, x::Array{V}) = TS{V,Date}(x, [Dates.Date() for i in 1:size(x,1)])
 # convert(x::TS{Bool}) = convert(TS{Float64}, x::TS{Bool})
