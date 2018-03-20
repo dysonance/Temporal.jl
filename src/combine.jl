@@ -28,8 +28,8 @@ function ojoin(x::TS, y::TS)::TS
     idx = union(x.index, y.index)
     xna = setdiff(idx, x.index)
     yna = setdiff(idx, y.index)
-    xi = sortperm([x.index; xna])
-    yi = sortperm([y.index; yna])
+    xi = sortperm(unique([x.index; xna]))
+    yi = sortperm(unique([y.index; yna]))
     xvals = [x.values; fill(NaN, (length(xna), size(x,2)))][xi,:]
     yvals = [y.values; fill(NaN, (length(yna), size(y,2)))][yi,:]
     return ts([xvals yvals], sort(idx), [x.fields; y.fields])
