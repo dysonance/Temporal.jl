@@ -60,13 +60,15 @@ function thisdt(s::AbstractString, t::Vector{Date})::BitVector
         a = split(s, '-')
         y = parse(Int, a[1])
         m = parse(Int, a[2])
-        return (year.(t) .== y) .| (month.(t) .== m)
+        return (year.(t) .== y) .& (month.(t) .== m)
     elseif n == 10  # yyyy-mm-dd given
+
         a = split(s, '-')
         y = parse(Int, a[1])
         m = parse(Int, a[2])
         d = parse(Int, a[3])
-        return (year.(t) .== y) .| (month.(t) .== m) .| (day.(t) .== d)
+        idx = (year.(t) .== y) .& (month.(t) .== m) .& (day.(t) .== d)
+
     end
 end
 
@@ -216,13 +218,13 @@ function thisdt(s::AbstractString, t::Vector{DateTime})::BitVector
         a = split(s, '-')
         y = parse(Int, a[1])
         m = parse(Int, a[2])
-        return (year.(t) .== y) .| (month.(t) .== m)
+        return (year.(t) .== y) .& (month.(t) .== m)
     elseif n == 10  # yyyy-mm-dd given
         a = split(s, '-')
         y = parse(Int, a[1])
         m = parse(Int, a[2])
         d = parse(Int, a[3])
-        return (year.(t) .== y) .| (month.(t) .== m) .| (day.(t) .== d)
+        return (year.(t) .== y) .& (month.(t) .== m) .& (day.(t) .== d)
     elseif n == 13  # yyyy-mm-ddTHH given
         a = split(s, 'T')
         b = split(a[1], '-')
@@ -231,7 +233,7 @@ function thisdt(s::AbstractString, t::Vector{DateTime})::BitVector
         m = parse(Int, b[2])
         d = parse(Int, b[3])
         hr = parse(Int, c[1])
-        return (year.(t) .== y) .| (month.(t) .== m) .| (day.(t) .== d) .| (hour.(t) .== hr)
+        return (year.(t) .== y) .& (month.(t) .== m) .& (day.(t) .== d) .& (hour.(t) .== hr)
     elseif n == 16  # yyyy-mm-ddTHH:MM given
         a = split(s, 'T')
         b = split(a[1], '-')
@@ -241,7 +243,7 @@ function thisdt(s::AbstractString, t::Vector{DateTime})::BitVector
         d = parse(Int, b[3])
         hr = parse(Int, c[1])
         min = parse(Int, c[2])
-        return (year.(t) .== y) .| (month.(t) .== m) .| (day.(t) .== d) .| (hour.(t) .== hr) .| (minute.(t) .== min)
+        return (year.(t) .== y) .& (month.(t) .== m) .& (day.(t) .== d) .& (hour.(t) .== hr) .& (minute.(t) .== min)
     elseif n == 19  # yyyy-mm-ddTHH:MM:SS given
         a = split(s, 'T')
         b = split(a[1], '-')
@@ -252,7 +254,7 @@ function thisdt(s::AbstractString, t::Vector{DateTime})::BitVector
         hr = parse(Int, c[1])
         min = parse(Int, c[2])
         sec = parse(Int, c[3])
-        return (year.(t) .== y) .| (month.(t) .== m) .| (day.(t) .== d) .| (hour.(t) .== hr) .| (minute.(t) .== min) .| (second.(t) .== sec)
+        return (year.(t) .== y) .& (month.(t) .== m) .& (day.(t) .== d) .& (hour.(t) .== hr) .& (minute.(t) .== min) .& (second.(t) .== sec)
     elseif n >= 20  # milliseconds given
         a = split(s, 'T')
         b = split(a[1], '-')
@@ -265,7 +267,7 @@ function thisdt(s::AbstractString, t::Vector{DateTime})::BitVector
         min = parse(Int, c[2])
         sec = parse(Int, f[1])
         milli = parse(Int, f[2])
-        return (year.(t) .== y) .| (month.(t) .== m) .| (day.(t) .== d) .| (hour.(t) .== hr) .| (minute.(t) .== min) .| (second.(t) .== sec) .| (millisecond.(t) .== milli)
+        return (year.(t) .== y) .& (month.(t) .== m) .& (day.(t) .== d) .& (hour.(t) .== hr) .& (minute.(t) .== min) .& (second.(t) .== sec) .& (millisecond.(t) .== milli)
     end
 end
 
