@@ -23,10 +23,12 @@ using Base.Test, Base.Dates, Temporal
         @test length(eow(x)) == length(sundays(x))
     end
     @testset "Aggregation" begin
+        srand(1)
         X = TS(rand(252*5,4))
         x = X[:,1]
         m = collapse(x, eoy, fun=mean)
-        @test round(m.values[end], 2) == round(mean(x[string(year(today())-1)].values), 2)
+        last_year = string(year(today())-1)
+        @test round(m.values[end], 2) == round(mean(x[last_year]), 2)
         m = apply(X, 1, fun=mean)
         @test m.values[1] == mean(X[1].values)
         m = apply(X, 2, fun=mean)
