@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="dysonance">
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Indexing - Temporal.jl</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+  <link href="../assets/Documenter.css" rel="stylesheet">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Indexing";
+    var mkdocs_page_input_path = "indexing.md";
+    var mkdocs_page_url = "/indexing/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Temporal.jl</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../ts/">TS</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../operations/">Operations</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Indexing</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#overview">Overview</a></li>
+    
+
+    <li class="toctree-l2"><a href="#numerical-indexing">Numerical Indexing</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#integer">Integer</a></li>
+        
+            <li><a class="toctree-l3" href="#boolean">Boolean</a></li>
+        
+            <li><a class="toctree-l3" href="#arrays-ranges">Arrays &amp; Ranges</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l2"><a href="#symbol-indexing">Symbol Indexing</a></li>
+    
+
+    <li class="toctree-l2"><a href="#string-indexing">String Indexing</a></li>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../combining/">Combining</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../aggregation/">Aggregation</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Temporal.jl</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Indexing</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/dysonance/Temporal.jl/edit/master/docs/indexing.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p><a id='Overview-1'></a></p>
+<h1 id="overview">Overview</h1>
+<p>One of the chief aims of the <code>Temporal.jl</code> package is to simplify the process of extracting a desired subset from a time series dataset. To that end, there are quite a few different methods by which one can index specific rows/columns of a <code>TS</code> object.</p>
+<p>One goal has been to keep as much of the relevant indexing operations from the base <code>Array</code> type as possible to maintain consistency. However, there are certain indexing idioms that are specifically more familiar and meaningful to tabular time series data, particularly when prototyping in the REPL.</p>
+<p>In other words, if you want to use standard <code>Array</code> indexing syntax, it should work as you would expect, but you should also be able to essentially say, "give me all the observations from the year <em>2017</em> in the <em>price</em> column."</p>
+<p><a id='Numerical-Indexing-1'></a></p>
+<h1 id="numerical-indexing">Numerical Indexing</h1>
+<p><a id='Integer-1'></a></p>
+<h2 id="integer">Integer</h2>
+<pre><code class="julia-repl">
+julia&gt; X = TS(cumsum(randn(252, 4))) + 100.0
+Index       A         B        C         D
+2017-07-12  99.3223   99.1899  99.2904   98.9043
+2017-07-13  98.3407   99.0495  98.8593   98.6791
+2017-07-14  98.8979   99.4358  98.4905   98.4703
+2017-07-15  98.9057   99.675   98.1238   98.6929
+2017-07-16  100.0268  99.8359  98.2409   99.1369
+2017-07-17  99.3638   99.6126  98.3376   101.1642
+2017-07-18  99.5977   98.9654  97.5836   101.959
+2017-07-19  100.582   99.2689  97.4451   101.4866
+2017-07-20  100.9913  97.5621  97.4471   100.4989
+⋮
+2018-03-11  112.29    63.1817  127.7107  98.0612
+2018-03-12  113.1927  63.081   127.9128  97.5421
+2018-03-13  114.3981  63.2095  127.5983  98.1253
+2018-03-14  114.0799  62.3793  127.9077  98.9717
+2018-03-15  115.5354  62.5903  128.5921  101.1593
+2018-03-16  113.8202  60.7997  128.3174  103.3935
+2018-03-17  114.2952  59.958   126.154   103.9079
+2018-03-18  114.057   58.6617  127.578   101.4482
+2018-03-19  113.7404  59.3399  128.9224  101.4708
+2018-03-20  114.7158  60.0364  127.5791  102.6929
+
+julia&gt; X[1]
+Index       A        B        C        D
+2017-07-12  99.3223  99.1899  99.2904  98.9043
+
+julia&gt; X[1, :]
+Index       A        B        C        D
+2017-07-12  99.3223  99.1899  99.2904  98.9043
+
+julia&gt; X[:, 1]
+Index       A
+2017-07-12  99.3223
+2017-07-13  98.3407
+2017-07-14  98.8979
+2017-07-15  98.9057
+2017-07-16  100.0268
+2017-07-17  99.3638
+2017-07-18  99.5977
+2017-07-19  100.582
+2017-07-20  100.9913
+⋮
+2018-03-11  112.29
+2018-03-12  113.1927
+2018-03-13  114.3981
+2018-03-14  114.0799
+2018-03-15  115.5354
+2018-03-16  113.8202
+2018-03-17  114.2952
+2018-03-18  114.057
+2018-03-19  113.7404
+2018-03-20  114.7158
+
+julia&gt; X[1, 1]
+Index       A
+2017-07-12  99.3223
+</code></pre>
+
+<p><a id='Boolean-1'></a></p>
+<h2 id="boolean">Boolean</h2>
+<pre><code class="julia-repl">
+julia&gt; X = TS(cumsum(randn(252, 4))) + 100.0
+Index       A         B         C         D
+2017-07-12  99.7685   100.0509  99.3988   101.5621
+2017-07-13  99.8112   99.4387   99.9212   102.0284
+2017-07-14  100.1163  100.7715  100.1808  103.8298
+2017-07-15  99.6736   99.2733   99.691    103.7424
+2017-07-16  98.831    98.5143   99.964    102.3673
+2017-07-17  99.749    98.6057   100.8606  100.1086
+2017-07-18  99.8733   100.1423  100.5014  99.7058
+2017-07-19  100.2552  99.8458   100.1588  101.9507
+2017-07-20  100.1382  99.5901   98.1357   101.535
+⋮
+2018-03-11  96.2887   100.0489  132.1981  119.5253
+2018-03-12  94.8899   101.0384  132.8834  119.179
+2018-03-13  95.2134   101.9899  132.5759  118.1662
+2018-03-14  94.2774   102.7379  131.6551  117.6703
+2018-03-15  96.5928   103.0903  130.5048  118.1756
+2018-03-16  97.3105   102.6701  130.3782  118.3853
+2018-03-17  97.7636   103.2919  129.8908  117.9017
+2018-03-18  98.7247   103.0518  131.0748  118.6428
+2018-03-19  97.4813   103.9216  130.6508  118.2261
+2018-03-20  96.7028   102.9487  129.3779  117.67
+
+julia&gt; X[trues(size(X,1)), :]
+Index       A         B         C         D
+2017-07-12  99.7685   100.0509  99.3988   101.5621
+2017-07-13  99.8112   99.4387   99.9212   102.0284
+2017-07-14  100.1163  100.7715  100.1808  103.8298
+2017-07-15  99.6736   99.2733   99.691    103.7424
+2017-07-16  98.831    98.5143   99.964    102.3673
+2017-07-17  99.749    98.6057   100.8606  100.1086
+2017-07-18  99.8733   100.1423  100.5014  99.7058
+2017-07-19  100.2552  99.8458   100.1588  101.9507
+2017-07-20  100.1382  99.5901   98.1357   101.535
+⋮
+2018-03-11  96.2887   100.0489  132.1981  119.5253
+2018-03-12  94.8899   101.0384  132.8834  119.179
+2018-03-13  95.2134   101.9899  132.5759  118.1662
+2018-03-14  94.2774   102.7379  131.6551  117.6703
+2018-03-15  96.5928   103.0903  130.5048  118.1756
+2018-03-16  97.3105   102.6701  130.3782  118.3853
+2018-03-17  97.7636   103.2919  129.8908  117.9017
+2018-03-18  98.7247   103.0518  131.0748  118.6428
+2018-03-19  97.4813   103.9216  130.6508  118.2261
+2018-03-20  96.7028   102.9487  129.3779  117.67
+
+julia&gt; X[rand(Bool, size(X,1)), 1]
+Index       A
+2017-07-18  99.8733
+2017-07-20  100.1382
+2017-07-25  100.7629
+2017-07-26  101.6633
+2017-07-28  98.9085
+2017-07-31  96.0578
+2017-08-02  98.5291
+2017-08-03  99.5773
+2017-08-04  98.0715
+⋮
+2018-02-28  97.156
+2018-03-04  94.544
+2018-03-05  93.6721
+2018-03-06  94.3229
+2018-03-08  96.5706
+2018-03-11  96.2887
+2018-03-13  95.2134
+2018-03-14  94.2774
+2018-03-15  96.5928
+2018-03-18  98.7247
+
+julia&gt; X[rand(Bool, size(X,1)), [true, false, false, false]]
+Index       A
+2017-07-14  100.1163
+2017-07-16  98.831
+2017-07-18  99.8733
+2017-07-19  100.2552
+2017-07-21  100.9737
+2017-07-22  100.3938
+2017-07-23  101.3243
+2017-07-25  100.7629
+2017-07-26  101.6633
+⋮
+2018-03-05  93.6721
+2018-03-06  94.3229
+2018-03-07  95.5645
+2018-03-08  96.5706
+2018-03-10  95.6153
+2018-03-12  94.8899
+2018-03-13  95.2134
+2018-03-14  94.2774
+2018-03-18  98.7247
+2018-03-19  97.4813
+</code></pre>
+
+<p><a id='Arrays-and-Ranges-1'></a></p>
+<h2 id="arrays-ranges">Arrays &amp; Ranges</h2>
+<pre><code class="julia-repl">
+julia&gt; X = TS(cumsum(randn(252, 4))) + 100.0
+Index       A        B         C         D
+2017-07-12  99.1177  99.7131   100.3449  97.7499
+2017-07-13  97.9879  100.5265  99.6601   96.5604
+2017-07-14  97.9937  100.3904  101.7275  96.3723
+2017-07-15  96.6727  98.9251   102.0934  95.6862
+2017-07-16  97.0628  98.4995   101.6129  94.9272
+2017-07-17  96.9046  99.3474   102.3934  94.0146
+2017-07-18  97.6717  98.2515   101.3468  93.2673
+2017-07-19  96.2583  97.8713   100.8819  94.7708
+2017-07-20  94.5895  98.551    100.0276  94.8469
+⋮
+2018-03-11  86.9821  97.6153   86.6883   80.2565
+2018-03-12  87.305   97.0206   84.76     80.7221
+2018-03-13  87.9572  97.6335   85.4449   81.7565
+2018-03-14  88.8935  97.9834   85.202    81.5934
+2018-03-15  89.1897  98.0749   84.6218   81.2227
+2018-03-16  90.7963  99.4896   84.0226   81.5386
+2018-03-17  90.1749  98.2566   83.521    81.4925
+2018-03-18  91.85    98.7266   83.2464   80.5375
+2018-03-19  91.6442  99.4717   84.9189   80.9269
+2018-03-20  91.1482  99.0309   84.5818   80.3913
+
+julia&gt; X[1:10, :]
+Index       A        B         C         D
+2017-07-12  99.1177  99.7131   100.3449  97.7499
+2017-07-13  97.9879  100.5265  99.6601   96.5604
+2017-07-14  97.9937  100.3904  101.7275  96.3723
+2017-07-15  96.6727  98.9251   102.0934  95.6862
+2017-07-16  97.0628  98.4995   101.6129  94.9272
+2017-07-17  96.9046  99.3474   102.3934  94.0146
+2017-07-18  97.6717  98.2515   101.3468  93.2673
+2017-07-19  96.2583  97.8713   100.8819  94.7708
+2017-07-20  94.5895  98.551    100.0276  94.8469
+2017-07-21  93.3211  99.3477   98.8247   94.0001
+
+julia&gt; X[end-100:end, 2:3]
+Index       B         C
+2017-12-10  99.9665   97.042
+2017-12-11  99.9546   96.9617
+2017-12-12  100.0012  96.1099
+2017-12-13  99.6226   95.3237
+2017-12-14  100.6827  95.8601
+2017-12-15  99.933    95.4119
+2017-12-16  98.8141   95.1433
+2017-12-17  98.9098   94.7546
+2017-12-18  99.3775   93.5232
+⋮
+2018-03-11  97.6153   86.6883
+2018-03-12  97.0206   84.76
+2018-03-13  97.6335   85.4449
+2018-03-14  97.9834   85.202
+2018-03-15  98.0749   84.6218
+2018-03-16  99.4896   84.0226
+2018-03-17  98.2566   83.521
+2018-03-18  98.7266   83.2464
+2018-03-19  99.4717   84.9189
+2018-03-20  99.0309   84.5818
+
+julia&gt; X[end, 2:end]
+Index       B        C        D
+2018-03-20  99.0309  84.5818  80.3913
+</code></pre>
+
+<p><a id='Symbol-Indexing-1'></a></p>
+<h1 id="symbol-indexing">Symbol Indexing</h1>
+<p>You can also index specific columns you want using the <code>fields</code> member of the <code>TS</code> object, so that columns can be fetched by name rather than by numerical index.</p>
+<pre><code class="julia-repl">
+julia&gt; X = TS(cumsum(randn(252, 4))) + 100.0
+Index       A         B         C         D
+2017-07-12  98.2173   100.4117  100.0722  99.2465
+2017-07-13  97.6679   101.0184  100.6443  98.3321
+2017-07-14  98.1843   99.8001   100.9056  97.645
+2017-07-15  97.7392   97.9303   99.6095   97.3349
+2017-07-16  98.6426   98.6344   99.6633   97.6097
+2017-07-17  99.0421   98.096    99.4013   97.9529
+2017-07-18  99.7363   99.5092   99.9717   97.2555
+2017-07-19  100.5263  98.9447   99.3014   98.4961
+2017-07-20  102.2027  97.7141   98.8561   99.9329
+⋮
+2018-03-11  98.9274   116.2673  91.4036   104.3177
+2018-03-12  97.7587   114.5201  90.3848   105.732
+2018-03-13  98.2568   113.3465  90.2993   105.7826
+2018-03-14  97.4053   112.9049  90.4447   105.834
+2018-03-15  96.6771   112.6326  88.2063   106.5929
+2018-03-16  96.5522   113.206   86.8169   104.1261
+2018-03-17  96.8115   114.1692  85.6065   103.7842
+2018-03-18  95.8985   115.3616  86.1694   104.0461
+2018-03-19  97.6225   117.2012  88.3738   103.328
+2018-03-20  96.8863   117.8509  91.0614   102.1116
+
+julia&gt; X[:, :A]
+Index       A
+2017-07-12  98.2173
+2017-07-13  97.6679
+2017-07-14  98.1843
+2017-07-15  97.7392
+2017-07-16  98.6426
+2017-07-17  99.0421
+2017-07-18  99.7363
+2017-07-19  100.5263
+2017-07-20  102.2027
+⋮
+2018-03-11  98.9274
+2018-03-12  97.7587
+2018-03-13  98.2568
+2018-03-14  97.4053
+2018-03-15  96.6771
+2018-03-16  96.5522
+2018-03-17  96.8115
+2018-03-18  95.8985
+2018-03-19  97.6225
+2018-03-20  96.8863
+
+julia&gt; X[:, [:B, :D]]
+Index       B         D
+2017-07-12  100.4117  99.2465
+2017-07-13  101.0184  98.3321
+2017-07-14  99.8001   97.645
+2017-07-15  97.9303   97.3349
+2017-07-16  98.6344   97.6097
+2017-07-17  98.096    97.9529
+2017-07-18  99.5092   97.2555
+2017-07-19  98.9447   98.4961
+2017-07-20  97.7141   99.9329
+⋮
+2018-03-11  116.2673  104.3177
+2018-03-12  114.5201  105.732
+2018-03-13  113.3465  105.7826
+2018-03-14  112.9049  105.834
+2018-03-15  112.6326  106.5929
+2018-03-16  113.206   104.1261
+2018-03-17  114.1692  103.7842
+2018-03-18  115.3616  104.0461
+2018-03-19  117.2012  103.328
+2018-03-20  117.8509  102.1116
+</code></pre>
+
+<p><a id='String-Indexing-1'></a></p>
+<h1 id="string-indexing">String Indexing</h1>
+<p>One of the more powerful features of Temporal's indexing functionality is that you can index rows of a <code>TS</code> object using <code>String</code>s formatted in such a way as to express specific periods of time in a natural idiomatic way. (If you have used the <code>xts</code> package in R this functionality will feel very familiar.)</p>
+<pre><code class="julia-repl">
+julia&gt; t = Date(2016,1,1):Day(1):Date(2017,12,31)
+2016-01-01:1 day:2017-12-31
+
+julia&gt; X = TS(cumsum(randn(length(t), 4)), t) + 100.0
+Index       A        B         C         D
+2016-01-01  99.1705  100.8654  100.9209  99.5487
+2016-01-02  98.9517  100.4923  99.9178   99.9183
+2016-01-03  98.6368  101.5237  99.5947   99.7095
+2016-01-04  98.056   101.8333  100.1843  99.1341
+2016-01-05  96.5095  102.0172  100.1796  98.3967
+2016-01-06  94.055   102.6601  99.2504   97.7684
+2016-01-07  93.4086  103.7909  98.9425   98.5922
+2016-01-08  93.5116  103.8166  97.9179   97.9169
+2016-01-09  93.043   103.0521  98.0896   98.3225
+⋮
+2017-12-22  94.7057  98.0932   65.6357   127.8285
+2017-12-23  94.3558  99.1771   66.9736   128.7999
+2017-12-24  93.9171  98.1745   66.4742   129.1716
+2017-12-25  93.7891  98.7509   66.5475   128.0624
+2017-12-26  93.5891  99.7892   64.6093   126.8876
+2017-12-27  94.1438  98.0596   64.4109   125.1451
+2017-12-28  95.4469  96.7908   65.1134   127.6674
+2017-12-29  94.5138  96.517    65.9134   126.6766
+2017-12-30  96.3201  96.5048   65.9909   126.9602
+2017-12-31  97.9193  96.4081   65.7347   125.532
+
+julia&gt; X[&quot;2017-07-01&quot;]  # single day
+Index       A        B        C       D
+2017-07-01  97.5874  95.7649  76.985  123.2316
+
+julia&gt; X[&quot;2016&quot;]  # whole year
+Index       A        B         C         D
+2016-01-01  99.1705  100.8654  100.9209  99.5487
+2016-01-02  98.9517  100.4923  99.9178   99.9183
+2016-01-03  98.6368  101.5237  99.5947   99.7095
+2016-01-04  98.056   101.8333  100.1843  99.1341
+2016-01-05  96.5095  102.0172  100.1796  98.3967
+2016-01-06  94.055   102.6601  99.2504   97.7684
+2016-01-07  93.4086  103.7909  98.9425   98.5922
+2016-01-08  93.5116  103.8166  97.9179   97.9169
+2016-01-09  93.043   103.0521  98.0896   98.3225
+⋮
+2016-12-22  73.1951  88.739    91.5783   117.0506
+2016-12-23  74.7912  88.6704   91.6553   117.4011
+2016-12-24  75.1985  87.9853   91.8648   116.2226
+2016-12-25  74.0441  88.8583   88.4507   114.646
+2016-12-26  74.4626  88.4019   86.6715   113.2258
+2016-12-27  74.5653  88.4642   86.7428   112.7621
+2016-12-28  74.7633  89.0957   87.8058   112.9914
+2016-12-29  76.5877  88.2646   87.6838   112.9654
+2016-12-30  76.2128  88.3903   88.6225   112.0898
+2016-12-31  77.6354  87.8494   88.1785   112.4971
+
+julia&gt; X[&quot;2016-09-15/&quot;]  # everything after a specific day
+ERROR: AssertionError: Invalid indexing string: Unable to parse 2016-09-15/
+
+julia&gt; X[&quot;/2017-07-01&quot;]  # everything up through a specific month
+ERROR: AssertionError: Invalid indexing string: Unable to parse /2017-07-01
+
+julia&gt; X[&quot;2016-09-15/2017-07-01&quot;]  # mix &amp; match
+ERROR: AssertionError: Invalid indexing string: Unable to parse 2016-09-15/2017-07-01
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../combining/" class="btn btn-neutral float-right" title="Combining">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../operations/" class="btn btn-neutral" title="Operations"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/dysonance/Temporal.jl/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../operations/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../combining/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
+      <script src="../assets/mathjaxhelper.js"></script>
+      <script src="../search/require.js"></script>
+      <script src="../search/search.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="dysonance">
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Combining - Temporal.jl</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+  <link href="../assets/Documenter.css" rel="stylesheet">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Combining";
+    var mkdocs_page_input_path = "combining.md";
+    var mkdocs_page_url = "/combining/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Temporal.jl</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../ts/">TS</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../operations/">Operations</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../indexing/">Indexing</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Combining</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#joins">Joins</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#outer-joins">Outer Joins</a></li>
+        
+            <li><a class="toctree-l3" href="#inner-joins">Inner Joins</a></li>
+        
+            <li><a class="toctree-l3" href="#leftright-joins">Left/Right Joins</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../aggregation/">Aggregation</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Temporal.jl</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Combining</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/dysonance/Temporal.jl/edit/master/docs/combining.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <ul>
+<li><a href="../ts/#Temporal.TS"><code>Temporal.TS</code></a></li>
+</ul>
+<p><a id='Joins-1'></a></p>
+<h1 id="joins">Joins</h1>
+<p><a id='Outer-Joins-1'></a></p>
+<h2 id="outer-joins">Outer Joins</h2>
+<p>One can perform a full outer join on the time <code>index</code>es of two <code>TS</code> objects $x$ and $y$ in the following ways:</p>
+<ul>
+<li><code>merge(x, y)</code></li>
+<li><code>ojoin(x, y)</code></li>
+<li><code>[x y]</code></li>
+<li><code>hcat(x, y)</code></li>
+</ul>
+<p>Where there are dates in the <code>index</code> of one that do not exist in the other, values will be filled with <code>NaN</code> objects. As the <code>missing</code> functionality matures in Julia's base syntax, it will eventually replace <code>NaN</code> in this context, since unfortunately <code>NaN</code> is only applicable for <code>Float64</code> element types.</p>
+<pre><code class="julia-repl">
+julia&gt; x = TS(rand(252))
+Index       A
+2017-07-12  0.221
+2017-07-13  0.3085
+2017-07-14  0.4408
+2017-07-15  0.5558
+2017-07-16  0.5679
+2017-07-17  0.9136
+2017-07-18  0.5643
+2017-07-19  0.88
+2017-07-20  0.7785
+⋮
+2018-03-11  0.9917
+2018-03-12  0.8962
+2018-03-13  0.6138
+2018-03-14  0.7796
+2018-03-15  0.1419
+2018-03-16  0.8437
+2018-03-17  0.2343
+2018-03-18  0.586
+2018-03-19  0.1586
+2018-03-20  0.1248
+
+julia&gt; y = TS(rand(252), x.index .- Month(6))
+Index       A
+2017-01-12  0.9218
+2017-01-13  0.4809
+2017-01-14  0.7463
+2017-01-15  0.3528
+2017-01-16  0.4397
+2017-01-17  0.1928
+2017-01-18  0.9131
+2017-01-19  0.2516
+2017-01-20  0.0852
+⋮
+2017-09-11  0.6402
+2017-09-12  0.0159
+2017-09-13  0.2291
+2017-09-14  0.7846
+2017-09-15  0.2764
+2017-09-16  0.3143
+2017-09-17  0.5267
+2017-09-18  0.1164
+2017-09-19  0.4902
+2017-09-20  0.059
+
+julia&gt; [x y]
+Index       A       A
+2017-01-12  NaN     0.9218
+2017-01-13  NaN     0.4809
+2017-01-14  NaN     0.7463
+2017-01-15  NaN     0.3528
+2017-01-16  NaN     0.4397
+2017-01-17  NaN     0.1928
+2017-01-18  NaN     0.9131
+2017-01-19  NaN     0.2516
+2017-01-20  NaN     0.0852
+⋮
+2018-03-11  0.9917  NaN
+2018-03-12  0.8962  NaN
+2018-03-13  0.6138  NaN
+2018-03-14  0.7796  NaN
+2018-03-15  0.1419  NaN
+2018-03-16  0.8437  NaN
+2018-03-17  0.2343  NaN
+2018-03-18  0.586   NaN
+2018-03-19  0.1586  NaN
+2018-03-20  0.1248  NaN
+</code></pre>
+
+<p><a id='Inner-Joins-1'></a></p>
+<h2 id="inner-joins">Inner Joins</h2>
+<p>You can do inner joins on <code>TS</code> objects using the <code>ijoin</code> function, which will remove any observations corresponding to time steps where at least one of the joined objects is missing a row. This will basically keep only the rows where the time <code>index</code> of the LHS and the RHS intersect.</p>
+<pre><code class="julia-repl">
+julia&gt; x = TS(rand(252))
+Index       A
+2017-07-12  0.7671
+2017-07-13  0.4044
+2017-07-14  0.6515
+2017-07-15  0.9406
+2017-07-16  0.2019
+2017-07-17  0.9357
+2017-07-18  0.9121
+2017-07-19  0.784
+2017-07-20  0.5431
+⋮
+2018-03-11  0.793
+2018-03-12  0.1222
+2018-03-13  0.7244
+2018-03-14  0.1624
+2018-03-15  0.8766
+2018-03-16  0.5887
+2018-03-17  0.2326
+2018-03-18  0.4773
+2018-03-19  0.0855
+2018-03-20  0.7402
+
+julia&gt; y = TS(rand(252), x.index .- Month(6))
+Index       A
+2017-01-12  0.693
+2017-01-13  0.5497
+2017-01-14  0.1282
+2017-01-15  0.3671
+2017-01-16  0.4879
+2017-01-17  0.9753
+2017-01-18  0.0657
+2017-01-19  0.4414
+2017-01-20  0.809
+⋮
+2017-09-11  0.7931
+2017-09-12  0.56
+2017-09-13  0.8174
+2017-09-14  0.298
+2017-09-15  0.2008
+2017-09-16  0.8532
+2017-09-17  0.1924
+2017-09-18  0.3456
+2017-09-19  0.9453
+2017-09-20  0.9013
+
+julia&gt; ijoin(x, y)
+Index       A       A
+2017-07-12  0.7671  0.0577
+2017-07-13  0.4044  0.2747
+2017-07-14  0.6515  0.2673
+2017-07-15  0.9406  0.2563
+2017-07-16  0.2019  0.9753
+2017-07-17  0.9357  0.4847
+2017-07-18  0.9121  0.9805
+2017-07-19  0.784   0.9155
+2017-07-20  0.5431  0.1105
+⋮
+2017-09-11  0.264   0.7931
+2017-09-12  0.9539  0.56
+2017-09-13  0.3017  0.8174
+2017-09-14  0.9197  0.298
+2017-09-15  0.7531  0.2008
+2017-09-16  0.2565  0.8532
+2017-09-17  0.8066  0.1924
+2017-09-18  0.7368  0.3456
+2017-09-19  0.7948  0.9453
+2017-09-20  0.3533  0.9013
+</code></pre>
+
+<p><a id='Left/Right-Joins-1'></a></p>
+<h2 id="leftright-joins">Left/Right Joins</h2>
+<p>Left and right joins are performed similarly to inner joins and the typical SQL join queries using the objects' <code>index</code> fields as the joining key.</p>
+<ul>
+<li><em>Left Join</em>: keep all observations of the LHS of the join, fill the RHS with NaN's where missing the corresponding time <code>index</code></li>
+<li><em>Right Join</em>: keep all observations of the RHS of the join, fill the LHS with NaN's where missing the corresponding time <code>index</code></li>
+</ul>
+<pre><code class="julia-repl">
+julia&gt; x = TS(rand(252))
+Index       A
+2017-07-12  0.6035
+2017-07-13  0.4372
+2017-07-14  0.4407
+2017-07-15  0.0405
+2017-07-16  0.9423
+2017-07-17  0.7718
+2017-07-18  0.8516
+2017-07-19  0.3898
+2017-07-20  0.9576
+⋮
+2018-03-11  0.075
+2018-03-12  0.9757
+2018-03-13  0.0047
+2018-03-14  0.2622
+2018-03-15  0.8096
+2018-03-16  0.261
+2018-03-17  0.9755
+2018-03-18  0.5182
+2018-03-19  0.4128
+2018-03-20  0.7118
+
+julia&gt; y = TS(rand(252), x.index .- Month(6))
+Index       A
+2017-01-12  0.9205
+2017-01-13  0.3511
+2017-01-14  0.73
+2017-01-15  0.3958
+2017-01-16  0.2029
+2017-01-17  0.0519
+2017-01-18  0.8671
+2017-01-19  0.2977
+2017-01-20  0.15
+⋮
+2017-09-11  0.2154
+2017-09-12  0.3407
+2017-09-13  0.1095
+2017-09-14  0.6158
+2017-09-15  0.5919
+2017-09-16  0.088
+2017-09-17  0.1212
+2017-09-18  0.1865
+2017-09-19  0.3404
+2017-09-20  0.022
+
+julia&gt; ljoin(x, y)
+Index       A       A
+2017-07-12  0.6035  0.319
+2017-07-13  0.4372  0.8196
+2017-07-14  0.4407  0.9037
+2017-07-15  0.0405  0.2011
+2017-07-16  0.9423  0.5781
+2017-07-17  0.7718  0.3852
+2017-07-18  0.8516  0.4595
+2017-07-19  0.3898  0.8921
+2017-07-20  0.9576  0.299
+⋮
+2018-03-11  0.075   NaN
+2018-03-12  0.9757  NaN
+2018-03-13  0.0047  NaN
+2018-03-14  0.2622  NaN
+2018-03-15  0.8096  NaN
+2018-03-16  0.261   NaN
+2018-03-17  0.9755  NaN
+2018-03-18  0.5182  NaN
+2018-03-19  0.4128  NaN
+2018-03-20  0.7118  NaN
+
+julia&gt; rjoin(x, y)
+Index       A       A
+2017-01-12  NaN     0.9205
+2017-01-13  NaN     0.3511
+2017-01-14  NaN     0.73
+2017-01-15  NaN     0.3958
+2017-01-16  NaN     0.2029
+2017-01-17  NaN     0.0519
+2017-01-18  NaN     0.8671
+2017-01-19  NaN     0.2977
+2017-01-20  NaN     0.15
+⋮
+2017-09-11  0.1902  0.8462
+2017-09-12  0.6219  0.8382
+2017-09-13  0.4086  0.298
+2017-09-14  0.3349  0.2448
+2017-09-15  0.1698  0.2616
+2017-09-16  0.219   0.2154
+2017-09-17  0.4069  0.3407
+2017-09-18  0.2992  0.1095
+2017-09-19  0.8517  0.6158
+2017-09-20  0.8545  0.5919
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../aggregation/" class="btn btn-neutral float-right" title="Aggregation">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../indexing/" class="btn btn-neutral" title="Indexing"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/dysonance/Temporal.jl/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../indexing/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../aggregation/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
+      <script src="../assets/mathjaxhelper.js"></script>
+      <script src="../search/require.js"></script>
+      <script src="../search/search.js"></script>
+
+</body>
+</html>
