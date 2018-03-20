@@ -75,7 +75,7 @@ end
 function fromthru(from::AbstractString, thru::AbstractString, t::Vector{Date})::BitVector
     fromidx = fromdt(from, t)
     thruidx = thrudt(thru, t)
-    return fromidx .| thruidx
+    return fromidx .& thruidx
 end
 
 function thrudt(s::AbstractString, t::Vector{DateTime})::BitVector
@@ -274,7 +274,7 @@ end
 function fromthru(from::AbstractString, thru::AbstractString, t::Vector{DateTime})
     fromidx = fromdt(from, t)
     thruidx = thrudt(thru, t)
-    return fromidx .| thruidx
+    return fromidx .& thruidx
 end
 
 function dtidx(s::AbstractString, t::Vector{Date})::BitVector
