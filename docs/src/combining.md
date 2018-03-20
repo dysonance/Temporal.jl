@@ -1,4 +1,8 @@
+```@index
+```
+
 # Joins
+
 
 ## Outer Joins
 
@@ -6,11 +10,20 @@ One can perform a full outer join on the time `index`es of two `TS` objects $x$ 
 - `merge(x, y)`
 - `ojoin(x, y)`
 - `[x y]`
+- `hcat(x, y)`
 
 Where there are dates in the `index` of one that do not exist in the other, values will be filled with `NaN` objects. As the `missing` functionality matures in Julia's base syntax, it will eventually replace `NaN` in this context, since unfortunately `NaN` is only applicable for `Float64` element types.
+
+```@repl
+using Temporal, Base.Dates
+x = TS(rand(252))
+y = TS(rand(252), x.index .- Month(6))
+[x y]
+```
 
 ## Inner Joins
 
 ## Left Joins
 
 ## Right Joins
+
