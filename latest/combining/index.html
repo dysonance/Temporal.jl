@@ -131,7 +131,10 @@
           <div role="main">
             <div class="section">
               
-                <p><a id='Joins-1'></a></p>
+                <ul>
+<li><a href="../ts/#Temporal.TS"><code>Temporal.TS</code></a></li>
+</ul>
+<p><a id='Joins-1'></a></p>
 <h1 id="joins">Joins</h1>
 <p><a id='Outer-Joins-1'></a></p>
 <h2 id="outer-joins">Outer Joins</h2>
@@ -140,8 +143,81 @@
 <li><code>merge(x, y)</code></li>
 <li><code>ojoin(x, y)</code></li>
 <li><code>[x y]</code></li>
+<li><code>hcat(x, y)</code></li>
 </ul>
 <p>Where there are dates in the <code>index</code> of one that do not exist in the other, values will be filled with <code>NaN</code> objects. As the <code>missing</code> functionality matures in Julia's base syntax, it will eventually replace <code>NaN</code> in this context, since unfortunately <code>NaN</code> is only applicable for <code>Float64</code> element types.</p>
+<pre><code class="julia-repl">julia&gt; using Temporal, Base.Dates
+
+julia&gt; x = TS(rand(252))
+Index       A
+2017-07-12  0.9287
+2017-07-13  0.3708
+2017-07-14  0.0474
+2017-07-15  0.0417
+2017-07-16  0.603
+2017-07-17  0.0463
+2017-07-18  0.2472
+2017-07-19  0.1188
+2017-07-20  0.6255
+⋮
+2018-03-11  0.771
+2018-03-12  0.0868
+2018-03-13  0.3879
+2018-03-14  0.3036
+2018-03-15  0.6091
+2018-03-16  0.0645
+2018-03-17  0.4683
+2018-03-18  0.5487
+2018-03-19  0.6579
+2018-03-20  0.0595
+
+julia&gt; y = TS(rand(252), x.index .- Month(6))
+Index       A
+2017-01-12  0.9864
+2017-01-13  0.3383
+2017-01-14  0.3465
+2017-01-15  0.7202
+2017-01-16  0.9183
+2017-01-17  0.9997
+2017-01-18  0.9054
+2017-01-19  0.9681
+2017-01-20  0.7129
+⋮
+2017-09-11  0.036
+2017-09-12  0.5861
+2017-09-13  0.9769
+2017-09-14  0.3656
+2017-09-15  0.5132
+2017-09-16  0.6934
+2017-09-17  0.5816
+2017-09-18  0.7637
+2017-09-19  0.5586
+2017-09-20  0.0021
+
+julia&gt; [x y]
+Index       A       A
+2017-01-12  NaN     0.9864
+2017-01-13  NaN     0.3383
+2017-01-14  NaN     0.3465
+2017-01-15  NaN     0.7202
+2017-01-16  NaN     0.9183
+2017-01-17  NaN     0.9997
+2017-01-18  NaN     0.9054
+2017-01-19  NaN     0.9681
+2017-01-20  NaN     0.7129
+⋮
+2018-03-11  0.771   NaN
+2018-03-12  0.0868  NaN
+2018-03-13  0.3879  NaN
+2018-03-14  0.3036  NaN
+2018-03-15  0.6091  NaN
+2018-03-16  0.0645  NaN
+2018-03-17  0.4683  NaN
+2018-03-18  0.5487  NaN
+2018-03-19  0.6579  NaN
+2018-03-20  0.0595  NaN
+</code></pre>
+
 <p><a id='Inner-Joins-1'></a></p>
 <h2 id="inner-joins">Inner Joins</h2>
 <p><a id='Left-Joins-1'></a></p>
