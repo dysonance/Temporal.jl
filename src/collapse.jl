@@ -63,13 +63,11 @@ function collapse{V,T}(x::TS{V,T}, at::AbstractArray{Bool,1}; fun::Function=last
         return x[idx]
     end
     out = zeros(V, (length(idx), size(x,2)))
-    a = 1
-    b = idx[1]
     @inbounds for j in 1:size(x,2)
-        out[1,:] = fun(x.values[a:b, j]; args...)
+        out[1,j] = fun(x.values[1:idx[1], j]; args...)
     end
     @inbounds for j=1:size(x,2), i=2:length(idx)
-        a = idx[i-1]
+        a = idx[i-1] + 1
         b = idx[i]
         out[i,j] = fun(x.values[a:b, j]; args...)
     end
