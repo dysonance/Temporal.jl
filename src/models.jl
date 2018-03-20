@@ -17,7 +17,17 @@ function acf{T<:Number}(x::Vector{T}, maxlag::Int=15; lags::AbstractArray{Int,1}
     @assert all(lags .< size(x,1)-1)
     return map((n) -> corlag(x, n), lags)
 end
-acf(x::TS, maxlag::Int=15; lags::AbstractArray{Int,1}=0:maxlag)::Vector{Float64} = acf(x.values, maxlag; lags=lags)
+
+function acf{T<:Number}(x::Matrix{T}, maxlag::Int=15; lags::AbstractVector{Int}=0:maxlag)::Matrix{Float64}
+    k = size(x,2)
+    out = zeros(Float64, (length(lags), k))
+    @inbounds for j in 1:k
+        out[:,j] = acf(x[:,j], maxlag, lags=lags)
+    end
+    return out
+end
+
+acf(x::TS, maxlag::Int=15; lags::AbstractArray{Int,1}=0:maxlag) = acf(x.values, maxlag; lags=lags)
 
 # Linear Models
 # abstract TS_Model
