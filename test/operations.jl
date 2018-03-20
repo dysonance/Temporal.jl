@@ -81,6 +81,7 @@ using Base.Test, Base.Dates, Temporal
         @test size(bx,1) == size(x,1)
         @test size(dropnan(bx),1) == size(lag(x,pad=false),1)
         @test dropnan(bx) == dropnan(shift(x, pad=true, padval=NaN))
+        @test acf(x)[1] == 1.0
     end
 end
 

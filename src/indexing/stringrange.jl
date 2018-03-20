@@ -8,7 +8,7 @@ end
 const DATE_STRING_LENGTHS = [4, 7, 10]
 const DATETIME_STRING_LENGTHS = [4, 7, 10, 13, 16, 19]
 
-function thrudt(s::AbstractString, t::Vector{Date})
+function thrudt(s::AbstractString, t::Vector{Date})::BitVector
     n = length(s)
     @assert n in DATE_STRING_LENGTHS "Invalid indexing string: Unable to parse $s"
     if n == 4  # yyyy given
@@ -29,7 +29,7 @@ function thrudt(s::AbstractString, t::Vector{Date})
     return t .<= ymd
 end
 
-function fromdt(s::AbstractString, t::Vector{Date})
+function fromdt(s::AbstractString, t::Vector{Date})::BitVector
     n = length(s)
     @assert n in DATE_STRING_LENGTHS "Invalid indexing string: Unable to parse $s"
     if n == 4  # yyyy given
@@ -50,7 +50,7 @@ function fromdt(s::AbstractString, t::Vector{Date})
     return t .>= ymd
 end
 
-function thisdt(s::AbstractString, t::Vector{Date})
+function thisdt(s::AbstractString, t::Vector{Date})::BitVector
     n = length(s)
     @assert n in DATE_STRING_LENGTHS "Invalid indexing string: Unable to parse $s"
     if n == 4  # yyyy given
@@ -60,23 +60,25 @@ function thisdt(s::AbstractString, t::Vector{Date})
         a = split(s, '-')
         y = parse(Int, a[1])
         m = parse(Int, a[2])
-        return (year.(t) .== y) .* (month.(t) .== m)
+        return (year.(t) .== y) .& (month.(t) .== m)
     elseif n == 10  # yyyy-mm-dd given
+
         a = split(s, '-')
         y = parse(Int, a[1])
         m = parse(Int, a[2])
         d = parse(Int, a[3])
-        return (year.(t) .== y) .* (month.(t) .== m) .* day.(t) .== d
+        idx = (year.(t) .== y) .& (month.(t) .== m) .& (day.(t) .== d)
+
     end
 end
 
-function fromthru(from::AbstractString, thru::AbstractString, t::Vector{Date})
+function fromthru(from::AbstractString, thru::AbstractString, t::Vector{Date})::BitVector
     fromidx = fromdt(from, t)
     thruidx = thrudt(thru, t)
-    return fromidx .* thruidx
+    return fromidx .| thruidx
 end
 
-function thrudt(s::AbstractString, t::Vector{DateTime})
+function thrudt(s::AbstractString, t::Vector{DateTime})::BitVector
     n = length(s)
     @assert n in DATETIME_STRING_LENGTHS || n >= 20 "Invalid indexing string: Unable to parse $s"
     if n == 4  # yyyy given
@@ -143,7 +145,7 @@ function thrudt(s::AbstractString, t::Vector{DateTime})
     return t .<= ymdhms
 end
 
-function fromdt(s::AbstractString, t::Vector{DateTime})
+function fromdt(s::AbstractString, t::Vector{DateTime})::BitVector
     n = length(s)
     @assert n in DATETIME_STRING_LENGTHS || n >= 20 "Invalid indexing string: Unable to parse $s"
     if n == 4  # yyyy given
@@ -207,7 +209,7 @@ function fromdt(s::AbstractString, t::Vector{DateTime})
     return t .>= ymdhms
 end
 
-function thisdt(s::AbstractString, t::Vector{DateTime})
+function thisdt(s::AbstractString, t::Vector{DateTime})::BitVector
     n = length(s)
     if n == 4  # yyyy given
         y = parse(Int, s)
@@ -216,13 +218,13 @@ function thisdt(s::AbstractString, t::Vector{DateTime})
         a = split(s, '-')
         y = parse(Int, a[1])
         m = parse(Int, a[2])
-        return (year.(t) .== y) .* (month.(t) .== m)
+        return (year.(t) .== y) .& (month.(t) .== m)
     elseif n == 10  # yyyy-mm-dd given
         a = split(s, '-')
         y = parse(Int, a[1])
         m = parse(Int, a[2])
         d = parse(Int, a[3])
-        return (year.(t) .== y) .* (month.(t) .== m) .* (day.(t) .== d)
+        return (year.(t) .== y) .& (month.(t) .== m) .& (day.(t) .== d)
     elseif n == 13  # yyyy-mm-ddTHH given
         a = split(s, 'T')
         b = split(a[1], '-')
@@ -231,7 +233,7 @@ function thisdt(s::AbstractString, t::Vector{DateTime})
         m = parse(Int, b[2])
         d = parse(Int, b[3])
         hr = parse(Int, c[1])
-        return (year.(t) .== y) .* (month.(t) .== m) .* (day.(t) .== d) .* (hour.(t) .== hr)
+        return (year.(t) .== y) .& (month.(t) .== m) .& (day.(t) .== d) .& (hour.(t) .== hr)
     elseif n == 16  # yyyy-mm-ddTHH:MM given
         a = split(s, 'T')
         b = split(a[1], '-')
@@ -241,7 +243,7 @@ function thisdt(s::AbstractString, t::Vector{DateTime})
         d = parse(Int, b[3])
         hr = parse(Int, c[1])
         min = parse(Int, c[2])
-        return (year.(t) .== y) .* (month.(t) .== m) .* (day.(t) .== d) .* (hour.(t) .== hr) .* (minute.(t) .== min)
+        return (year.(t) .== y) .& (month.(t) .== m) .& (day.(t) .== d) .& (hour.(t) .== hr) .& (minute.(t) .== min)
     elseif n == 19  # yyyy-mm-ddTHH:MM:SS given
         a = split(s, 'T')
         b = split(a[1], '-')
@@ -252,7 +254,7 @@ function thisdt(s::AbstractString, t::Vector{DateTime})
         hr = parse(Int, c[1])
         min = parse(Int, c[2])
         sec = parse(Int, c[3])
-        return (year.(t) .== y) .* (month.(t) .== m) .* (day.(t) .== d) .* (hour.(t) .== hr) .* (minute.(t) .== min) .* (second.(t) .== sec)
+        return (year.(t) .== y) .& (month.(t) .== m) .& (day.(t) .== d) .& (hour.(t) .== hr) .& (minute.(t) .== min) .& (second.(t) .== sec)
     elseif n >= 20  # milliseconds given
         a = split(s, 'T')
         b = split(a[1], '-')
@@ -265,17 +267,17 @@ function thisdt(s::AbstractString, t::Vector{DateTime})
         min = parse(Int, c[2])
         sec = parse(Int, f[1])
         milli = parse(Int, f[2])
-        return (year.(t) .== y) .* (month.(t) .== m) .* (day.(t) .== d) .* (hour.(t) .== hr) .* (minute.(t) .== min) .* (second.(t) .== sec) .* (millisecond.(t) .== milli)
+        return (year.(t) .== y) .& (month.(t) .== m) .& (day.(t) .== d) .& (hour.(t) .== hr) .& (minute.(t) .== min) .& (second.(t) .== sec) .& (millisecond.(t) .== milli)
     end
 end
 
 function fromthru(from::AbstractString, thru::AbstractString, t::Vector{DateTime})
     fromidx = fromdt(from, t)
     thruidx = thrudt(thru, t)
-    return fromidx .* thruidx
+    return fromidx .| thruidx
 end
 
-function dtidx(s::AbstractString, t::Vector{Date})
+function dtidx(s::AbstractString, t::Vector{Date})::BitVector
     if s == "/" || s == ""
         return trues(t)
     end
@@ -297,7 +299,7 @@ function dtidx(s::AbstractString, t::Vector{Date})
     end
 end
 
-function dtidx(s::AbstractString, t::Vector{DateTime})
+function dtidx(s::AbstractString, t::Vector{DateTime})::BitVector
     if s == "/" || s == ""
         return trues(t)
     end
