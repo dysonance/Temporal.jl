@@ -46,7 +46,7 @@ include("collapse.jl")
 include("operations.jl")
 include("models.jl")
 include("slice.jl")
-include("io.jl")
+include("io/io.jl")
 include("ohlc.jl")
 include("viz.jl")
 
