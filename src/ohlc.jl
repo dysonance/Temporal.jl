@@ -34,7 +34,7 @@ vo(x::TS)::TS = x[:,findfirst(ismatch.(r"(vo)"i, String.(x.fields)))]
 function cl(x::TS; use_adj::Bool=true, allow_settle::Bool=true, allow_last::Bool=true)::TS
     columns = String.(x.fields)
     if use_adj
-        j = findfirst(ismatch.(r"(adj((usted)|\s|)+)(cl)"i, columns))
+        j = findfirst(ismatch.(r"(adj((usted)|\s|)+)?(cl)"i, columns))
         if j != 0
             return x[:,j]
         end
