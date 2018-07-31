@@ -158,8 +158,7 @@ julia> quandl_auth()
 "Your_API_Key"
 ```
 """ ->
-function quandl_auth{T<:String}(key::T="")::String
-    authfile = "$(Pkg.dir())/quandl-auth"
+function quandl_auth{T<:String}(key::T=""; authfile::T=expanduser("~/quandl-auth"))::String
     if key == ""
         if isfile(authfile)
             key = readstring(authfile)
