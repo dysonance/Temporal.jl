@@ -1,4 +1,11 @@
-import Base:getindex
+import Base.getindex
+
+# define axes function for newer julia versions
+if VERSION >= v"0.7-"
+    import Base.axes
+    axes(x::TS) = axes(x.values)
+    axes(x::TS, d) = axes(x.values, d)
+end
 
 # all element indexing
 getindex(x::TS)                   = x
