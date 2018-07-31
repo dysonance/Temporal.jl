@@ -2,7 +2,7 @@ VERSION >= v"0.6-" && __precompile__(true)
 
 module Temporal
 using Base.Dates
-using Requests
+using HTTP
 using JSON
 using RecipesBase
 

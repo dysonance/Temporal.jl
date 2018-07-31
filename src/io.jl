@@ -94,9 +94,9 @@ function isdate{T<:TimeType}(t::AbstractVector{T})::Bool
     return all(h.==h[1]) && all(m.==m[1]) && all(s.==s[1]) && all(ms.==ms[1])
 end
 
-function csvresp(resp::Requests.Response; sort::Char='d')
+function csvresp(resp::HTTP.Response; sort::Char='d')
     @assert resp.status == 200 "Error in download request."
-    rowdata = Vector{String}(split(readstring(resp), '\n'))
+    rowdata = Vector{String}(split(String(resp.body), '\n'))
     header = Vector{String}(split(shift!(rowdata), ','))
     pop!(rowdata)
     if sort == 'd'
@@ -229,7 +229,7 @@ function quandl(code::String;
     else
         url = "$QUANDL_URL/$code.csv?&rows=$rows&order=$sort_arg&collapse=$freq_arg&transform=$calc&api_key=$auth"
     end
-    indata = csvresp(get(url), sort=sort)
+    indata = csvresp(HTTP.get(url), sort=sort)
     return TS(indata[1], indata[2], indata[3][2:end])
 end
 
@@ -239,9 +239,9 @@ Download Quandl metadata for a database and dataset into a Julia Dict object.
 `quandl_meta(database::String, dataset::String)`
 """ ->
 function quandl_meta(database::String, dataset::String)::Dict{String,Any}
-    resp = get("$QUANDL_URL/$database/$dataset/metadata.json")
+    resp = HTTP.get("$QUANDL_URL/$database/$dataset/metadata.json")
     @assert resp.status == 200 "Error downloading metadata from Quandl."
-    return JSON.parse(readstring(resp))["dataset"]
+    return JSON.parse(String(resp.body))["dataset"]
 end
 
 @doc doc"""
@@ -253,24 +253,24 @@ function quandl_search(;db::String="", qry::String="", perpage::Int=1, pagenum::
     @assert db!="" || qry!="" "Must enter a database or a search query."
     dbstr = db   == "" ? "" : "database_code=$db&"
     qrystr = qry  == "" ? "" : "query=$(replace(qry, ' ', '+'))&"
-    resp = get("$QUANDL_URL.json?$(dbstr)$(qrystr)per_page=$perpage&page=$pagenum")
+    resp = HTTP.get("$QUANDL_URL.json?$(dbstr)$(qrystr)per_page=$perpage&page=$pagenum")
     @assert resp.status == 200 "Error retrieving search results from Quandl"
-    return JSON.parse(readstring(resp))
+    return JSON.parse(String(resp.body))
 end
 
 # ==============================================================================
 # YAHOO INTERFACE ==============================================================
 # ==============================================================================
-function yahoo_get_crumb()::Tuple{SubString{String}, Dict{String, Requests.HttpCommon.Cookie}}
-    response = Requests.get(YAHOO_TMP)
-    m = match(r"\"user\":{\"crumb\":\"(.*?)\"", readstring(response))
-    return (m[1], Requests.cookies(response))
+function yahoo_get_crumb()::Tuple{SubString{String}, Dict{String, HTTP.Cookie}}
+    response = HTTP.get(YAHOO_TMP)
+    m = match(r"\"user\":{\"crumb\":\"(.*?)\"", String(resp.body))
+    return (m[1], HTTP.cookies(response))
 end
 
 @doc doc"""
 Download stock price data from Yahoo! Finance into a TS object.
 
-`yahoo(symb::String; from::String="1900-01-01", thru::String=string(Dates.today()), freq::String="d", event::String="history", crumb_tuple::Tuple{SubString{String}, Dict{String, Requests.HttpCommon.Cookie}}=yahoo_get_crumb())::TS`
+`yahoo(symb::String; from::String="1900-01-01", thru::String=string(Dates.today()), freq::String="d", event::String="history", crumb_tuple::Tuple{SubString{String}, Dict{String, HTTP.Cookie}}=yahoo_get_crumb())::TS`
 
 # Arguments
 - `symb` ticker symbol of the stock
@@ -304,7 +304,7 @@ function yahoo(symb::String;
                thru::String=string(Dates.today()),
                freq::String="d",
                event::String="history",
-               crumb_tuple::Tuple{SubString{String}, Dict{String, Requests.HttpCommon.Cookie}}=yahoo_get_crumb())::TS
+               crumb_tuple::Tuple{SubString{String}, Dict{String, HTTP.Cookie}}=yahoo_get_crumb())::TS
     @assert freq in ["d","wk","mo"] "Argument `freq` must be either \"d\" (daily), \"wk\" (weekly), or \"mo\" (monthly)."
     @assert event in ["history","div","split"] "Argument `event` must be either \"history\", \"div\", or \"split\"."
     @assert from[5] == '-' && from[8] == '-' "Argument `from` has invalid date format."
@@ -312,7 +312,7 @@ function yahoo(symb::String;
     period1 = Int(floor(Dates.datetime2unix(Dates.DateTime(from))))
     period2 = Int(floor(Dates.datetime2unix(Dates.DateTime(thru))))
     urlstr = "$(YAHOO_URL)/$(symb)?period1=$(period1)&period2=$(period2)&interval=1$(freq)&events=$(event)&crumb=$(crumb_tuple[1])"
-    response = Requests.get(urlstr, cookies=crumb_tuple[2])
+    response = HTTP.get(urlstr, cookies=crumb_tuple[2])
     indata = Temporal.csvresp(response)
     return TS(indata[1], indata[2], indata[3][2:end])
 end
@@ -322,7 +322,7 @@ function yahoo(syms::Vector{String};
                thru::String=string(Dates.today()),
                freq::String="d",
                event::String="history",
-               crumb_tuple::Tuple{SubString{String}, Dict{String, Requests.HttpCommon.Cookie}}=yahoo_get_crumb())::Dict{String,TS}
+               crumb_tuple::Tuple{SubString{String}, Dict{String, HTTP.Cookie}}=yahoo_get_crumb())::Dict{String,TS}
     out = Dict()
     for s = syms
         out[s] = yahoo(s, from=from, thru=thru, freq=freq, event=event, crumb_tuple=crumb_tuple)
@@ -374,7 +374,7 @@ function google(symb::String;
                  "&enddate=$(Dates.monthabbr(thru_date))",
                  "+$(@sprintf("%.2d",Dates.dayofmonth(thru_date)))",
                  "+$(Dates.year(thru_date))&output=csv")
-    response = Requests.get(url)
+    response = HTTP.get(url)
     indata = Temporal.csvresp(response)
     return TS(indata[1], indata[2], indata[3][2:end])
 end
