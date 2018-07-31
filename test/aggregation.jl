@@ -30,7 +30,7 @@ using Base.Test, Base.Dates, Temporal
         @test round(m.values[end], 2) == round(mean(x[prev_year]), 2)
         m = collapse(x, (t)->eom(t,cal=true), fun=mean)
         prev_month = string(today()-Month(1))[1:7]
-        @test mean(x[prev_month]) == m.values[end]
+        @test mean(x[prev_month]) == m[prev_month].values[end]
         m = apply(X, 1, fun=mean)
         @test m.values[1] == mean(X[1].values)
         m = apply(X, 2, fun=mean)
