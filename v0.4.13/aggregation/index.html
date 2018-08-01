@@ -8,7 +8,7 @@
   
   <meta name="author" content="dysonance">
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>TS - Temporal.jl</title>
+  <title>Aggregation - Temporal.jl</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -18,9 +18,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "TS";
-    var mkdocs_page_input_path = "ts.md";
-    var mkdocs_page_url = "/ts/";
+    var mkdocs_page_name = "Aggregation";
+    var mkdocs_page_input_path = "aggregation.md";
+    var mkdocs_page_url = "/aggregation/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -53,15 +53,9 @@
     <a class="" href="..">Home</a>
 	    </li>
           
-            <li class="toctree-l1 current">
+            <li class="toctree-l1">
 		
-    <a class="current" href="./">TS</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l2"><a href="#construction">Construction</a></li>
-    
-
-    </ul>
+    <a class="" href="../ts/">TS</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -79,9 +73,23 @@
     <a class="" href="../combining/">Combining</a>
 	    </li>
           
-            <li class="toctree-l1">
+            <li class="toctree-l1 current">
 		
-    <a class="" href="../aggregation/">Aggregation</a>
+    <a class="current" href="./">Aggregation</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#temporal-aggregation">Temporal Aggregation</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#time-period-sampling-methods">Time Period Sampling Methods</a></li>
+        
+            <li><a class="toctree-l3" href="#collapsing-summarizing">Collapsing &amp; Summarizing</a></li>
+        
+        </ul>
+    
+
+    </ul>
 	    </li>
           
         </ul>
@@ -106,10 +114,10 @@
     
       
     
-    <li>TS</li>
+    <li>Aggregation</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/dysonance/Temporal.jl/edit/master/docs/ts.md"
+        <a href="https://github.com/dysonance/Temporal.jl/edit/master/docs/aggregation.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -119,16 +127,45 @@
           <div role="main">
             <div class="section">
               
-                <p><a id='Construction-1'></a></p>
-<h1 id="construction">Construction</h1>
+                <p><a id='Temporal-Aggregation-1'></a></p>
+<h1 id="temporal-aggregation">Temporal Aggregation</h1>
+<p><a id='Time-Period-Sampling-Methods-1'></a></p>
+<h2 id="time-period-sampling-methods">Time Period Sampling Methods</h2>
+<p>Summarize by day of the week:</p>
 <ul>
-<li><a href="./#Temporal.TS"><code>Temporal.TS</code></a></li>
+<li><code>mondays</code></li>
+<li><code>tuesdays</code></li>
+<li><code>wednesdays</code></li>
+<li><code>thursdays</code></li>
+<li><code>fridays</code></li>
+<li><code>saturdays</code></li>
+<li><code>sundays</code></li>
 </ul>
-<p><a id='Temporal.TS' href='#Temporal.TS'>#</a>
-<strong><code>Temporal.TS</code></strong> &mdash; <em>Type</em>.</p>
-<p>Time series type aimed at efficiency and simplicity.</p>
-<p>Motivated by the <code>xts</code> package in R and the <code>pandas</code> package in Python.</p>
-<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/5ef821b19f25d9c5bd02024302c8d127c3956594/src/ts.jl#L10' class='documenter-source'>source</a><br></p>
+<p>Summarize by beginnings and endings of weeks, months, quarters, or years:</p>
+<ul>
+<li><code>bow</code></li>
+<li><code>eow</code></li>
+<li><code>bom</code></li>
+<li><code>eom</code></li>
+<li><code>boq</code></li>
+<li><code>eoq</code></li>
+<li><code>boy</code></li>
+<li><code>eoy</code></li>
+<li><code>bow</code></li>
+<li><code>eow</code></li>
+<li><code>bom</code></li>
+<li><code>eom</code></li>
+<li><code>boq</code></li>
+<li><code>eoq</code></li>
+<li><code>boy</code></li>
+<li><code>eoy</code></li>
+</ul>
+<p><a id='Collapsing-and-Summarizing-1'></a></p>
+<h2 id="collapsing-summarizing">Collapsing &amp; Summarizing</h2>
+<ul>
+<li><code>collapse</code></li>
+<li><code>apply</code></li>
+</ul>
               
             </div>
           </div>
@@ -136,10 +173,8 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../operations/" class="btn btn-neutral float-right" title="Operations">Next <span class="icon icon-circle-arrow-right"></span></a>
       
-      
-        <a href=".." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../combining/" class="btn btn-neutral" title="Combining"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -167,10 +202,8 @@
           <a href="https://github.com/dysonance/Temporal.jl/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../combining/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
-      
-        <span style="margin-left: 15px"><a href="../operations/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

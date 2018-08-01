@@ -8,7 +8,7 @@
   
   <meta name="author" content="dysonance">
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>TS - Temporal.jl</title>
+  <title>Operations - Temporal.jl</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -18,9 +18,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "TS";
-    var mkdocs_page_input_path = "ts.md";
-    var mkdocs_page_url = "/ts/";
+    var mkdocs_page_name = "Operations";
+    var mkdocs_page_input_path = "operations.md";
+    var mkdocs_page_url = "/operations/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -53,20 +53,26 @@
     <a class="" href="..">Home</a>
 	    </li>
           
+            <li class="toctree-l1">
+		
+    <a class="" href="../ts/">TS</a>
+	    </li>
+          
             <li class="toctree-l1 current">
 		
-    <a class="current" href="./">TS</a>
+    <a class="current" href="./">Operations</a>
     <ul class="subnav">
             
-    <li class="toctree-l2"><a href="#construction">Construction</a></li>
+    <li class="toctree-l2"><a href="#basic">Basic</a></li>
+    
+
+    <li class="toctree-l2"><a href="#arithmetic">Arithmetic</a></li>
+    
+
+    <li class="toctree-l2"><a href="#logical">Logical</a></li>
     
 
     </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../operations/">Operations</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -106,10 +112,10 @@
     
       
     
-    <li>TS</li>
+    <li>Operations</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/dysonance/Temporal.jl/edit/master/docs/ts.md"
+        <a href="https://github.com/dysonance/Temporal.jl/edit/master/docs/operations.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -119,16 +125,12 @@
           <div role="main">
             <div class="section">
               
-                <p><a id='Construction-1'></a></p>
-<h1 id="construction">Construction</h1>
-<ul>
-<li><a href="./#Temporal.TS"><code>Temporal.TS</code></a></li>
-</ul>
-<p><a id='Temporal.TS' href='#Temporal.TS'>#</a>
-<strong><code>Temporal.TS</code></strong> &mdash; <em>Type</em>.</p>
-<p>Time series type aimed at efficiency and simplicity.</p>
-<p>Motivated by the <code>xts</code> package in R and the <code>pandas</code> package in Python.</p>
-<p><a target='_blank' href='https://github.com/dysonance/Temporal.jl/blob/5ef821b19f25d9c5bd02024302c8d127c3956594/src/ts.jl#L10' class='documenter-source'>source</a><br></p>
+                <p><a id='Basic-1'></a></p>
+<h1 id="basic">Basic</h1>
+<p><a id='Arithmetic-1'></a></p>
+<h1 id="arithmetic">Arithmetic</h1>
+<p><a id='Logical-1'></a></p>
+<h1 id="logical">Logical</h1>
               
             </div>
           </div>
@@ -136,10 +138,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../operations/" class="btn btn-neutral float-right" title="Operations">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../indexing/" class="btn btn-neutral float-right" title="Indexing">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href=".." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../ts/" class="btn btn-neutral" title="TS"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -167,10 +169,10 @@
           <a href="https://github.com/dysonance/Temporal.jl/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../ts/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../operations/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../indexing/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
