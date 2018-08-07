@@ -1,6 +1,10 @@
 using Temporal
 using JSON
-using Base.Dates
+if VERSION >= v"0.7-"
+    using Dates
+else
+    using Base.Dates
+end
 const YAHOO_URL = "https://query1.finance.yahoo.com/v7/finance/download"  # for querying yahoo's servers
 const YAHOO_TMP = "https://ca.finance.yahoo.com/quote/^GSPC/history?p=^GSPC"  # for getting the cookies and crumbs
 const QUANDL_URL = "https://www.quandl.com/api/v3/datasets"  # for querying quandl's servers

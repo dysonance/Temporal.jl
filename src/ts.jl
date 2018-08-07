@@ -1,5 +1,9 @@
 import Base: size, length, show, start, next, done, endof, isempty, convert, ndims, float, eltype, copy
-using Base.Dates
+if VERSION >= v"0.7-"
+    using Dates
+else
+    using Base.Dates
+end
 
 ################################################################################
 # TYPE DEFINITION ##############################################################
