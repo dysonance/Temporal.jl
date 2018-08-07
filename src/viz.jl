@@ -35,7 +35,7 @@ end
 
 function get_xticks(t::Vector{T};
                     nticks::Int=5,
-                    fmt_str::String=(T==Date?"yyyy-mm-dd":"yyyy-mm-ddTHH:MM:SS"))::Tuple{Vector{Int},Vector{String}} where T<:Dates.TimeType
+                    fmt_str::String=(T==Date ? "yyyy-mm-dd" : "yyyy-mm-ddTHH:MM:SS"))::Tuple{Vector{Int},Vector{String}} where T<:Dates.TimeType
     xticks_idx::Vector{Int} = round.(Int, linspace(1, size(t,1), nticks))
     xticks_lab::Vector{String} = Dates.format.(t[xticks_idx], fmt_str)
     return xticks_idx, xticks_lab

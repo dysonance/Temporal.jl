@@ -64,7 +64,7 @@ function tsread(file::String; dlm::Char=',', header::Bool=true, eol::Char='\n', 
     return TS(arr, indextype(idx), fields)
 end
 
-@doc doc"""
+@doc """
 Write TS object to a text file.
 
 `tswrite(x::TS, file::String; dlm::Char=',', header::Bool=true, eol::Char='\\n')`
@@ -90,7 +90,7 @@ end
 #     Dates.datetime2unix(Dates.DateTime(s))
 # end
 
-function isdate{T<:TimeType}(t::AbstractVector{T})::Bool
+function isdate(t::AbstractVector{T})::Bool where {T<:TimeType}
     h = Dates.hour.(t)
     m = Dates.minute.(t)
     s = Dates.second.(t)
@@ -146,7 +146,7 @@ end
 # ==============================================================================
 # QUANDL INTERFACE =============================================================
 # ==============================================================================
-@doc doc"""
+@doc """
 Set up Quandl user account authorization. Run once passing your Quandl API key, and it will be saved for future use.
 
 `quandl_auth{T<:String}(key::T="")::String`
@@ -162,7 +162,7 @@ julia> quandl_auth()
 "Your_API_Key"
 ```
 """ ->
-function quandl_auth{T<:String}(key::T=""; authfile::T=expanduser("~/quandl-auth"))::String
+function quandl_auth(key::T=""; authfile::T=expanduser("~/quandl-auth"))::String where {T<:String}
     if key == ""
         if isfile(authfile)
             key = readstring(authfile)
@@ -175,7 +175,7 @@ function quandl_auth{T<:String}(key::T=""; authfile::T=expanduser("~/quandl-auth
     return key
 end
 
-@doc doc"""
+@doc """
 Download time series data from Quandl as a TS object.
 ```
 quandl(code::String;
@@ -224,7 +224,7 @@ function quandl(code::String;
     end
     # Format URL ===============================================================
     sort_arg = (sort=='a' ? "asc" : "des")
-    freq_arg = (freq=='d'?"daily":(freq=='w'?"weekly":(freq=='m'?"monthly":(freq=='q'?"quarterly":(freq=='a'?"annual":"")))))
+    freq_arg = (freq=='d' ? "daily" : (freq=='w' ? "weekly" : (freq=='m' ? "monthly" : (freq=='q' ? "quarterly" : (freq=='a' ? "annual" : "")))))
     if rows == 0
         fromstr = from == "" ? "" : "&start_date=$from"
         thrustr = thru == "" ? "" : "&end_date=$thru"
@@ -236,7 +236,7 @@ function quandl(code::String;
     return TS(indata[1], indata[2], indata[3][2:end])
 end
 
-@doc doc"""
+@doc """
 Download Quandl metadata for a database and dataset into a Julia Dict object.
 
 `quandl_meta(database::String, dataset::String)`
@@ -247,7 +247,7 @@ function quandl_meta(database::String, dataset::String)::Dict{String,Any}
     return JSON.parse(String(resp.body))["dataset"]
 end
 
-@doc doc"""
+@doc """
 Search Quandl for data in a given database, `db`, or matching a given query, `qry`.
 
 `quandl_search(;db::String="", qry::String="", perpage::Int=1, pagenum::Int=1)`
@@ -270,7 +270,7 @@ function yahoo_get_crumb()::Tuple{SubString{String}, Dict{String, HTTP.Cookie}}
     return (m[1], HTTP.cookies(response))
 end
 
-@doc doc"""
+@doc """
 Download stock price data from Yahoo! Finance into a TS object.
 
 `yahoo(symb::String; from::String="1900-01-01", thru::String=string(Dates.today()), freq::String="d", event::String="history", crumb_tuple::Tuple{SubString{String}, Dict{String, HTTP.Cookie}}=yahoo_get_crumb())::TS`
@@ -336,7 +336,7 @@ end
 # ==============================================================================
 # QUANDL INTERFACE =============================================================
 # ==============================================================================
-@doc doc"""
+@doc """
 Download stock price data from Google Finance into a TS object.
 
 `google(symb::String; from::String="2000-01-01", thru::String=string(Dates.today()))::TS`

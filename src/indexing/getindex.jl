@@ -8,23 +8,23 @@ if VERSION >= v"0.7-"
 end
 
 # all element indexing
-getindex(x::TS)                   = x
-getindex(x::TS, ::Colon)          = x
+getindex(x::TS) = x
+getindex(x::TS, ::Colon) = x
 getindex(x::TS, ::Colon, ::Colon) = x
 
 # general interface
-getindex(x::TS, r, c)       = (rows=findrows(r,x); cols=findcols(c,x); TS(x.values[rows,cols],x.index[rows],x.fields[cols]))
+getindex(x::TS, r, c) = (rows=findrows(r,x); cols=findcols(c,x); TS(x.values[rows,cols],x.index[rows],x.fields[cols]))
 getindex(x::TS, r, ::Colon) = (rows=findrows(r,x); TS(x.values[rows,:],x.index[rows],x.fields))
 getindex(x::TS, ::Colon, c) = (cols=findcols(c,x); TS(x.values[:,cols],x.index,x.fields[cols]))
 
 # types only used to index rows
-getindex{R<:Int}(x::TS, r::R)                        = (rows=findrows(r,x); TS(x.values[rows,:],x.index[rows],x.fields))
-getindex{R<:AbstractVector{<:Integer}}(x::TS, r::R)  = (rows=findrows(r,x); TS(x.values[rows,:],x.index[rows],x.fields))
-getindex{R<:TimeType}(x::TS, r::R)                   = (rows=findrows(r,x); TS(x.values[rows,:],x.index[rows],x.fields))
-getindex{R<:AbstractVector{<:TimeType}}(x::TS, r::R) = (rows=findrows(r,x); TS(x.values[rows,:],x.index[rows],x.fields))
-getindex{R<:AbstractString}(x::TS, r::R)             = (rows=findrows(r,x); TS(x.values[rows,:],x.index[rows],x.fields))
+getindex(x::TS, r::R) where {R<:Int} = (rows=findrows(r,x); TS(x.values[rows,:],x.index[rows],x.fields))
+getindex(x::TS, r::R) where {R<:AbstractVector{<:Integer}} = (rows=findrows(r,x); TS(x.values[rows,:],x.index[rows],x.fields))
+getindex(x::TS, r::R) where {R<:TimeType} = (rows=findrows(r,x); TS(x.values[rows,:],x.index[rows],x.fields))
+getindex(x::TS, r::R) where {R<:AbstractVector{<:TimeType}} = (rows=findrows(r,x); TS(x.values[rows,:],x.index[rows],x.fields))
+getindex(x::TS, r::R) where {R<:AbstractString} = (rows=findrows(r,x); TS(x.values[rows,:],x.index[rows],x.fields))
 
 # types only used to index columns
-getindex{C<:Symbol}(x::TS, c::C)                   = (cols=findcols(c,x); TS(x.values[:,cols],x.index,x.fields[cols]))
-getindex{C<:AbstractVector{<:Symbol}}(x::TS, c::C) = (cols=findcols(c,x); TS(x.values[:,cols],x.index,x.fields[cols]))
+getindex(x::TS, c::C) where {C<:Symbol} = (cols=findcols(c,x); TS(x.values[:,cols],x.index,x.fields[cols]))
+getindex(x::TS, c::C) where {C<:AbstractVector{<:Symbol}} = (cols=findcols(c,x); TS(x.values[:,cols],x.index,x.fields[cols]))
 

@@ -56,7 +56,7 @@ boy(x::TS; cal::Bool=false) = x[boy(x.index, cal=cal)]
 eoy(x::TS; cal::Bool=false) = x[eoy(x.index, cal=cal)]
 
 
-function collapse{V,T}(x::TS{V,T}, at::AbstractArray{Bool,1}; fun::Function=last, args...)::TS{V,T}
+function collapse(x::TS{V,T}, at::AbstractArray{Bool,1}; fun::Function=last, args...)::TS{V,T} where {V,T}
     @assert size(at,1) == size(x,1) "Arguments `x` and `at` must have same number of rows."
     idx = find(at)
     if fun == last
@@ -75,11 +75,11 @@ function collapse{V,T}(x::TS{V,T}, at::AbstractArray{Bool,1}; fun::Function=last
 end
 
 # Here `at` is a function of the index of `x` which generates a BitArray to be used as above
-function collapse{V,T}(x::TS{V,T}, at::Function; fun::Function=last, args...)::TS{V,T}
+function collapse(x::TS{V,T}, at::Function; fun::Function=last, args...)::TS{V,T} where {V,T}
     return collapse(x, at(x.index), fun=fun; args...)
 end
 
-function apply{V}(x::TS{V}, dim::Int=1; fun=sum)
+function apply(x::TS{V}, dim::Int=1; fun=sum) where {V}
     if dim == 1
         n = size(x,1)
         out = zeros(V, n)

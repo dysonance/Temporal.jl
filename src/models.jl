@@ -36,7 +36,7 @@ function lag(x::Vector{Float64}, n::Int=1; pad::Bool=true, padval::Float64=NaN)
 end
 
 
-function corlag{T<:Number}(x::AbstractArray{T,1}, n::Int=1)
+function corlag(x::AbstractArray{T,1}, n::Int=1) where {T<:Number}
     if n == 0
         return 1.0
     end
@@ -51,12 +51,12 @@ Compute the autocorrelation function of a univariate time series
 
 `acf{T<:Number}(x::AbstractArray{T,1}, maxlag::Int=15; lags::AbstractArray{Int,1}=0:maxlag)`
 """ ->
-function acf{T<:Number}(x::Vector{T}, maxlag::Int=15; lags::AbstractArray{Int,1}=0:maxlag)::Vector{Float64}
+function acf(x::Vector{T}, maxlag::Int=15; lags::AbstractArray{Int,1}=0:maxlag)::Vector{Float64} where {T<:Number}
     @assert all(lags .< size(x,1)-2)
     return map((n) -> corlag(x, n), lags)
 end
 
-function acf{T<:Number}(x::Matrix{T}, maxlag::Int=15; lags::AbstractVector{Int}=0:maxlag)::Matrix{Float64}
+function acf(x::Matrix{T}, maxlag::Int=15; lags::AbstractVector{Int}=0:maxlag)::Matrix{Float64} where {T<:Number}
     k = size(x,2)
     out = zeros(Float64, (length(lags), k))
     @inbounds for j in 1:k

@@ -7,17 +7,17 @@ function set_sanitize_names_option(value::Bool = false)::Void
 end
 
 # Find columns in a `TS` object corresponding to the given indexing indicator
-findcols{C<:Symbol}(c::C, x::TS)                    = x.fields .== c
-findcols{C<:AbstractVector{<:Symbol}}(c::C, x::TS)  = map(sym->sym in c, x.fields)
-findcols{C<:Int}(c::C, x::TS)                       = [c]
-findcols{C<:AbstractVector{<:Integer}}(c::C, x::TS) = c
+findcols(c::C, x::TS) where {C<:Symbol} = x.fields .== c
+findcols(c::C, x::TS) where {C<:AbstractVector{<:Symbol}} = map(sym->sym in c, x.fields)
+findcols(c::C, x::TS) where {C<:Int} = [c]
+findcols(c::C, x::TS) where {C<:AbstractVector{<:Integer}} = c
 
 # Find rows in a `TS` object corresponding to the given indexing indicator
-findrows{T<:AbstractVector{<:TimeType}}(t::T, x::TS) = map(ti->ti in t, x.index)
-findrows{T<:TimeType}(t::T, x::TS)                   = x.index .== t
-findrows{R<:Int}(r::R, x::TS)                        = [r]
-findrows{R<:AbstractVector{<:Integer}}(r::R, x::TS)  = r
-findrows{S<:AbstractString}(s::S, x::TS)             = dtidx(s, x.index)
+findrows(t::T, x::TS) where {T<:AbstractVector{<:TimeType}} = map(ti->ti in t, x.index)
+findrows(t::T, x::TS) where {T<:TimeType} = x.index .== t
+findrows(r::R, x::TS) where {R<:Int} = [r]
+findrows(r::R, x::TS) where {R<:AbstractVector{<:Integer}} = r
+findrows(s::S, x::TS) where {S<:AbstractString} = dtidx(s, x.index)
 
 # Find the alphanumeric characters be able to generate sanitized column names (`fields`)
 function findalphanum(s::AbstractString, drop_underscores::Bool=false)::Vector{Int}

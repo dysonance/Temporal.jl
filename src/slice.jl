@@ -5,12 +5,12 @@ Methods for slicing and dicing TS objects
 @doc """
 Get the first `n` observations of a TS object
 """ ->
-head{V,T}(x::TS{V,T}, n::Int=5) = x[1:n,:]
+head(x::TS{V,T}, n::Int=5) where {V,T} = x[1:n,:]
 
 @doc """
 Get the last `n` observations of a TS object
 """ ->
-tail{V,T}(x::TS{V,T}, n::Int=5) = x[end-n+1:end,:]
+tail(x::TS{V,T}, n::Int=5) where {V,T} = x[end-n+1:end,:]
 
 @doc """
 Get the indexes of all rows in an Array containing NaN values
@@ -40,8 +40,8 @@ function nancols(x::Array{Float64}; fun::Function=any)::BitVector
 	return cutcols
 end
 
-nanrows{V,T}(x::TS{V,T}; args...) = nanrows(x.values; args...)
-nancols{V,T}(x::TS{V,T}; args...) = nancols(x.values; args...)
+nanrows(x::TS{V,T}; args...) where {V,T} = nanrows(x.values; args...)
+nancols(x::TS{V,T}; args...) where {V,T} = nancols(x.values; args...)
 
 @doc """
 Drop missing (NaN) values from an Array
@@ -61,7 +61,7 @@ end
 @doc """
 Drop missing (NaN) values from a TS object
 """ ->
-function dropnan{V,T}(x::TS{V,T}; dim::Int=1, fun::Function=any)
+function dropnan(x::TS{V,T}; dim::Int=1, fun::Function=any) where {V,T}
 	@assert dim == 1 || dim == 2 || dim == 3 "Argument `dim` must be 1 (rows), 2 (columns), or 3 (both)."
 	if dim == 1
 		return x[.!nanrows(x.values, fun=fun)]
@@ -77,7 +77,7 @@ function dropnan!(x::TS; dim::Int=1, fun::Function=any)::Void
     return nothing
 end
 
-function ffill!{Float64}(x::AbstractArray{Float64,1})
+function ffill!(x::AbstractArray{Float64,1})
 	i = findfirst(.!isnan.(x))
 	@inbounds for i = i+1:size(x,1)
 		isnan(x[i]) ? x[i] = x[i-1] : nothing
@@ -85,14 +85,14 @@ function ffill!{Float64}(x::AbstractArray{Float64,1})
 	return x
 end
 
-function ffill!{Float64}(x::AbstractArray{Float64,2})
+function ffill!(x::AbstractArray{Float64,2})
 	@inbounds for j = 1:size(x,2)
 		x[:,j] = ffill!(x[:,j])
 	end
     return nothing
 end
 
-function bfill!{Float64}(x::AbstractArray{Float64,1})
+function bfill!(x::AbstractArray{Float64,1})
 	i = findlast(.!isnan.(x))
 	@inbounds for i = i-1:-1:1
 		isnan(x[i]) ? x[i] = x[i+1] : nothing
@@ -100,7 +100,7 @@ function bfill!{Float64}(x::AbstractArray{Float64,1})
 	return x
 end
 
-function bfill!{Float64}(x::AbstractArray{Float64,2})
+function bfill!(x::AbstractArray{Float64,2})
 	@inbounds for j = 1:size(x,2)
 		x[:,j] = bfill!(x[:,j])
 	end
@@ -114,7 +114,7 @@ function interpolate(x1::Int, x2::Int, y1::Float64, y2::Float64)
 	return y
 end
 
-function linterp!{Float64}(x::AbstractArray{Float64,1})
+function linterp!(x::AbstractArray{Float64,1})
 	@assert size(x,1) > 3 "Must have 3 or more elements to interpolate."
 	isval = .!isnan.(x)
 	if all(isval)
@@ -130,7 +130,7 @@ function linterp!{Float64}(x::AbstractArray{Float64,1})
 	return x
 end
 
-function linterp!{Float64}(x::AbstractArray{Float64,2})
+function linterp!(x::AbstractArray{Float64,2})
 	@inbounds for j = 1:size(x,2)
 		x[:,j] = linterp!(x[:,j])
 	end
@@ -140,7 +140,7 @@ end
 @doc """
 Fill missing (NaN) values from a TS object
 """ ->
-function fillnan{V,T}(x::TS{V,T}, method::Symbol=:ffill)
+function fillnan(x::TS{V,T}, method::Symbol=:ffill) where {V,T}
 	c = nancols(x.values)
 	if !any(c)
 		return x
@@ -164,7 +164,7 @@ end
 @doc """
 Replace missing (NaN) values from a TS object with filled values.
 """ ->
-function fillnan!{V,T}(x::TS{V,T}, method::Symbol=:ffill)::Void
+function fillnan!(x::TS{V,T}, method::Symbol=:ffill)::Void where {V,T}
     c = nancols(x.values)
     if !any(c)
         return x

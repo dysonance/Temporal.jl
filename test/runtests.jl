@@ -1,6 +1,6 @@
 using Temporal
-using Base.Test
-using Base.Dates
+using Test
+using Dates
 
 # constant variables
 N = 252*3
