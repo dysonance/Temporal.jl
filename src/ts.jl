@@ -11,7 +11,7 @@ end
 
 abstract type AbstractTS end
 
-@doc doc"""
+@doc """
 Time series type aimed at efficiency and simplicity.
 
 Motivated by the `xts` package in R and the `pandas` package in Python.
@@ -28,20 +28,20 @@ mutable struct TS{V<:Real,T<:TimeType}
     end
 end
 
-TS{V,T}(v::AbstractArray{V}, t::AbstractVector{T}, f::Union{Symbol,String,Char}) = TS{V,T}(v, t, [Symbol(f)])
-TS{V,T}(v::AbstractArray{V}, t::AbstractVector{T}, f::Union{AbstractVector{Symbol},AbstractVector{String},AbstractVector{Char}}) = TS{V,T}(v, t, Symbol.(f))
-TS{V,T}(v::AbstractArray{V}, t::AbstractVector{T}) = TS{V,T}(v, t, autocol(1:size(v,2)))
-TS{V,T}(v::AbstractArray{V}, t::T, f) = TS{V,T}(v, [t], f)
-TS{V,T}(v::V, t::AbstractVector{T}, f) = TS{V,T}([v], t, f)
-TS{V,T}(v::V, t::T, f) = TS{V,T}([v][:,:], [t], f)
-TS{V,T}(v::V, t::T) = TS{V,T}([v], [t], [:A])
-TS{V}(v::AbstractArray{V}) = TS{V,Date}(v, autoidx(size(v,1)), autocol(1:size(v,2)))
+TS(v::AbstractArray{V}, t::AbstractVector{T}, f::Union{Symbol,String,Char}) where {V,T} = TS{V,T}(v, t, [Symbol(f)])
+TS(v::AbstractArray{V}, t::AbstractVector{T}, f::Union{AbstractVector{Symbol},AbstractVector{String},AbstractVector{Char}}) where {V,T} = TS{V,T}(v, t, Symbol.(f))
+TS(v::AbstractArray{V}, t::AbstractVector{T}) where {V,T} = TS{V,T}(v, t, autocol(1:size(v,2)))
+TS(v::AbstractArray{V}, t::T, f) where {V,T} = TS{V,T}(v, [t], f)
+TS(v::V, t::AbstractVector{T}, f) where {V,T} = TS{V,T}([v], t, f)
+TS(v::V, t::T, f) where {V,T} = TS{V,T}([v][:,:], [t], f)
+TS(v::V, t::T) where {V,T} = TS{V,T}([v], [t], [:A])
+TS(v::AbstractArray{V}) where {V} = TS{V,Date}(v, autoidx(size(v,1)), autocol(1:size(v,2)))
 TS() = TS{Float64,Date}(Matrix{Float64}(0,0), Date[], Symbol[])
 
 # Conversions ------------------------------------------------------------------
 convert(::Type{TS{Float64}}, x::TS{Bool}) = TS{Float64}(map(Float64, x.values), x.index, x.fields)
 convert(::Type{TS{Int}}, x::TS{Bool}) = TS{Int}(map(Int, x.values), x.index, x.fields)
-convert{V<:Real}(::Type{TS{Bool}}, x::TS{V}) = TS{Bool}(map(V, x.values), x.index, x.fields)
+convert(::Type{TS{Bool}}, x::TS{V}) where {V<:Real} = TS{Bool}(map(V, x.values), x.index, x.fields)
 convert(x::TS{Bool}) = convert(TS{Int}, x::TS{Bool})
 # convert{V}(::Type{TS}, x::Array{V}) = TS{V,Date}(x, [Dates.Date() for i in 1:size(x,1)])
 # convert(x::TS{Bool}) = convert(TS{Float64}, x::TS{Bool})
