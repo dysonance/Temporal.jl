@@ -36,7 +36,7 @@ TS(v::V, t::AbstractVector{T}, f) where {V,T} = TS{V,T}([v], t, f)
 TS(v::V, t::T, f) where {V,T} = TS{V,T}([v][:,:], [t], f)
 TS(v::V, t::T) where {V,T} = TS{V,T}([v], [t], [:A])
 TS(v::AbstractArray{V}) where {V} = TS{V,Date}(v, autoidx(size(v,1)), autocol(1:size(v,2)))
-TS() = TS{Float64,Date}(Matrix{Float64}(0,0), Date[], Symbol[])
+TS() = TS{Float64,Date}(Matrix{Float64}(UndefInitializer(),0,0), Date[], Symbol[])
 
 # Conversions ------------------------------------------------------------------
 convert(::Type{TS{Float64}}, x::TS{Bool}) = TS{Float64}(map(Float64, x.values), x.index, x.fields)
