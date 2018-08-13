@@ -20,10 +20,10 @@ const SHOWINT = false  # whether to format integer columns without decimals
 # strwidth(b::Bool)::Int = b ? 4 : 5
 # strwidth(c::Char)::Int = 1
 
-str_width(s::AbstractString)::Int = strwidth(s)
-str_width(s::Symbol)::Int = strwidth(string(s))
-str_width(n::Number)::Int = strwidth(string(n))
-str_width(f::Function)::Int = strwidth(string(f))
+str_width(s::AbstractString)::Int = length(s)
+str_width(s::Symbol)::Int = length(string(s))
+str_width(n::Number)::Int = length(string(n))
+str_width(f::Function)::Int = length(string(f))
 str_width(b::Bool)::Int = b ? 4 : 5
 str_width(c::Char)::Int = 1
 
