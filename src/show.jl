@@ -86,7 +86,7 @@ function print_row(x::TS{V,T}, row::Int, widths::Vector{Int}, negs::Vector{Bool}
     end
 end
 
-function print_rows(io::IO, x::TS, widths::Vector{Int}=getwidths(io,x).+PADDING, negs::Vector{Bool}=getnegs(io,x))::Void
+function print_rows(io::IO, x::TS, widths::Vector{Int}=getwidths(io,x).+PADDING, negs::Vector{Bool}=getnegs(io,x))::Nothing
     # negs = getnegs(io,x)
     # widths = getwidths(io,x) .+ PADDING
     nrow = size(x,1)
@@ -107,7 +107,7 @@ function print_rows(io::IO, x::TS, widths::Vector{Int}=getwidths(io,x).+PADDING,
     nothing
 end
 
-function show(io::IO, x::TS{V,T})::Void where {V,T}
+function show(io::IO, x::TS{V,T})::Nothing where {V,T}
     if print_summary(io, x) == 0
         return nothing
     end

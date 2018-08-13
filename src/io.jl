@@ -69,7 +69,7 @@ Write TS object to a text file.
 
 `tswrite(x::TS, file::String; dlm::Char=',', header::Bool=true, eol::Char='\\n')`
 """ ->
-function tswrite(x::TS, file::String; dlm::Char=',', header::Bool=true, eol::Char='\n')::Void
+function tswrite(x::TS, file::String; dlm::Char=',', header::Bool=true, eol::Char='\n')::Nothing
     outfile = open(file, "w")
     if header
         write(outfile, "Index$(dlm)$(join(x.fields, dlm))$(eol)")

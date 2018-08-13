@@ -85,10 +85,10 @@ maximum(x::TS{V}) where {V} = maximum(x.values)
 maximum(x::TS{V}, dim::Int) where {V} = maximum(x.values, dim)
 minimum(x::TS{V}) where {V} = minimum(x.values)
 minimum(x::TS{V}, dim::Int) where {V} = minimum(x.values, dim)
-cumsum(x::TS, dim::Int=1) = ts(cumsum(x.values, dim), x.index, x.fields)
-cummin(x::TS, dim::Int=1) = ts(cummin(x.values, dim), x.index, x.fields)
-cummax(x::TS, dim::Int=1) = ts(cummax(x.values, dim), x.index, x.fields)
-cumprod(x::TS, dim::Int=1) = ts(cumprod(x.values, dim), x.index, x.fields)
+cumsum(x::TS; dims::Int=1) = ts(cumsum(x.values, dims=dims), x.index, x.fields)
+cummin(x::TS; dims::Int=1) = ts(cummin(x.values, dims), x.index, x.fields)
+cummax(x::TS; dims::Int=1) = ts(cummax(x.values, dims), x.index, x.fields)
+cumprod(x::TS; dims::Int=1) = ts(cumprod(x.values, dims), x.index, x.fields)
 
 nans(r::Int, c::Int) = fill(NaN, 1, 2)
 nans(dims::Tuple{Int,Int}) = fill(NaN, dims)
@@ -151,16 +151,16 @@ function diff(x::TS{V,T}, n::Int=1; dim::Int=1, pad::Bool=false, padval::V=zero(
 end
 
 function lag(x::TS{V,T}, n::Int=1; pad::Bool=false, padval::V=zero(V)) where {V,T}
-	@assert abs(n) < size(x,1) "Argument `n` out of bounds."
-	if n == 0
-		return x
-	elseif n > 0
-		out = zeros(x.values)
-		out[n+1:end,:] = x.values[1:end-n,:]
-	elseif n < 0
-		out = zeros(x.values)
-		out[1:end+n,:] = x.values[1-n:end,:]
-	end
+    @assert abs(n) < size(x,1) "Argument `n` out of bounds."
+    if n == 0
+        return x
+    elseif n > 0
+        out = zeros(x.values)
+        out[n+1:end,:] = x.values[1:end-n,:]
+    elseif n < 0
+        out = zeros(x.values)
+        out[1:end+n,:] = x.values[1-n:end,:]
+    end
     r = size(x, 1)
     c = size(x, 2)
     if pad
@@ -294,7 +294,7 @@ broadcast(::typeof(<=), x::TS, y::TS) = compare_elementwise(x, y, <=)
 # <(x::TS, y::Real) = all(x.values .< y)
 # >=(x::TS, y::Real) = all(x.values .>= y)
 # <=(x::TS, y::Real) = all(x.values .<= y)
-# 
+
 # broadcast(::typeof(==), x::TS, y::Real) = TS{Bool}(x.values .== y, x.index, x.fields)
 # broadcast(::typeof(!=), x::TS, y::Real) = TS{Bool}(x.values .!= y, x.index, x.fields)
 # broadcast(::typeof(>), x::TS, y::Real) = TS{Bool}(x.values .> y, x.index, x.fields)

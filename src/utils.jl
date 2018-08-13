@@ -1,6 +1,6 @@
 global SANITIZE_NAMES = false
 
-function set_sanitize_names_option(value::Bool = false)::Void
+function set_sanitize_names_option(value::Bool = false)::Nothing
     global SANITIZE_NAMES
     SANITIZE_NAMES = value
     return nothing
@@ -38,7 +38,7 @@ namefix(s::AbstractString)::AbstractString = s[findalphanum(s)]
 namefix(s::Symbol)::Symbol = Symbol(namefix(string(s)))
 
 # Convert all column names (`field`s) of a TS object to alphanumeric-only `Symbol`s
-namefix!(x::TS)::Void = x.fields = namefix.(x.fields)
+namefix!(x::TS)::Nothing = x.fields = namefix.(x.fields)
 
 # Generate automatic column names following the Excel spreadsheet naming convention (A,B,C,..,X,Y,Z,AA,AB,AC,...)
 function autocol(col::Int)::Symbol
