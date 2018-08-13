@@ -1,6 +1,6 @@
 # module TestAggregation
 
-using Base.Test, Base.Dates, Temporal
+using Test, Dates, Temporal
 
 @testset "Reducing / Collapsing" begin
     @testset "Periods" begin

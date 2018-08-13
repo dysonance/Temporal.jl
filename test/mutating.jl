@@ -1,6 +1,6 @@
 # module TestMutating
 
-using Base.Test, Base.Dates, Temporal
+using Test, Dates, Temporal
 
 @testset "Mutating" begin
     @testset "General" begin

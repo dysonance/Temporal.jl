@@ -1,4 +1,4 @@
-import Base: size, length, show, start, next, done, endof, isempty, convert, ndims, float, eltype, copy
+import Base: size, length, show, start, next, done, endof, isempty, convert, ndims, float, eltype, copy, ==
 if VERSION >= v"0.7-"
     using Dates
 else

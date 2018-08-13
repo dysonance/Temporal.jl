@@ -1,6 +1,6 @@
 # module TestBasics
 
-using Base.Test, Base.Dates, Temporal
+using Test, Dates, Temporal
 
 @testset "Initialization" begin
     @test Temporal.autocol(1:27)[end] == :AA
@@ -11,7 +11,7 @@ using Base.Test, Base.Dates, Temporal
     @test X.values == Y.values == data
     @test X.index == collect(dates)
     @test Y.index == collect(times)
-    @test size(TS(rand((N,K)))) == (N,K)
+    @test size(TS(rand(N,K))) == (N,K)
     @test TS(X.values, X.index, ['A','B','C','D']) == X
     @test TS(X.values, X.index, ["A","B","C","D"]) == X
     @test TS(X.values[:,1], X.index, 'A') == X[:,1]
@@ -21,7 +21,7 @@ using Base.Test, Base.Dates, Temporal
     # underscores in colnames (issue 13)
     u = TS(rand(N), X.index, "under_score")
     @test u.fields[1] == :under_score
-    show(STDOUT, TS(rand(252,4)))
+    show(Core.CoreSTDOUT, TS(rand(252,4)))
     print("\n")
 end
 

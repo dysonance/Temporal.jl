@@ -1,6 +1,6 @@
 # module TestSubsetting
 
-using Base.Test, Base.Dates, Temporal
+using Test, Dates, Temporal
 
 @testset "Subsetting" begin
     @testset "Identity" begin

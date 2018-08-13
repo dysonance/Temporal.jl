@@ -1,6 +1,6 @@
 # module TestIO
 
-using Base.Test, Base.Dates, Temporal
+using Test, Dates, Temporal
 
 @testset "Input/Output" begin
     @testset "Sample Data" begin

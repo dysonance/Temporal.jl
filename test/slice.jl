@@ -1,6 +1,6 @@
 # module TestSlice
 
-using Base.Test, Base.Dates, Temporal
+using Test, Dates, Temporal
 
 @testset "Slicing" begin
     @testset "Head/Tail" begin

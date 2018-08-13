@@ -1,6 +1,6 @@
 # module TestOperations
 
-using Base.Test, Base.Dates, Temporal
+using Test, Dates, Temporal
 
 @testset "Operations" begin
     @testset "Utilities" begin

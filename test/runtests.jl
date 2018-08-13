@@ -5,7 +5,7 @@ using Dates
 # constant variables
 N = 252*3
 K = 4
-data = cumsum(randn(N,K), 1)
+data = cumsum(randn(N,K), dims=1)
 dates = today()-Day(N-1):Day(1):today()
 times = DateTime(dates[1]):Hour(1):DateTime(dates[1])+Hour(N-1)
 X = TS(data, dates)

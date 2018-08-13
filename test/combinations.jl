@@ -1,6 +1,6 @@
 # module TestCombinations
 
-using Base.Test, Base.Dates, Temporal
+using Test, Dates, Temporal
 
 X1 = copy(X)
 X2 = TS(Y.values, X1.index+Week(1), Y.fields)
