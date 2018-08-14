@@ -56,7 +56,7 @@ function getwidths(io::IO, x::TS{V,T})::Vector{Int} where {V,T}
         widths[2:end] = 5
     elseif V <: Number
         @inbounds for j in 1:size(x,2)
-            widths[j+1] = max(widths[j+1], maximum(str_width.(round.(vals[:,j],DECIMALS))))
+            widths[j+1] = max(widths[j+1], maximum(str_width.(round.(vals[:,j], digits=DECIMALS))))
         end
     else
         @inbounds for j in 1:size(x,2)
@@ -80,7 +80,7 @@ function print_row(x::TS{V,T}, row::Int, widths::Vector{Int}, negs::Vector{Bool}
     if V <: Bool
         return prod(rpad.([string(x.index[row]); [" "].^(negs.*(x.values[row,:].>=0.0)) .* string.(x.values[row,:])], widths))
     elseif V <: Number
-        return prod(rpad.([string(x.index[row]); [" "].^(negs.*(x.values[row,:].>=0.0)) .* string.(round.(x.values[row,:],DECIMALS))], widths))
+        return prod(rpad.([string(x.index[row]); [" "].^(negs.*(x.values[row,:].>=0.0)) .* string.(round.(x.values[row,:], digits=DECIMALS))], widths))
     else
         return prod(rpad.([string(x.index[row]); string.(x.values[row,:])], widths))
     end

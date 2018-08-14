@@ -65,5 +65,3 @@ ndims(::TS) = 2
 float(x::TS) = ts(float(x.values), x.index, x.fields)
 eltype(x::TS) = eltype(x.values)
 copy(x::TS) = TS(x.values, x.index, x.fields)
-# round(V::Type, x::TS) = TS(round(V, x.values), x.index, x.fields)
-

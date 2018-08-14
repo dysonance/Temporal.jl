@@ -71,7 +71,7 @@ log(x::TS) = ts(log.(x.values), x.index, x.fields)
 log(b::Number, x::TS) = ts(log.(b, x.values), x.index, x.fields)
 
 # Number functions
-round(x::TS{V}, n::Int=0) where {V} = ts(round.(x.values,n), x.index, x.fields)
+round(x::TS{V}; digits::Int=0) where {V} = ts(round.(x.values, digits=digits), x.index, x.fields)
 round(::Type{R}, x::TS) where {R} = ts(round.(R, x.values), x.index, x.fields)
 sum(x::TS{V}) where {V} = sum(x.values)
 sum(x::TS{V}, dim::Int) where {V} = sum(x.values, dim)
