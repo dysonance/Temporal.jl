@@ -86,7 +86,7 @@ function apply(x::TS{V}, dim::Int=1; fun=sum) where {V}
         @inbounds for i in 1:n
             out[i] = fun(x.values[i,:])
         end
-        return ts(out, x.index, Symbol(ucfirst(string(fun))))
+        return ts(out, x.index, Symbol(uppercasefirst(string(fun))))
     elseif dim == 2
         k = size(x,2)
         out = zeros(V, k)
