@@ -110,7 +110,7 @@ function interpolate(x1::Int, x2::Int, y1::Float64, y2::Float64)
     m = (y2-y1)/(x2-x1)
     b = y1 - m*x1
     x = collect(x1:1.0:x2)
-    y = m*x + b
+    y = m*x .+ b
     return y
 end
 
@@ -178,7 +178,7 @@ function fillnan!(x::TS{V,T}, method::Symbol=:ffill)::Nothing where {V,T}
         linterp!(v)
     # elseif method == :spline
     end
-    x[:] = v
+    x.values = v
     return nothing
 end
 
