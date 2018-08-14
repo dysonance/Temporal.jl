@@ -20,7 +20,6 @@ import Base: +,
              falses,
              isnan,
              sum,
-             mean,
              maximum,
              minimum,
              round,
@@ -36,6 +35,8 @@ import Base: +,
              findfirst,
              log,
              broadcast
+
+import Statistics: mean
 
 find(x::TS) = find(x.values)
 findfirst(x::TS) = findfirst(x.values)
