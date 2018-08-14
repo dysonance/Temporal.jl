@@ -44,7 +44,7 @@ x2 = X1[:,1]
         @test size(Z,1) == length(union(X1.index, X2.index))
         @test size(Z,2) == size(X1,2) + size(X2,2) + size(x1,2) + size(x2,2)
         # ts object with multiple arrays
-        Z = [X1 ones(N) 2.0+zeros(N,2)]
+        Z = [X1 ones(N) 2.0.+zeros(N,2)]
         @test size(Z,1) == size(X1,1)
         @test size(Z,2) == size(X1,2) + 3
         @test all(Z[:,5].values .== 1.0)

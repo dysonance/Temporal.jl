@@ -1,4 +1,4 @@
-import Base: size, length, show, start, next, done, endof, isempty, convert, ndims, float, eltype, copy, ==
+import Base: size, length, show, start, next, done, lastindex, isempty, convert, ndims, float, eltype, copy, ==
 if VERSION >= v"0.7-"
     using Dates
 else
@@ -60,7 +60,8 @@ isempty(x::TS) = (isempty(x.index) && isempty(x.values))
 first(x::TS) = x[1]
 last(x::TS) = x[end]
 #FIXME: should interface with indexing (changing this messed with show method)
-endof(x::TS) = endof(x.values)
+lastindex(x::TS) = lastindex(x.values)
+lastindex(x::TS, d) = lastindex(x.values, d)
 ndims(::TS) = 2
 float(x::TS) = ts(float(x.values), x.index, x.fields)
 eltype(x::TS) = eltype(x.values)
