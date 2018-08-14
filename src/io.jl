@@ -137,9 +137,14 @@ function csvresp(resp::HTTP.Response; sort::Char='d')
     else
         # Standard logic
         @inbounds for i in 1:N
-            j = (v[i] .== "")
-            v[i][find(j)] .= "NaN"
-            data[i,:] .= float(v[i][2:k])
+            #  j = (v[i] .== "")
+            #  v[i][findall(j)] .= "NaN"
+            for j in 2:k
+                if v[i][j] == ""
+                    v[i][j] = "NaN"
+                end
+                data[i,j-1] = parse(Float64, v[i][j])
+            end
         end
     end
     return (data, t, header)
