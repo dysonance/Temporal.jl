@@ -121,7 +121,7 @@ function linterp!(x::AbstractArray{Float64,1})
         return x
     end
     @assert sum(isval) > 2 "Must have at least 2 non-missing values to interpolate."
-    idx = find(isval)
+    idx = findall(isval)
     @inbounds for i = 1:size(idx,1)-1
         a = idx[i]
         b = idx[i+1]
@@ -151,7 +151,7 @@ function fillnan(x::TS{V,T}, method::Symbol=:ffill) where {V,T}
     elseif method == :bfill
         bfill!(v)
     elseif method == :linear
-        @inbounds for j = find(c)
+        @inbounds for j = findall(c)
             linterp!(v)
         end
     #TODO: elseif method == :spline

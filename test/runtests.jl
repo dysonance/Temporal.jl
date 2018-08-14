@@ -12,11 +12,11 @@ X = TS(data, dates)
 Y = TS(data, times)
 
 test_scripts = [
-    #  "basic.jl",
-    #  "subsetting.jl",
-    #  "mutating.jl",
-    #  "combinations.jl",
-    #  "operations.jl",
+    "basic.jl",
+    "subsetting.jl",
+    "mutating.jl",
+    "combinations.jl",
+    "operations.jl",
     "io.jl",
     "slice.jl",
     "aggregation.jl"

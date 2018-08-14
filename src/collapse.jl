@@ -58,7 +58,7 @@ eoy(x::TS; cal::Bool=false) = x[eoy(x.index, cal=cal)]
 
 function collapse(x::TS{V,T}, at::AbstractArray{Bool,1}; fun::Function=last, args...)::TS{V,T} where {V,T}
     @assert size(at,1) == size(x,1) "Arguments `x` and `at` must have same number of rows."
-    idx = find(at)
+    idx = findall(at)
     if fun == last
         return x[idx]
     end

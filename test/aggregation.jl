@@ -27,7 +27,7 @@ using Test, Dates, Temporal
         x = X[:,1]
         m = collapse(x, eoy, fun=mean)
         prev_year = string(year(today())-1)
-        @test round(m.values[end], 2) == round(mean(x[prev_year]), 2)
+        @test round(m.values[end], digits=2) == round(mean(x[prev_year]), digits=2)
         m = collapse(x, (t)->eom(t,cal=true), fun=mean)
         prev_month = string(today()-Month(1))[1:7]
         @test mean(x[prev_month]) == m[prev_month].values[end]
