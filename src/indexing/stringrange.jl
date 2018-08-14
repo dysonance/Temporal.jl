@@ -1,5 +1,7 @@
 global RANGE_DELIMITER = '/'
 
+import Base: !=, ==
+
 function set_range_delimiter_option(value = '/')
     global RANGE_DELIMITER
     RANGE_DELIMITER = value
@@ -279,7 +281,7 @@ end
 
 function dtidx(s::AbstractString, t::Vector{Date})::BitVector
     if s == "/" || s == ""
-        return trues(t)
+        return trues(length(t))
     end
     @assert !in('T', s) "Cannot index Date type with sub-daily frequency."
     bds = split(s, RANGE_DELIMITER)
@@ -301,7 +303,7 @@ end
 
 function dtidx(s::AbstractString, t::Vector{DateTime})::BitVector
     if s == "/" || s == ""
-        return trues(t)
+        return trues(length(t))
     end
     bds = split(s, RANGE_DELIMITER)
     @assert length(bds) in [1,2]
