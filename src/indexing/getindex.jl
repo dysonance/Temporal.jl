@@ -12,6 +12,11 @@ getindex(x::TS) = x
 getindex(x::TS, ::Colon) = x
 getindex(x::TS, ::Colon, ::Colon) = x
 
+# cartesian index support
+getindex(x::TS, idx::CI) where {CI<:AbstractArray{CartesianIndex{2}}} = TS(x.values[idx],
+                                                                           x.index[[idx[i].I[1] for i in 1:length(idx)]],
+                                                                           x.fields[unique([idx[i].I[2] for i in 1:length(idx)])])
+
 # general interface
 getindex(x::TS, r, c) = (rows=findrows(r,x); cols=findcols(c,x); TS(x.values[rows,cols],x.index[rows],x.fields[cols]))
 getindex(x::TS, r, ::Colon) = (rows=findrows(r,x); TS(x.values[rows,:],x.index[rows],x.fields))

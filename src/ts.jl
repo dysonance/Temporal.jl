@@ -1,4 +1,4 @@
-import Base: size, length, show, start, next, done, lastindex, isempty, convert, ndims, float, eltype, copy, ==
+import Base: size, length, show, iterate, lastindex, isempty, convert, ndims, float, eltype, copy, ==
 if VERSION >= v"0.7-"
     using Dates
 else
@@ -53,15 +53,13 @@ const ts = TS
 size(x::TS) = size(x.values)
 size(x::TS, dim::Int) = size(x.values, dim)
 length(x::TS) = prod(size(x))::Int
-start(x::TS) = 1
-next(x::TS, i::Int) = ((x.index[i], x.values[i,:]), i+1)
-done(x::TS, i::Int) = (i > size(x,1))
+lastindex(x::TS) = lastindex(x.values)
+lastindex(x::TS, d) = lastindex(x.values, d)
+iterate(x::TS) = x.values[1,1], 2
+iterate(x::TS, i::Int) = ((x.index[i], x.values[i,:]), i+1)
 isempty(x::TS) = (isempty(x.index) && isempty(x.values))
 first(x::TS) = x[1]
 last(x::TS) = x[end]
-#FIXME: should interface with indexing (changing this messed with show method)
-lastindex(x::TS) = lastindex(x.values)
-lastindex(x::TS, d) = lastindex(x.values, d)
 ndims(::TS) = 2
 float(x::TS) = ts(float(x.values), x.index, x.fields)
 eltype(x::TS) = eltype(x.values)

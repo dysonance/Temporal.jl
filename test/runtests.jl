@@ -11,14 +11,16 @@ times = DateTime(dates[1]):Hour(1):DateTime(dates[1])+Hour(N-1)
 X = TS(data, dates)
 Y = TS(data, times)
 
-test_scripts = ["basic.jl",
-                "subsetting.jl",
-                "mutating.jl",
-                "combinations.jl",
-                "operations.jl",
-                "io.jl",
-                "slice.jl",
-                "aggregation.jl"]
+test_scripts = [
+    "basic.jl",
+    "subsetting.jl",
+    "mutating.jl",
+    "combinations.jl",
+    "operations.jl",
+    "io.jl",
+    "slice.jl",
+    "aggregation.jl"
+]
 
 for test_script in test_scripts
     include(test_script)

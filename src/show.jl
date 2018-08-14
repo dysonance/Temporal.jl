@@ -53,7 +53,7 @@ function getwidths(io::IO, x::TS{V,T})::Vector{Int} where {V,T}
     toprows, botrows = getshowrows(io, x)
     vals = [x.values[toprows,:]; x.values[botrows,:]]
     if V <: Bool
-        widths[2:end] = 5
+        widths[2:end] .= 5
     elseif V <: Number
         @inbounds for j in 1:size(x,2)
             widths[j+1] = max(widths[j+1], maximum(str_width.(round.(vals[:,j], digits=DECIMALS))))

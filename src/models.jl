@@ -1,3 +1,5 @@
+import Statistics.cor
+
 # Autocorrelation
 
 #TODO: move to another file to maintain a more logical structure
@@ -42,8 +44,8 @@ function corlag(x::AbstractArray{T,1}, n::Int=1) where {T<:Number}
     end
     @assert n > 0
     @assert n < size(x,1) - 2
-    idx = lagindex(x, n)
-    return cor(x[idx-n], x[idx])
+    idx = collect(lagindex(x, n))
+    return cor(x[idx.-n], x[idx])
 end
 
 @doc """

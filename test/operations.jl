@@ -1,18 +1,18 @@
 # module TestOperations
 
-using Test, Dates, Temporal
+using Test, Dates, Temporal, Random
 
 @testset "Operations" begin
     @testset "Utilities" begin
-        srand(1)
+        Random.seed!(1)
         x = ts(cumsum(randn(N))) + N
         dx = diff(log(x), pad=true, padval=NaN)
-        @test find(trues(x)) == collect(1:N)
-        @test findfirst(trues(x)) == 1
+        @test findall(trues(x)) == [CartesianIndex(i,1) for i in 1:size(x,1)]
+        @test findfirst(trues(x)) == CartesianIndex(1,1)
         idx_nans = isnan(dx)
-        @test find(idx_nans) == [1]
-        @test findfirst(idx_nans) == 1
-        @test sign(dx[find(.!idx_nans)]).values[:] == sign.(dx.values[.!isnan.(dx.values)])
+        @test findall(idx_nans) == [CartesianIndex(1,1)]
+        @test findfirst(idx_nans) == CartesianIndex(1,1)
+        @test sign(dx[findall(!idx_nans)]).values[:] == sign.(dx.values[.!isnan.(dx.values)])
         x = ts(rand(N))
         @test round(Int,x).values == round.(Int,round(x).values)
         @test ones(x).values == ones(eltype(x), size(x))
@@ -30,6 +30,7 @@ using Test, Dates, Temporal
         @test all(y.values .>= 0.0)
     end
     @testset "Logical" begin
+        x1 = x2 = TS(rand(100))
         @test x1 == x2
         @test all(trues(x1))
         @test all(!falses(x2))
@@ -41,15 +42,15 @@ using Test, Dates, Temporal
         @test all(x2 <= x1)
     end
     @testset "Arithmetic" begin
-        x1 = TS(rand(100))
-        x2 = TS(rand(100))
+        x1 = TS(rand(100)) + 100
+        x2 = TS(rand(100)) + 100
         z = x1 + x2
         @test z.values == x1.values + x2.values
         z = x1 - x2
         @test z.values == x1.values - x2.values
-        z = x1 .* x2
+        z = x1 * x2
         @test z.values == x1.values .* x2.values
-        z = x1 ./ x2
+        z = x1 / x2
         @test z.values == x1.values ./ x2.values
         z = x1 * 2.0
         @test z.values == x1.values * 2.0
@@ -61,7 +62,7 @@ using Test, Dates, Temporal
         @test x2 - x2.values == zeros(x2)
     end
     @testset "Statistics" begin
-        x = copy(x1)
+        x = TS(rand(100)) + 100
         x[1] = 0.0
         @test prod(x) == prod(round(x)) == cumprod(x).values[end] == prod(x.values) == 0.0
         @test cumsum(x).values[end] ≈ sum(x) ≈ sum(x.values)
