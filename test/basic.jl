@@ -21,7 +21,7 @@ using Test, Dates, Temporal
     # underscores in colnames (issue 13)
     u = TS(rand(N), X.index, "under_score")
     @test u.fields[1] == :under_score
-    show(Core.CoreSTDOUT, TS(rand(252,4)))
+    show(stdout, TS(rand(252,4)))
     print("\n")
 end
 
