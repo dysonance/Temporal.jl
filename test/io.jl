@@ -4,7 +4,8 @@ using Test, Dates, Temporal
 
 @testset "Input/Output" begin
     @testset "Sample Data" begin
-        corn = tsread("$(Pkg.dir("Temporal"))/data/Corn.csv", header=true, eol='\n')
+        filepath = split(pwd(), "/")[end] == "test" ? "$(pwd())/../data/Corn.csv" : "$(pwd())/data/Corn.csv"
+        corn = tsread(filepath, header=true, eol='\n')
         @test size(corn, 2) == 8
         @test size(cl(corn), 2) == 1
     end

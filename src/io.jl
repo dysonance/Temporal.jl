@@ -38,12 +38,12 @@ Index       Open    High    Low     Last    Change  Settle  Volume    OpenIntere
 """ ->
 function tsread(file::String; dlm::Char=',', header::Bool=true, eol::Char='\n', indextype::Type=Date, format::String="yyyy-mm-dd")::TS
     @assert indextype == Date || indextype == DateTime "Argument `indextype` must be either `Date` or `DateTime`."
-    csv = Vector{String}(split(readstring(file), eol))
+    csv = Vector{String}(split(read(file, String), eol))
     if csv[end] == ""
         pop!(csv)  # remove final blank line
     end
     if header
-        fields = Vector{String}(split(shift!(csv), dlm)[2:end])
+        fields = Vector{String}(split(popfirst!(csv), dlm)[2:end])
         k = length(fields)
         n = length(csv)
     else
@@ -57,11 +57,13 @@ function tsread(file::String; dlm::Char=',', header::Bool=true, eol::Char='\n', 
     idx = fill("", n)::Vector{String}
     for i = 1:n
         s = Vector{String}(split(csv[i], dlm))
-        idx[i] = shift!(s)
-        s[s.==""] = "NaN"
-        arr[i,:] = float(s)
+        idx[i] = popfirst!(s)
+        s[s.==""] .= "NaN"
+        for j in 1:length(s)
+            arr[i,j] = parse(Float64, s[j])
+        end
     end
-    return TS(arr, indextype(idx), fields)
+    return TS(arr, indextype.(idx), fields)
 end
 
 @doc """
@@ -101,7 +103,7 @@ end
 function csvresp(resp::HTTP.Response; sort::Char='d')
     @assert resp.status == 200 "Error in download request."
     rowdata = Vector{String}(split(String(resp.body), '\n'))
-    header = Vector{String}(split(shift!(rowdata), ','))
+    header = Vector{String}(split(popfirst!(rowdata), ','))
     pop!(rowdata)
     if sort == 'd'
         reverse!(rowdata)
@@ -113,7 +115,7 @@ function csvresp(resp::HTTP.Response; sort::Char='d')
     v = map(s -> Array{String}(split(s, ',')), rowdata)
     source_is_google = (header[1] == "\ufeffDate")
     if source_is_google
-        header[1] = "Date"
+        header[1] .= "Date"
         format = Dates.DateFormat("dd-uuu-yy")
         t = map(s -> Dates.DateTime(s[1], format), v)
         t .+= Dates.Year(2000)  # instead of year 0017, take year 2017
@@ -130,14 +132,14 @@ function csvresp(resp::HTTP.Response; sort::Char='d')
             split_a = float(stock_split_string[1])
             split_b = float(stock_split_string[2])
             is_rev_split = split_a < split_b
-            data[i,1] = split_b / split_a
+            data[i,1] .= split_b / split_a
         end
     else
         # Standard logic
         @inbounds for i in 1:N
             j = (v[i] .== "")
-            v[i][find(j)] = "NaN"
-            data[i,:] = float(v[i][2:k])
+            v[i][find(j)] .= "NaN"
+            data[i,:] .= float(v[i][2:k])
         end
     end
     return (data, t, header)
@@ -165,7 +167,7 @@ julia> quandl_auth()
 function quandl_auth(key::T=""; authfile::T=expanduser("~/quandl-auth"))::String where {T<:String}
     if key == ""
         if isfile(authfile)
-            key = readstring(authfile)
+            key = read(authfile, String)
         end
     else
         f = open(authfile, "w")
@@ -328,7 +330,7 @@ function yahoo(syms::Vector{String};
                crumb_tuple::Tuple{SubString{String}, Dict{String, HTTP.Cookie}}=yahoo_get_crumb())::Dict{String,TS}
     out = Dict()
     for s = syms
-        out[s] = yahoo(s, from=from, thru=thru, freq=freq, event=event, crumb_tuple=crumb_tuple)
+        out[s] .= yahoo(s, from=from, thru=thru, freq=freq, event=event, crumb_tuple=crumb_tuple)
     end
     return out
 end
