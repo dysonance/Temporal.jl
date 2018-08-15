@@ -1,6 +1,7 @@
 using Temporal
 using JSON
 if VERSION >= v"0.7-"
+    using Printf  # needed for @sprintf macro
     using Dates
 else
     using Base.Dates
