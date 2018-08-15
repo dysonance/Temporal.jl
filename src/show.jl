@@ -13,6 +13,9 @@ str_width(n::Number) = length(string(n))
 str_width(f::Function) = length(string(f))
 str_width(b::Bool) = b ? 4 : 5
 str_width(c::Char) = 1
+str_width(::Missing) = 7
+
+_round(x, n=4) = ismissing(x) ? missing : round(x, digits=n)
 
 function print_summary(io::IO, x::TS{V,T}) where {V,T}
     if isempty(x)
@@ -43,7 +46,7 @@ function getwidths(io::IO, x::TS{V,T}) where {V,T}
         widths[2:end] .= 5
     elseif V <: Number
         @inbounds for j in 1:size(x,2)
-            widths[j+1] = max(widths[j+1], maximum(str_width.(round.(vals[:,j], digits=DECIMALS))))
+            widths[j+1] = max(widths[j+1], maximum(str_width.(_round.(vals[:,j], DECIMALS))))
         end
     else
         @inbounds for j in 1:size(x,2)
@@ -63,11 +66,13 @@ end
 
 print_header(x::TS, widths::Vector{Int}, negs::Vector{Bool}) = prod(rpad.(["Index"; lpad.(string.(x.fields), str_width.(x.fields).+negs)], widths))
 
+pos_or_missing(x) = [(ismissing(x) || x >= 0.0) for x in x]
+
 function print_row(x::TS{V,T}, row::Int, widths::Vector{Int}, negs::Vector{Bool}) where {V,T}
     if V <: Bool
-        return prod(rpad.([string(x.index[row]); [" "].^(negs.*(x.values[row,:].>=0.0)) .* string.(x.values[row,:])], widths))
+        return prod(rpad.([string(x.index[row]); [" "].^(negs .* pos_or_missing(x.values[row,:])) .* string.(x.values[row,:])], widths))
     elseif V <: Number
-        return prod(rpad.([string(x.index[row]); [" "].^(negs.*(x.values[row,:].>=0.0)) .* string.(round.(x.values[row,:], digits=DECIMALS))], widths))
+        return prod(rpad.([string(x.index[row]); [" "].^(negs .* pos_or_missing(x.values[row,:])) .* string.(_round.(x.values[row,:], DECIMALS))], widths))
     else
         return prod(rpad.([string(x.index[row]); string.(x.values[row,:])], widths))
     end
