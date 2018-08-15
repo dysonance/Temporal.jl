@@ -10,7 +10,7 @@ end
 const DATE_STRING_LENGTHS = [4, 7, 10]
 const DATETIME_STRING_LENGTHS = [4, 7, 10, 13, 16, 19]
 
-function thrudt(s::AbstractString, t::Vector{Date})::BitVector
+function thrudt(s::AbstractString, t::Vector{Date})
     n = length(s)
     @assert n in DATE_STRING_LENGTHS "Invalid indexing string: Unable to parse $s"
     if n == 4  # yyyy given
@@ -31,7 +31,7 @@ function thrudt(s::AbstractString, t::Vector{Date})::BitVector
     return t .<= ymd
 end
 
-function fromdt(s::AbstractString, t::Vector{Date})::BitVector
+function fromdt(s::AbstractString, t::Vector{Date})
     n = length(s)
     @assert n in DATE_STRING_LENGTHS "Invalid indexing string: Unable to parse $s"
     if n == 4  # yyyy given
@@ -52,7 +52,7 @@ function fromdt(s::AbstractString, t::Vector{Date})::BitVector
     return t .>= ymd
 end
 
-function thisdt(s::AbstractString, t::Vector{Date})::BitVector
+function thisdt(s::AbstractString, t::Vector{Date})
     n = length(s)
     @assert n in DATE_STRING_LENGTHS "Invalid indexing string: Unable to parse $s"
     if n == 4  # yyyy given
@@ -74,13 +74,13 @@ function thisdt(s::AbstractString, t::Vector{Date})::BitVector
     end
 end
 
-function fromthru(from::AbstractString, thru::AbstractString, t::Vector{Date})::BitVector
+function fromthru(from::AbstractString, thru::AbstractString, t::Vector{Date})
     fromidx = fromdt(from, t)
     thruidx = thrudt(thru, t)
     return fromidx .& thruidx
 end
 
-function thrudt(s::AbstractString, t::Vector{DateTime})::BitVector
+function thrudt(s::AbstractString, t::Vector{DateTime})
     n = length(s)
     @assert n in DATETIME_STRING_LENGTHS || n >= 20 "Invalid indexing string: Unable to parse $s"
     if n == 4  # yyyy given
@@ -147,7 +147,7 @@ function thrudt(s::AbstractString, t::Vector{DateTime})::BitVector
     return t .<= ymdhms
 end
 
-function fromdt(s::AbstractString, t::Vector{DateTime})::BitVector
+function fromdt(s::AbstractString, t::Vector{DateTime})
     n = length(s)
     @assert n in DATETIME_STRING_LENGTHS || n >= 20 "Invalid indexing string: Unable to parse $s"
     if n == 4  # yyyy given
@@ -211,7 +211,7 @@ function fromdt(s::AbstractString, t::Vector{DateTime})::BitVector
     return t .>= ymdhms
 end
 
-function thisdt(s::AbstractString, t::Vector{DateTime})::BitVector
+function thisdt(s::AbstractString, t::Vector{DateTime})
     n = length(s)
     if n == 4  # yyyy given
         y = parse(Int, s)
@@ -279,7 +279,7 @@ function fromthru(from::AbstractString, thru::AbstractString, t::Vector{DateTime
     return fromidx .& thruidx
 end
 
-function dtidx(s::AbstractString, t::Vector{Date})::BitVector
+function dtidx(s::AbstractString, t::Vector{Date})
     if s == "/" || s == ""
         return trues(length(t))
     end
@@ -301,7 +301,7 @@ function dtidx(s::AbstractString, t::Vector{Date})::BitVector
     end
 end
 
-function dtidx(s::AbstractString, t::Vector{DateTime})::BitVector
+function dtidx(s::AbstractString, t::Vector{DateTime})
     if s == "/" || s == ""
         return trues(length(t))
     end

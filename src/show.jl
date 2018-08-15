@@ -7,27 +7,14 @@ const DECIMALS = 4  # the maximum number of decimals to show
 const PADDING = 2  # number of spaces minimum between fields
 const SHOWINT = false  # whether to format integer columns without decimals
 
-# rpad(s::Symbol, n::Int)::String = rpad(string(s), n)
-# isinteger(::String)::Bool = false
-# isinteger(::Symbol)::Bool = false
-# isinteger(::Char)::Bool = false
-# isinteger(::Date)::Bool = false
-# isinteger(::DateTime)::Bool = false
-# isinteger(::Function)::Bool = false
-# strwidth(s::Symbol)::Int = strwidth(string(s))
-# strwidth(n::Number)::Int = strwidth(string(n))
-# strwidth(f::Function)::Int = strwidth(string(f))
-# strwidth(b::Bool)::Int = b ? 4 : 5
-# strwidth(c::Char)::Int = 1
+str_width(s::AbstractString) = length(s)
+str_width(s::Symbol) = length(string(s))
+str_width(n::Number) = length(string(n))
+str_width(f::Function) = length(string(f))
+str_width(b::Bool) = b ? 4 : 5
+str_width(c::Char) = 1
 
-str_width(s::AbstractString)::Int = length(s)
-str_width(s::Symbol)::Int = length(string(s))
-str_width(n::Number)::Int = length(string(n))
-str_width(f::Function)::Int = length(string(f))
-str_width(b::Bool)::Int = b ? 4 : 5
-str_width(c::Char)::Int = 1
-
-function print_summary(io::IO, x::TS{V,T})::Int where {V,T}
+function print_summary(io::IO, x::TS{V,T}) where {V,T}
     if isempty(x)
         println(@sprintf("Empty %s", typeof(x)))
         return 0
@@ -37,7 +24,7 @@ function print_summary(io::IO, x::TS{V,T})::Int where {V,T}
     end
 end
 
-function getshowrows(io::IO, x::TS{V,T})::Tuple{Vector{Int},Vector{Int}} where {V,T}
+function getshowrows(io::IO, x::TS{V,T}) where {V,T}
     nrow = size(x,1)
     dims = displaysize(io)
     if nrow > dims[1]
@@ -48,7 +35,7 @@ function getshowrows(io::IO, x::TS{V,T})::Tuple{Vector{Int},Vector{Int}} where {
     end
 end
 
-function getwidths(io::IO, x::TS{V,T})::Vector{Int} where {V,T}
+function getwidths(io::IO, x::TS{V,T}) where {V,T}
     widths = [T==Date ? 10 : 19; str_width.(x.fields)]
     toprows, botrows = getshowrows(io, x)
     vals = [x.values[toprows,:]; x.values[botrows,:]]
@@ -66,17 +53,17 @@ function getwidths(io::IO, x::TS{V,T})::Vector{Int} where {V,T}
     return widths
 end
 
-hasnegs(v::Vector)::Bool = eltype(v)<:Number ? any(v.<zero(eltype(v))) : false
+hasnegs(v::Vector) = eltype(v)<:Number ? any(v.<zero(eltype(v))) : false
 
-function getnegs(io::IO, x::TS)::Vector{Bool}
+function getnegs(io::IO, x::TS)
     toprows, botrows = getshowrows(io, x)
     idx = [toprows; botrows]
     return [hasnegs(x.values[:,j]) for j in 1:size(x,2)]
 end
 
-print_header(x::TS, widths::Vector{Int}, negs::Vector{Bool})::String = prod(rpad.(["Index"; lpad.(string.(x.fields), str_width.(x.fields).+negs)], widths))
+print_header(x::TS, widths::Vector{Int}, negs::Vector{Bool}) = prod(rpad.(["Index"; lpad.(string.(x.fields), str_width.(x.fields).+negs)], widths))
 
-function print_row(x::TS{V,T}, row::Int, widths::Vector{Int}, negs::Vector{Bool})::String where {V,T}
+function print_row(x::TS{V,T}, row::Int, widths::Vector{Int}, negs::Vector{Bool}) where {V,T}
     if V <: Bool
         return prod(rpad.([string(x.index[row]); [" "].^(negs.*(x.values[row,:].>=0.0)) .* string.(x.values[row,:])], widths))
     elseif V <: Number
@@ -86,7 +73,7 @@ function print_row(x::TS{V,T}, row::Int, widths::Vector{Int}, negs::Vector{Bool}
     end
 end
 
-function print_rows(io::IO, x::TS, widths::Vector{Int}=getwidths(io,x).+PADDING, negs::Vector{Bool}=getnegs(io,x))::Nothing
+function print_rows(io::IO, x::TS, widths::Vector{Int}=getwidths(io,x).+PADDING, negs::Vector{Bool}=getnegs(io,x))
     # negs = getnegs(io,x)
     # widths = getwidths(io,x) .+ PADDING
     nrow = size(x,1)
@@ -107,7 +94,7 @@ function print_rows(io::IO, x::TS, widths::Vector{Int}=getwidths(io,x).+PADDING,
     nothing
 end
 
-function show(io::IO, x::TS{V,T})::Nothing where {V,T}
+function show(io::IO, x::TS{V,T}) where {V,T}
     if print_summary(io, x) == 0
         return nothing
     end

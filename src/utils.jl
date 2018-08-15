@@ -1,6 +1,6 @@
 global SANITIZE_NAMES = false
 
-function set_sanitize_names_option(value::Bool = false)::Nothing
+function set_sanitize_names_option(value::Bool = false)
     global SANITIZE_NAMES
     SANITIZE_NAMES = value
     return nothing
@@ -20,7 +20,7 @@ findrows(r::R, x::TS) where {R<:AbstractVector{<:Integer}} = r
 findrows(s::S, x::TS) where {S<:AbstractString} = dtidx(s, x.index)
 
 # Find the alphanumeric characters be able to generate sanitized column names (`fields`)
-function findalphanum(s::AbstractString, drop_underscores::Bool=false)::Vector{Int}
+function findalphanum(s::AbstractString, drop_underscores::Bool=false)
    if drop_underscores
        return sort(union(find(isalpha,s), find(isnumber,s)))
    else
@@ -41,7 +41,7 @@ namefix(s::Symbol)::Symbol = Symbol(namefix(string(s)))
 namefix!(x::TS)::Nothing = x.fields = namefix.(x.fields)
 
 # Generate automatic column names following the Excel spreadsheet naming convention (A,B,C,..,X,Y,Z,AA,AB,AC,...)
-function autocol(col::Int)::Symbol
+function autocol(col::Int)
     @assert col >= 1 "Invalid column number $col - cannot generate column name"
     if col <= 26
         return Symbol(Char(64 + col))
@@ -56,7 +56,7 @@ function autocol(col::Int)::Symbol
     end
     return Symbol(colname)
 end
-autocol(cols::AbstractArray{Int,1})::Vector{Symbol} = autocol.(cols)
+autocol(cols::AbstractArray{Int,1}) = autocol.(cols)
 
 # Automatically generate an `index` vector of `Date`/`DateTime` values from today's date back through $n$ days
 autoidx(n::Int; dt::Period=Day(1), from::Date=today()-(n-1)*dt, thru::Date=from+(n-1)*dt) = collect(from:dt:thru)
