@@ -48,11 +48,11 @@ function corlag(x::AbstractArray{T,1}, n::Int=1) where {T<:Number}
     return cor(x[idx.-n], x[idx])
 end
 
-@doc """
+"""
 Compute the autocorrelation function of a univariate time series
 
 `acf{T<:Number}(x::AbstractArray{T,1}, maxlag::Int=15; lags::AbstractArray{Int,1}=0:maxlag)`
-""" ->
+"""
 function acf(x::Vector{T}, maxlag::Int=15; lags::AbstractArray{Int,1}=0:maxlag)::Vector{Float64} where {T<:Number}
     @assert all(lags .< size(x,1)-2)
     return map((n) -> corlag(x, n), lags)

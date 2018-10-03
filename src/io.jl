@@ -11,7 +11,7 @@ const YAHOO_TMP = "https://ca.finance.yahoo.com/quote/^GSPC/history?p=^GSPC"  # 
 const QUANDL_URL = "https://www.quandl.com/api/v3/datasets"  # for querying quandl's servers
 const GOOGLE_URL = "http://finance.google.com/finance/historical?"  # for querying google finance's servers
 
-@doc """
+"""
 Read contents from a text file into a TS object.
 
 `tsread(file::String; dlm::Char=',', header::Bool=true, eol::Char='\\n', indextype::Type=Date, format::String="yyyy-mm-dd")`
@@ -36,7 +36,7 @@ Index       Open    High    Low     Last    Change  Settle  Volume    OpenIntere
 2016-08-29  316.25  318.75  310.75  312.0   4.5     311.75  111379.0  94676.0
 2016-08-30  311.75  312.75  303.5   304.0   7.75    304.0   123102.0  66033.0
 ```
-""" ->
+"""
 function tsread(file::String; dlm::Char=',', header::Bool=true, eol::Char='\n', indextype::Type=Date, format::String="yyyy-mm-dd")::TS
     @assert indextype == Date || indextype == DateTime "Argument `indextype` must be either `Date` or `DateTime`."
     csv = Vector{String}(split(read(file, String), eol))
@@ -67,11 +67,11 @@ function tsread(file::String; dlm::Char=',', header::Bool=true, eol::Char='\n', 
     return TS(arr, indextype.(idx), fields)
 end
 
-@doc """
+"""
 Write TS object to a text file.
 
 `tswrite(x::TS, file::String; dlm::Char=',', header::Bool=true, eol::Char='\\n')`
-""" ->
+"""
 function tswrite(x::TS, file::String; dlm::Char=',', header::Bool=true, eol::Char='\n')::Nothing
     outfile = open(file, "w")
     if header
@@ -154,7 +154,7 @@ end
 # ==============================================================================
 # QUANDL INTERFACE =============================================================
 # ==============================================================================
-@doc """
+"""
 Set up Quandl user account authorization. Run once passing your Quandl API key, and it will be saved for future use.
 
 `quandl_auth{T<:String}(key::T="")::String`
@@ -169,7 +169,7 @@ julia> quandl_auth("Your_API_Key")
 julia> quandl_auth()
 "Your_API_Key"
 ```
-""" ->
+"""
 function quandl_auth(key::T=""; authfile::T=expanduser("~/quandl-auth"))::String where {T<:String}
     if key == ""
         if isfile(authfile)
@@ -183,7 +183,7 @@ function quandl_auth(key::T=""; authfile::T=expanduser("~/quandl-auth"))::String
     return key
 end
 
-@doc """
+"""
 Download time series data from Quandl as a TS object.
 ```
 quandl(code::String;
@@ -212,7 +212,7 @@ Index       Open   High    Low    Last   Change  Settle  Volume    PreviousDayOp
 2016-12-31  53.87  54.09   53.41  53.89  0.05    53.72   266762.0  457983.0
 2017-12-31  48.47  49.63   48.38  49.6   1.14    49.51   540748.0  606895.0
 ```
-""" ->
+"""
 function quandl(code::String;
                 from::String="",
                 thru::String="",
@@ -244,22 +244,22 @@ function quandl(code::String;
     return TS(indata[1], indata[2], indata[3][2:end])
 end
 
-@doc """
+"""
 Download Quandl metadata for a database and dataset into a Julia Dict object.
 
 `quandl_meta(database::String, dataset::String)`
-""" ->
+"""
 function quandl_meta(database::String, dataset::String)::Dict{String,Any}
     resp = HTTP.get("$QUANDL_URL/$database/$dataset/metadata.json")
     @assert resp.status == 200 "Error downloading metadata from Quandl."
     return JSON.parse(String(resp.body))["dataset"]
 end
 
-@doc """
+"""
 Search Quandl for data in a given database, `db`, or matching a given query, `qry`.
 
 `quandl_search(;db::String="", qry::String="", perpage::Int=1, pagenum::Int=1)`
-""" ->
+"""
 function quandl_search(;db::String="", qry::String="", perpage::Int=1, pagenum::Int=1)
     @assert db!="" || qry!="" "Must enter a database or a search query."
     dbstr = db   == "" ? "" : "database_code=$db&"
@@ -278,7 +278,7 @@ function yahoo_get_crumb()::Tuple{SubString{String}, Dict{String, HTTP.Cookie}}
     return (m[1], HTTP.cookies(response))
 end
 
-@doc """
+"""
 Download stock price data from Yahoo! Finance into a TS object.
 
 `yahoo(symb::String; from::String="1900-01-01", thru::String=string(Dates.today()), freq::String="d", event::String="history", crumb_tuple::Tuple{SubString{String}, Dict{String, HTTP.Cookie}}=yahoo_get_crumb())::TS`
@@ -309,7 +309,7 @@ Index       Open    High    Low     Close   Volume      AdjClose
 2017-03-20  140.4   142.8   139.73  140.64  2.54857e7   140.64
 2017-03-27  139.39  144.49  138.62  144.12  2.86449e7   144.12
 ```
-""" ->
+"""
 function yahoo(symb::String;
                from::String="1900-01-01",
                thru::String=string(Dates.today()),
@@ -344,7 +344,7 @@ end
 # ==============================================================================
 # QUANDL INTERFACE =============================================================
 # ==============================================================================
-@doc """
+"""
 Download stock price data from Google Finance into a TS object.
 
 `google(symb::String; from::String="2000-01-01", thru::String=string(Dates.today()))::TS`
@@ -372,7 +372,7 @@ Index       Open    High    Low     Close   Volume
 2017-05-26  152.85  153.0   152.06  152.49  2.443507e6
 2017-05-30  151.95  152.67  151.59  151.73  3.666032e6
 ```
-""" ->
+"""
 function google(symb::String;
                 from::String="2000-01-01",
                 thru::String=string(Dates.today()))::TS

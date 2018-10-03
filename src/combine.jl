@@ -10,13 +10,13 @@ import Base: hcat, vcat, merge
 #     return ts(yy, x.index, y.fields)
 # end
 
-@doc """
+"""
 Outer join two TS objects by index.
 
 Equivalent to `x` OUTER JOIN `y` ON `x.index` = `y.index`.
 
 `ojoin(x::TS, y::TS)::TS`
-""" ->
+"""
 function ojoin(x::TS, y::TS)::TS
     if isempty(x) && !isempty(y)
         return y
@@ -35,13 +35,13 @@ function ojoin(x::TS, y::TS)::TS
     return ts([xvals yvals], sort(idx), [x.fields; y.fields])
 end
 
-@doc """
+"""
 Inner join two TS objects by index.
 
 Equivalent to `x` INNER JOIN `y` on `x.index` = `y.index`.
 
 `ijoin(x::TS, y::TS)::TS`
-""" ->
+"""
 function ijoin(x::TS, y::TS)::TS
     if isempty(x) && !isempty(y)
         return y
@@ -54,24 +54,24 @@ function ijoin(x::TS, y::TS)::TS
     return ts([x[idx].values y[idx].values], idx, [x.fields; y.fields])
 end
 
-@doc """
+"""
 Left join two TS objects by index.
 
 Equivalent to `x` LEFT JOIN `y` ON `x.index` = `y.index`.
 
 `ljoin(x::TS, y::TS)::TS`
-""" ->
+"""
 function ljoin(x::TS, y::TS)::TS
     return [x y[intersect(x.index, y.index)]]
 end
 
-@doc """
+"""
 Right join two TS objects by index.
 
 Equivalent to `x` RIGHT JOIN `y` ON `x.index` = `y.index`.
 
 `rjoin(x::TS, y::TS)::TS`
-""" ->
+"""
 function rjoin(x::TS, y::TS)::TS
     return [x[intersect(x.index, y.index)] y]
 end
@@ -100,13 +100,13 @@ function vcat(series::TS...)
     return out
 end
 
-@doc """
+"""
 Merge two TS objects by index.
 
 The `join` argument specifies the logic used to perform the merge, and may take on the values 'o' (outer join), 'i' (inner join), 'l' (left join), or 'r' (right join). Defaults to outer join, whose result is the same as `hcat(x, y)` or `[x y]`.
 
 `merge(x::TS, y::TS; join::Char='o')::TS`
-""" ->
+"""
 function merge(x::TS, y::TS; join::Char='o')::TS
     @assert join == 'o' || join == 'i' || join == 'l' || join == 'r' "`join` must be 'o', 'i', 'l', or 'r'."
     if join == 'o'
