@@ -8,16 +8,17 @@ has_volume(x::TS)::Bool = any(occursin.(r"(vo)"i, String.(x.fields)))
 function has_close(x::TS; allow_settle::Bool=true, allow_last::Bool=true)::Bool
     columns = String.(x.fields)
     if allow_settle && allow_last
-        return any(occursin.(r"(cl)|(last)|(settle)"i, columns))
+        # return any(occursin.(r"(cl)|(last)|(settle)"i, columns))
+        return any([occursin(r"(cl)|(last)|(settle)"i, column) for column in columns])
     end
     if allow_last && !allow_settle
-        return any(occursin.(r"(cl)|(last)"i, columns))
+        return any([occursin(r"(cl)|(last)"i, column) for column in columns])
     end
     if allow_settle && !allow_last
-        return any(occursin.(r"(cl)|(settle)"i, columns))
+        return any([occursin(r"(cl)|(settle)"i, column) for column in columns])
     end
     if !allow_last && !allow_settle
-        return any(occursin.(r"(cl)"i, columns))
+        return any([occursin(r"(cl)"i, column) for column in columns])
     end
     return false
 end
