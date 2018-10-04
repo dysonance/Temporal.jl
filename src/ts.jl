@@ -11,11 +11,11 @@ end
 
 abstract type AbstractTS end
 
-@doc """
+"""
 Time series type aimed at efficiency and simplicity.
 
 Motivated by the `xts` package in R and the `pandas` package in Python.
-""" ->
+"""
 mutable struct TS{V<:Real,T<:TimeType}
     values::Matrix{V}
     index::Vector{T}

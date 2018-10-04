@@ -2,19 +2,19 @@
 Methods for slicing and dicing TS objects
 =#
 
-@doc """
+"""
 Get the first `n` observations of a TS object
-""" ->
+"""
 head(x::TS{V,T}, n::Int=5) where {V,T} = x[1:n,:]
 
-@doc """
+"""
 Get the last `n` observations of a TS object
-""" ->
+"""
 tail(x::TS{V,T}, n::Int=5) where {V,T} = x[end-n+1:end,:]
 
-@doc """
+"""
 Get the indexes of all rows in an Array containing NaN values
-""" ->
+"""
 function nanrows(x::Array{Float64}; fun::Function=any)::BitVector
     @assert fun == any || fun == all "Argument `fun` must be either `any` or `all`"
     cutrows = falses(size(x,1))
@@ -26,9 +26,9 @@ function nanrows(x::Array{Float64}; fun::Function=any)::BitVector
     return cutrows
 end
 
-@doc """
+"""
 Get the indexes of all columns in an Array containing NaN values
-""" ->
+"""
 function nancols(x::Array{Float64}; fun::Function=any)::BitVector
     @assert fun == any || fun == all "Argument `fun` must be either `any` or `all`"
     cutcols = falses(size(x,2))
@@ -43,9 +43,9 @@ end
 nanrows(x::TS{V,T}; args...) where {V,T} = nanrows(x.values; args...)
 nancols(x::TS{V,T}; args...) where {V,T} = nancols(x.values; args...)
 
-@doc """
+"""
 Drop missing (NaN) values from an Array
-""" ->
+"""
 function dropnan(x::Array{Float64}; dim::Int=1, fun::Function=any)
     @assert dim == 1 || dim == 2 || dim == 3 "Argument `dim` must be 1 (rows), 2 (cols), or 3 (both)."
     if dim == 1  # rows only
@@ -58,9 +58,9 @@ function dropnan(x::Array{Float64}; dim::Int=1, fun::Function=any)
     end
 end
 
-@doc """
+"""
 Drop missing (NaN) values from a TS object
-""" ->
+"""
 function dropnan(x::TS{V,T}; dim::Int=1, fun::Function=any) where {V,T}
     @assert dim == 1 || dim == 2 || dim == 3 "Argument `dim` must be 1 (rows), 2 (columns), or 3 (both)."
     if dim == 1
@@ -137,9 +137,9 @@ function linterp!(x::AbstractArray{Float64,2})
 end
 
 # TODO: make this more efficient (learn how to assign and not mutate)
-@doc """
+"""
 Fill missing (NaN) values from a TS object
-""" ->
+"""
 function fillnan(x::TS{V,T}, method::Symbol=:ffill) where {V,T}
     c = nancols(x.values)
     if !any(c)
@@ -161,9 +161,9 @@ function fillnan(x::TS{V,T}, method::Symbol=:ffill) where {V,T}
     return ts(v, x.index, x.fields)
 end
 
-@doc """
+"""
 Replace missing (NaN) values from a TS object with filled values.
-""" ->
+"""
 function fillnan!(x::TS{V,T}, method::Symbol=:ffill)::Nothing where {V,T}
     c = nancols(x.values)
     if !any(c)
