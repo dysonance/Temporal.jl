@@ -45,10 +45,10 @@ hasnegs(X::Matrix)::Vector{Bool} = [hasnegs(X[:,j]) for j in 1:size(X,2)]
 function show(io::IO, X::TS, padding::Int=PADDING, digits::Int=DECIMALS)::Nothing
     # print summary of data structure
     if (isempty(X))
-        print("Empty $(typeof(X))\n")
+        print(io, "Empty $(typeof(X))\n")
         return nothing
     else
-        print("$(size(X,1))x$(size(X,2)) $(typeof(X)): $(X.index[1]) to $(X.index[end])\n\n")
+        print(io, "$(size(X,1))x$(size(X,2)) $(typeof(X)): $(X.index[1]) to $(X.index[end])\n\n")
     end
     # partition rows if data too large
     toprows, bottomrows = getshowrows(io, X)
