@@ -1,5 +1,6 @@
 using Temporal
 using JSON
+using HTTP
 if VERSION >= v"0.7-"
     using Printf  # needed for @sprintf macro
     using Dates
@@ -274,7 +275,7 @@ end
 # ==============================================================================
 function yahoo_get_crumb()::Tuple{SubString{String}, Dict{String, HTTP.Cookie}}
     response = HTTP.get(YAHOO_TMP)
-    m = match(r"\"user\":{\"crumb\":\"(.*?)\"", String(resp.body))
+    m = match(r"\"user\":{\"crumb\":\"(.*?)\"", String(response.body))
     return (m[1], HTTP.cookies(response))
 end
 
