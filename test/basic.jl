@@ -30,4 +30,86 @@ using Test, Dates, Temporal
     end
 end
 
+@testset "Rename" begin
+    @testset "inplace" begin
+        @testset "Pair" begin
+            ts = TS(data, times, [:a, :b, :c, :d])
+            rename!(ts, :a => :A)
+            @test ts.fields == [:A, :b, :c, :d]
+        end
+
+        @testset "Several Pairs" begin
+            ts = TS(data, times, [:a, :b, :c, :d])
+            rename!(ts, :a => :A, :d => :D)
+            @test ts.fields == [:A, :b, :c, :D]
+        end
+
+        @testset "Dict" begin
+            ts = TS(data, times, [:a, :b, :c, :d])
+            d = Dict(:a => :A, :d => :D)
+            rename!(ts, d...)
+            @test ts.fields == [:A, :b, :c, :D]
+        end
+
+        @testset "Lambda Function" begin
+            ts = TS(data, times, [:a, :b, :c, :d])
+            f = colname -> Symbol(uppercase(string(colname)))
+            rename!(f, ts)
+            @test ts.fields == [:A, :B, :C, :D]
+        end
+
+        @testset "Function with composition" begin
+            ts = TS(data, times, [:a, :b, :c, :d])
+            f = Symbol ∘ uppercase ∘ string
+            rename!(f, ts)
+            @test ts.fields == [:A, :B, :C, :D]
+        end
+
+        @testset "Function with do block" begin
+            ts = TS(data, times, [:a, :b, :c, :d])
+            rename!(ts) do x
+                x |> string |> uppercase |> Symbol
+            end
+            @test ts.fields == [:A, :B, :C, :D]
+        end
+
+        @testset "Function with automatic String/Symbol" begin
+            ts = TS(data, times, [:a, :b, :c, :d])
+            rename!(uppercase, ts, String)
+            @test ts.fields == [:A, :B, :C, :D]
+        end
+    end
+
+    @testset "not in place" begin
+        @testset "Pair" begin
+            ts1 = TS(data, times, [:a, :b, :c, :d])
+            ts2 = rename(ts1, :a => :A)
+            @test ts1.fields == [:a, :b, :c, :d]
+            @test ts2.fields == [:A, :b, :c, :d]
+        end
+
+        @testset "Several Pairs" begin
+            ts1 = TS(data, times, [:a, :b, :c, :d])
+            ts2 = rename(ts1, :a => :A, :d => :D)
+            @test ts1.fields == [:a, :b, :c, :d]
+            @test ts2.fields == [:A, :b, :c, :D]
+        end
+
+        @testset "Lambda Function" begin
+            ts1 = TS(data, times, [:a, :b, :c, :d])
+            f = colname -> Symbol(uppercase(string(colname)))
+            ts2 = rename(f, ts1)
+            @test ts1.fields == [:a, :b, :c, :d]
+            @test ts2.fields == [:A, :B, :C, :D]
+        end
+
+        @testset "Function with automatic String/Symbol" begin
+            ts1 = TS(data, times, [:a, :b, :c, :d])
+            ts2 = rename(uppercase, ts1, String)
+            @test ts1.fields == [:a, :b, :c, :d]
+            @test ts2.fields == [:A, :B, :C, :D]
+        end
+    end
+end
+
 # end

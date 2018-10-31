@@ -22,7 +22,10 @@ test_scripts = [
     "aggregation.jl"
 ]
 
+if length(ARGS) > 0
+    test_scripts = ARGS
+end
+
 for test_script in test_scripts
     include(test_script)
 end
-

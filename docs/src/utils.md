@@ -30,3 +30,33 @@ A = tsread(Pkg.dir("Temporal", "data", "XOM.csv"))
 set_sanitize_names_option(true)
 B = tsread(Pkg.dir("Temporal", "data", "XOM.csv"))
 ```
+
+## Rename columns
+
+### Not in place
+
+`rename` function return a `TS`.
+
+```@repl
+using Temporal
+N = 252*3
+K = 4
+data = cumsum(randn(N,K), dims=1)
+dates = today()-Day(N-1):Day(1):today()
+ts = TS(data, dates, [:a, :b, :c, :d])
+rename(ts, :a => :A, :d => :D)
+rename(ts, Dict(:a => :A, :d => :D)...)
+rename(Symbol ∘ uppercase ∘ string, ts)
+rename(uppercase, ts, String)
+```
+
+### In place
+
+`rename!` function modify name of columns in place and return `true` when a `TS` is renamed.
+
+```julia
+rename!(ts, :a => :A, :d => :D)
+rename!(ts, Dict(:a => :A, :d => :D)...)
+rename!(Symbol ∘ uppercase ∘ string, ts)
+rename!(uppercase, ts, String)
+```
