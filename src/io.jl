@@ -325,7 +325,9 @@ function yahoo(symb::String;
     urlstr = "$(YAHOO_URL)/$(symb)?period1=$(period1)&period2=$(period2)&interval=1$(freq)&events=$(event)&crumb=$(crumb_tuple[1])"
     response = HTTP.get(urlstr, cookies=crumb_tuple[2])
     indata = Temporal.csvresp(response)
-    return TS(indata[1], indata[2], indata[3][2:end])
+    data = TS(indata[1], indata[2], indata[3][2:end])
+    rename!(data, Symbol("Adj Close")=>:AdjClose)
+    return data
 end
 
 function yahoo(syms::Vector{String};
