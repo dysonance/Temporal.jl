@@ -56,7 +56,7 @@ length(x::TS) = prod(size(x))::Int
 lastindex(x::TS) = lastindex(x.values)
 lastindex(x::TS, d) = lastindex(x.values, d)
 iterate(x::TS) = size(x,1) == 0 ? nothing : (x.index[1], x.values[1,:]), 2
-iterate(x::TS, i::Int) = i == lastindex(x, 1) ? nothing : ((x.index[i], x.values[i,:]), i+1)
+iterate(x::TS, i::Int) = i == lastindex(x, 1) + 1 ? nothing : ((x.index[i], x.values[i,:]), i+1)
 isempty(x::TS) = (isempty(x.index) && isempty(x.values))
 first(x::TS) = x[1]
 last(x::TS) = x[end]
