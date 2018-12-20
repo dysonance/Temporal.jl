@@ -120,6 +120,11 @@ using Test, Dates, Temporal
         @test X[1,:A] == X[1,1]
         @test X[[:A,:B]] == X[:,1:2] == X[:,[:A,:B]]
     end
+    @testset "Pattern Filtering" begin
+        @test size(subset(X, "A"), 2) == 1
+        @test size(subset(X, ["A", "A"]), 2) == 1
+        @test size(subset(X, ["A", "B"]), 2) == 0
+    end
 end
 
 # end

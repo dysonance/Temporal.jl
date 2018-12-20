@@ -27,6 +27,34 @@ function nanrows(x::Array{Float64}; fun::Function=any)::BitVector
 end
 
 """
+Subset the columns of a time series matching a single pattern
+"""
+function subset(X::TS, pattern::String)
+    keepcols = falses(size(X,2))
+    for (j, field) in enumerate(X.fields)
+        if occursin(pattern, String(field))
+            keepcols[j] = true
+        end
+    end
+    return X[:, keepcols]
+end
+
+"""
+Subset the columns of a time series matching a series of patterns
+"""
+function subset(X::TS, patterns::Vector{String})
+    keepcols = trues(size(X,2))
+    for pattern in patterns
+        for (j, field) in enumerate(X.fields)
+            if !occursin(pattern, String(field))
+                keepcols[j] = false
+            end
+        end
+    end
+    return X[:, keepcols]
+end
+
+"""
 Get the indexes of all columns in an Array containing NaN values
 """
 function nancols(x::Array{Float64}; fun::Function=any)::BitVector

@@ -16,7 +16,7 @@ module Temporal
         # Foundational
         TS, ts,
         # Merging/Joining
-        ojoin, ijoin, ljoin, rjoin, merge, hcat, vcat, head, tail,
+        ojoin, ijoin, ljoin, rjoin, merge, hcat, vcat, head, tail, subset,
         # Missing Data
         nanrows, nancols, dropnan, fillnan, fillnan!, ffill!, bfill!, linterp!,
         # Operations
