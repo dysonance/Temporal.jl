@@ -35,7 +35,7 @@ vo(x::TS)::TS = x[:,findfirst([occursin(r"(vo)"i, String(field)) for field in x.
 function cl(x::TS; use_adj::Bool=true, allow_settle::Bool=true, allow_last::Bool=true)::TS
     columns = String.(x.fields)
     if use_adj
-        j = findfirst([occursin(r"(adj((usted)|\s|)+)?(cl)"i, column) for column in columns])
+        j = findfirst([occursin(r"(adj((usted)|\s|)+)(cl)?"i, column) for column in columns])
         if !isa(j, Nothing)
             return x[:,j]
         end
