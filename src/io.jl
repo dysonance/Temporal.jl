@@ -273,10 +273,34 @@ end
 # ==============================================================================
 # YAHOO INTERFACE ==============================================================
 # ==============================================================================
-function yahoo_get_crumb()::Tuple{SubString{String}, Dict{String, HTTP.Cookie}}
-    response = HTTP.get(YAHOO_TMP)
-    m = match(r"\"user\":{\"crumb\":\"(.*?)\"", String(response.body))
-    return (m[1], HTTP.cookies(response))
+
+function yahoo_get_crumb()::Tuple{SubString{String}, Dict{String, Set{HTTP.Cookies.Cookie}}}
+    response = HTTP.request("GET", YAHOO_TMP)
+    m = match(r"\"user\":{\"crumb\":\"(.*?)\"", String(response.body)).captures[1]
+    h = response.headers
+    # manually grab and parse the cookie
+    function substring_after_equal(str;offset::Int64=1)
+        idx = collect(findfirst("=",str))[1]
+        return String(str[idx+offset:end])
+    end
+    function return_cookie_string(head)
+        for x in head
+            if occursin("cookie",lowercase(x[1]))
+                return String(x[2])
+            end
+        end
+        return nothing
+    end
+    cookie_str = return_cookie_string(h)
+    split_h = split(cookie_str,";")
+    n = String(split_h[1][1:1])
+    v = String(split_h[1][3:end])
+    expire = substring_after_equal(split_h[2])
+    pth = substring_after_equal(split_h[3])
+    dom = substring_after_equal(split_h[4],offset=2)
+    c = HTTP.Cookies.Cookie(n,v,domain=dom,path=pth,expires=DateTime(expire,"e, d-u-y H:M:S G\\MT"),unparsed=[cookie_str])
+    c_dict = (m,Dict(m=>Set([c])))
+    return c_dict
 end
 
 """
@@ -316,7 +340,7 @@ function yahoo(symb::String;
                thru::String=string(Dates.today()),
                freq::String="d",
                event::String="history",
-               crumb_tuple::Tuple{SubString{String}, Dict{String, HTTP.Cookie}}=yahoo_get_crumb())::TS
+               crumb_tuple::Tuple{SubString{String}, Dict{String, Set{HTTP.Cookies.Cookie}}}=yahoo_get_crumb())::TS
     @assert freq in ["d","wk","mo"] "Argument `freq` must be either \"d\" (daily), \"wk\" (weekly), or \"mo\" (monthly)."
     @assert event in ["history","div","split"] "Argument `event` must be either \"history\", \"div\", or \"split\"."
     @assert from[5] == '-' && from[8] == '-' "Argument `from` has invalid date format."
@@ -324,7 +348,7 @@ function yahoo(symb::String;
     period1 = Int(floor(Dates.datetime2unix(Dates.DateTime(from))))
     period2 = Int(floor(Dates.datetime2unix(Dates.DateTime(thru))))
     urlstr = "$(YAHOO_URL)/$(symb)?period1=$(period1)&period2=$(period2)&interval=1$(freq)&events=$(event)&crumb=$(crumb_tuple[1])"
-    response = HTTP.get(urlstr, cookies=crumb_tuple[2])
+    response = HTTP.request("POST",HTTP.URIs.URI(urlstr), cookies=true, cookiejar=crumb_tuple[2])
     indata = Temporal.csvresp(response)
     return TS(indata[1], indata[2], indata[3][2:end])
 end
