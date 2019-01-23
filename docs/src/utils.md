@@ -7,7 +7,7 @@ The `RANGE_DELIMITER` option specifies what value should separate the `String`s 
 By default, `RANGE_DELIMITER` is set to `'/'`, and can be changed dynamically using the function `set_range_delimiter_option`.
 
 ```@repl
-using Temporal, Base.Dates;
+using Temporal, Dates;
 t = Date("2017-01-01"):Day(1):Date("2017-12-31");
 vals = rand(length(t), 4);
 X = TS(vals, t)
@@ -24,7 +24,7 @@ By default, `SANITIZE_NAMES` is set to `false`, so that generally speaking the r
 Notice in the sample below how the `Adj Close` column name becomes `AdjClose` after changing the setting to `true`.
 
 ```@repl
-using Temporal, Base.Dates;
+using Temporal, Dates;
 isalpha("Hi mom")  # hide
 A = tsread(Pkg.dir("Temporal", "data", "XOM.csv"))
 set_sanitize_names_option(true)

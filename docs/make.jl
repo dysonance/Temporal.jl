@@ -1,10 +1,11 @@
 using Documenter, Temporal
 
 makedocs(modules=[Temporal],
-         #doctest=false,
-         #clean=true,
-         #format=:html,
+         doctest=false,
+         clean=true,
+         format=Documenter.HTML(),
          authors="Jacob Amos",
+         sitename="Temporal",
          pages=Any["Home" => "index.md",
                    "TS Object" => "ts.md",
                    "Operations" => "operations.md",
@@ -15,5 +16,5 @@ makedocs(modules=[Temporal],
 
 deploydocs(deps=Deps.pip("mkdocs", "python-markdown-math"),
            repo="github.com/dysonance/Temporal.jl.git",
-           julia="0.6")
+           julia="1.0")
 

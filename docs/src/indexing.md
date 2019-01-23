@@ -54,7 +54,7 @@ X[:, [:B, :D]]
 One of the more powerful features of Temporal's indexing functionality is that you can index rows of a `TS` object using `String`s formatted in such a way as to express specific periods of time in a natural idiomatic way. (If you have used the `xts` package in R this functionality will feel very familiar.)
 
 ```@repl
-using Base.Dates, Temporal  # hide
+using Dates, Temporal  # hide
 t = Date(2016,1,1):Day(1):Date(2017,12,31)
 X = TS(cumsum(randn(length(t), 4)), t) + 100.0
 X["2017-07-01"]  # single day

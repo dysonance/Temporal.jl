@@ -1,3 +1,6 @@
+```@index
+```
+
 # Basic
 
 # Arithmetic
