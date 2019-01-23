@@ -17,4 +17,4 @@ after_success:
   - julia -e 'using Pkg; cd(Pkg.dir("Temporal")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
   - julia -e 'using Pkg; cd(Pkg.dir("Temporal")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
   - julia -e 'using Pkg; Pkg.add("Documenter")'
-  - julia --depwarn=no -e 'using Pkg; cd(Pkg.dir("Temporal")); include(joinpath("docs", "make.jl"))'
+  - julia --depwarn=no -e 'using Pkg; cd(Pkg.Pkg2.dir("Temporal")); include(joinpath("docs", "make.jl"))'
