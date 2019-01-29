@@ -19,7 +19,8 @@ test_scripts = [
     "operations.jl",
     "io.jl",
     "slice.jl",
-    "aggregation.jl"
+    "aggregation.jl",
+    "conversion.jl"
 ]
 
 for test_script in test_scripts
