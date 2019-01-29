@@ -56,5 +56,6 @@ module Temporal
     include("io.jl")
     include("ohlc.jl")
     include("viz.jl")
+    include("convert.jl")
 
 end
