@@ -65,7 +65,7 @@ function show(io::IO, X::TS, padding::Int=PADDING, digits::Int=DECIMALS)::Nothin
             print(io, join(datarow), '\n')
         end
     else
-        @inbounds for (t, x) in X[toprows]
+        @inbounds for (t, x) in X[toprows[1:end-1]]
             datarow = [
                        rpad(t, width_index);
                        [rpad(string(round(x[j], digits=digits)), width_values[j]) for j in 1:size(X,2)]
@@ -78,7 +78,10 @@ function show(io::IO, X::TS, padding::Int=PADDING, digits::Int=DECIMALS)::Nothin
                        rpad(t, width_index);
                        [rpad(string(round(x[j], digits=digits)), width_values[j]) for j in 1:size(X,2)]
                       ]
-            print(io, join(datarow), '\n')
+            print(io, join(datarow))
+            if t != X[bottomrows].index[end]
+                print('\n')
+            end
         end
     end
     return nothing
