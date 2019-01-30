@@ -25,7 +25,6 @@ Notice in the sample below how the `Adj Close` column name becomes `AdjClose` af
 
 ```@repl
 using Temporal, Dates;
-isalpha("Hi mom")  # hide
 A = tsread(Pkg.dir("Temporal", "data", "XOM.csv"))
 set_sanitize_names_option(true)
 B = tsread(Pkg.dir("Temporal", "data", "XOM.csv"))

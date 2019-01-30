@@ -1,9 +1,17 @@
 ```@index
 ```
 
-# Basic
+```@autodocs
+Modules = [Temporal]
+Order = [:type, :function, :constant, :macro, :module]
+Pages = ["operations.jl"]
+```
 
-# Arithmetic
+# Operations
 
-# Logical
+## Basic
+
+## Arithmetic
+
+## Logical
 
