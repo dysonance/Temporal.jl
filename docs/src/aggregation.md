@@ -1,36 +1,68 @@
-# Temporal Aggregation
+# Aggregation
 
-## Time Period Sampling Methods
+## Sampling
 
-Summarize by day of the week:
-- `mondays`
-- `tuesdays`
-- `wednesdays`
-- `thursdays`
-- `fridays`
-- `saturdays`
-- `sundays`
+### Weekdays
 
-Summarize by beginnings and endings of weeks, months, quarters, or years:
-- `bow`
-- `eow`
-- `bom`
-- `eom`
-- `boq`
-- `eoq`
-- `boy`
-- `eoy`
-- `bow`
-- `eow`
-- `bom`
-- `eom`
-- `boq`
-- `eoq`
-- `boy`
-- `eoy`
+```@docs
+mondays
+tuesdays
+wednesdays
+thursdays
+fridays
+saturdays
+sundays
+```
 
-## Collapsing & Summarizing
-- `collapse`
-- `apply`
+### Interval Boundaries
 
+#### Weekly
+```@docs
+bow
+eow
+```
 
+#### Monthly
+```@docs
+bom
+eom
+```
+
+#### Quarterly
+```@docs
+boq
+eoq
+```
+
+#### Yearly
+```@docs
+boy
+eoy
+```
+
+## Collapsing
+
+```@docs
+collapse
+```
+
+```@repl
+using Temporal, Statistics, Dates
+X = TS(randn(100, 4))
+collapse(X, eom, fun=mean)
+last_month = string(X.index[end])[1:7]
+mean(X[last_month])
+```
+
+## Summarizing
+
+```@docs
+apply
+```
+
+```@repl
+using Temporal, Statistics
+X = TS(randn(100, 4))
+apply(X, 1, fun=sum)
+apply(X, 2, fun=sum)
+```
