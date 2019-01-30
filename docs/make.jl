@@ -10,11 +10,10 @@ makedocs(modules=[Temporal],
                    "TS Object" => "ts.md",
                    "Operations" => "operations.md",
                    "Data Access" => "io.md",
-                   "Data Manipulation" => Any["indexing.md",
-                                              "combining.md",
-                                              "aggregation.md"]])
+                   "Data Manipulation" => ["indexing.md", "combining.md", "aggregation.md"]])
 
 deploydocs(deps=Deps.pip("mkdocs", "python-markdown-math"),
            repo="github.com/dysonance/Temporal.jl.git",
-           julia="1.0")
-
+           devbranch="master",
+           devurl="dev",
+           versions=["stable" => "v^", "v#.#", "dev" => "dev"])
