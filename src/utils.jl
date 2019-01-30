@@ -19,17 +19,10 @@ findrows(r::R, x::TS) where {R<:Int} = [r]
 findrows(r::R, x::TS) where {R<:AbstractVector{<:Integer}} = r
 findrows(s::S, x::TS) where {S<:AbstractString} = dtidx(s, x.index)
 
-# Find the alphanumeric characters be able to generate sanitized column names (`fields`)
-function findalphanum(s::AbstractString, drop_underscores::Bool=false)
-   if drop_underscores
-       return sort(union(find(isalpha,s), find(isnumber,s)))
-   else
-       return sort(union(union(find(isalpha,s), find(isnumber,s)), find(c->c=='_', s)))
-   end
-end
+isalphanum(s::String, allow_underscores::Bool=false) = [isletter(c) || isnumeric(c) || (allow_underscores && c=='_') for c in s]
 
 # Find the alphanumeric characters be able to generate sanitized column names (`fields`)
-findalphanum(s::String)::Vector{Int} = find(isalpha.(split(s,"")).+isnumber.(split(s,"")))
+findalphanum(s::String, allow_underscores::Bool=false)::Vector{Int} = findall(isalphanum(s, allow_underscores))
 
 # Change a String or Symbol to an alphanumeric-only version
 namefix(s::AbstractString)::AbstractString = s[findalphanum(s)]
