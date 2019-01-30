@@ -1,8 +1,5 @@
 # Construction
 
-```@index
-```
-
 ```@autodocs
 Modules = [Temporal]
 Order = [:type, :function, :constant, :macro, :module]

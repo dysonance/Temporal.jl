@@ -12,8 +12,8 @@ In other words, if you want to use standard `Array` indexing syntax, it should w
 ### Integer
 
 ```@repl
-using Temporal  # hide
-X = TS(cumsum(randn(252, 4))) + 100.0
+using Temporal
+X = TS(cumsum(randn(252, 4), dims=1)) + 100.0
 X[1]
 X[1, :]
 X[:, 1]
@@ -23,8 +23,8 @@ X[1, 1]
 ### Boolean
 
 ```@repl
-using Temporal  # hide
-X = TS(cumsum(randn(252, 4))) + 100.0
+using Temporal
+X = TS(cumsum(randn(252, 4), dims=1)) + 100.0
 X[trues(size(X,1)), :]
 X[rand(Bool, size(X,1)), 1]
 X[rand(Bool, size(X,1)), [true, false, false, false]]
@@ -33,8 +33,8 @@ X[rand(Bool, size(X,1)), [true, false, false, false]]
 ### Arrays & Ranges
 
 ```@repl
-using Temporal  # hide
-X = TS(cumsum(randn(252, 4))) + 100.0
+using Temporal
+X = TS(cumsum(randn(252, 4), dims=1)) + 100.0
 X[1:10, :]
 X[end-100:end, 2:3]
 X[end, 2:end]
@@ -45,8 +45,8 @@ X[end, 2:end]
 You can also index specific columns you want using the `fields` member of the `TS` object, so that columns can be fetched by name rather than by numerical index.
 
 ```@repl
-using Temporal  # hide
-X = TS(cumsum(randn(252, 4))) + 100.0
+using Temporal
+X = TS(cumsum(randn(252, 4), dims=1)) + 100.0
 X[:, :A]
 X[:, [:B, :D]]
 ```
@@ -56,9 +56,9 @@ X[:, [:B, :D]]
 One of the more powerful features of Temporal's indexing functionality is that you can index rows of a `TS` object using `String`s formatted in such a way as to express specific periods of time in a natural idiomatic way. (If you have used the `xts` package in R this functionality will feel very familiar.)
 
 ```@repl
-using Dates, Temporal  # hide
+using Dates, Temporal
 t = Date(2016,1,1):Day(1):Date(2017,12,31)
-X = TS(cumsum(randn(length(t), 4)), t) + 100.0
+X = TS(cumsum(randn(length(t), 4), dims=1), t) + 100.0
 X["2017-07-01"]  # single day
 X["2016"]  # whole year
 X["2016-09-15/"]  # everything after a specific day

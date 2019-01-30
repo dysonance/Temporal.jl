@@ -1,6 +1,3 @@
-```@index
-```
-
 # Data Readers
 
 ## Flat Files
