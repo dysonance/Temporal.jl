@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Joins · Temporal</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link href="../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>Temporal</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../">Home</a></li><li><a class="toctext" href="../ts/">TS Object</a></li><li><a class="toctext" href="../operations/">Operations</a></li><li><a class="toctext" href="../io/">Data Access</a></li><li><span class="toctext">Data Manipulation</span><ul><li><a class="toctext" href="../indexing/">Indexing</a></li><li class="current"><a class="toctext" href>Joins</a><ul class="internal"><li><a class="toctext" href="#Outer-Joins-1">Outer Joins</a></li><li><a class="toctext" href="#Inner-Joins-1">Inner Joins</a></li><li><a class="toctext" href="#Left/Right-Joins-1">Left/Right Joins</a></li></ul></li><li><a class="toctext" href="../aggregation/">Aggregation</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>Data Manipulation</li><li><a href>Joins</a></li></ul><a class="edit-page" href="https://github.com/dysonance/Temporal.jl/blob/master/docs/src/combining.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>Joins</span><a class="fa fa-bars" href="#"></a></div></header><ul><li><a href="../ts/#Temporal.TS"><code>Temporal.TS</code></a></li><li><a href="../aggregation/#Temporal.apply"><code>Temporal.apply</code></a></li><li><a href="../aggregation/#Temporal.bom"><code>Temporal.bom</code></a></li><li><a href="../aggregation/#Temporal.boq"><code>Temporal.boq</code></a></li><li><a href="../aggregation/#Temporal.bow"><code>Temporal.bow</code></a></li><li><a href="../aggregation/#Temporal.boy"><code>Temporal.boy</code></a></li><li><a href="../aggregation/#Temporal.collapse"><code>Temporal.collapse</code></a></li><li><a href="../aggregation/#Temporal.eom"><code>Temporal.eom</code></a></li><li><a href="../aggregation/#Temporal.eoq"><code>Temporal.eoq</code></a></li><li><a href="../aggregation/#Temporal.eow"><code>Temporal.eow</code></a></li><li><a href="../aggregation/#Temporal.eoy"><code>Temporal.eoy</code></a></li><li><a href="../aggregation/#Temporal.fridays"><code>Temporal.fridays</code></a></li><li><a href="../aggregation/#Temporal.mondays"><code>Temporal.mondays</code></a></li><li><a href="../aggregation/#Temporal.saturdays"><code>Temporal.saturdays</code></a></li><li><a href="../aggregation/#Temporal.sundays"><code>Temporal.sundays</code></a></li><li><a href="../aggregation/#Temporal.thursdays"><code>Temporal.thursdays</code></a></li><li><a href="../aggregation/#Temporal.tuesdays"><code>Temporal.tuesdays</code></a></li><li><a href="../aggregation/#Temporal.wednesdays"><code>Temporal.wednesdays</code></a></li></ul><h1><a class="nav-anchor" id="Joins-1" href="#Joins-1">Joins</a></h1><h2><a class="nav-anchor" id="Outer-Joins-1" href="#Outer-Joins-1">Outer Joins</a></h2><p>One can perform a full outer join on the time <code>index</code>es of two <code>TS</code> objects <span>$x$</span> and <span>$y$</span> in the following ways:</p><ul><li><code>merge(x, y)</code></li><li><code>ojoin(x, y)</code></li><li><code>[x y]</code></li><li><code>hcat(x, y)</code></li></ul><p>Where there are dates in the <code>index</code> of one that do not exist in the other, values will be filled with <code>NaN</code> objects. As the <code>missing</code> functionality matures in Julia&#39;s base syntax, it will eventually replace <code>NaN</code> in this context, since unfortunately <code>NaN</code> is only applicable for <code>Float64</code> element types.</p><pre><code class="language-julia-repl">
+julia&gt; x = TS(rand(252))
+252x1 TS{Float64,Dates.Date}: 2018-05-24 to 2019-01-30
+
+Index       A
+2018-05-24  0.2156
+2018-05-25  0.9841
+2018-05-26  0.6069
+2018-05-27  0.1912
+2018-05-28  0.7758
+2018-05-29  0.9584
+2018-05-30  0.6431
+2018-05-31  0.7295
+⋮
+2019-01-21  0.0623  2019-01-22  0.2363  2019-01-23  0.3518  2019-01-24  0.9879  2019-01-25  0.6377  2019-01-26  0.8721  2019-01-27  0.4154  2019-01-28  0.1743  2019-01-29  0.3338  2019-01-30  0.4819
+
+julia&gt; y = TS(rand(252), x.index .- Month(6))
+252x1 TS{Float64,Dates.Date}: 2017-11-24 to 2018-07-30
+
+Index       A
+2017-11-24  0.6268
+2017-11-25  0.6493
+2017-11-26  0.1262
+2017-11-27  0.3571
+2017-11-28  0.393
+2017-11-29  0.9529
+2017-11-30  0.514
+2017-11-30  0.3054
+⋮
+2018-07-21  0.7136  2018-07-22  0.9192  2018-07-23  0.9542  2018-07-24  0.0484  2018-07-25  0.699   2018-07-26  0.4638  2018-07-27  0.2248  2018-07-28  0.9021  2018-07-29  0.4691  2018-07-30  0.3482
+
+julia&gt; [x y]
+431x2 TS{Float64,Dates.Date}: 2017-11-24 to 2019-01-30
+
+Index       A       A
+2017-11-24  NaN     0.6268
+2017-11-25  NaN     0.6493
+2017-11-26  NaN     0.1262
+2017-11-27  NaN     0.3571
+2017-11-28  NaN     0.393
+2017-11-29  NaN     0.9529
+2017-11-30  NaN     0.514
+2017-12-01  NaN     0.3054
+⋮
+2019-01-21  0.0623  NaN     2019-01-22  0.2363  NaN     2019-01-23  0.3518  NaN     2019-01-24  0.9879  NaN     2019-01-25  0.6377  NaN     2019-01-26  0.8721  NaN     2019-01-27  0.4154  NaN     2019-01-28  0.1743  NaN     2019-01-29  0.3338  NaN     2019-01-30  0.4819  NaN</code></pre><h2><a class="nav-anchor" id="Inner-Joins-1" href="#Inner-Joins-1">Inner Joins</a></h2><p>You can do inner joins on <code>TS</code> objects using the <code>ijoin</code> function, which will remove any observations corresponding to time steps where at least one of the joined objects is missing a row. This will basically keep only the rows where the time <code>index</code> of the LHS and the RHS intersect.</p><pre><code class="language-julia-repl">
+julia&gt; x = TS(rand(252))
+252x1 TS{Float64,Dates.Date}: 2018-05-24 to 2019-01-30
+
+Index       A
+2018-05-24  0.9995
+2018-05-25  0.4602
+2018-05-26  0.9067
+2018-05-27  0.4988
+2018-05-28  0.3015
+2018-05-29  0.5615
+2018-05-30  0.4452
+2018-05-31  0.2974
+⋮
+2019-01-21  0.1972  2019-01-22  0.4817  2019-01-23  0.689   2019-01-24  0.2971  2019-01-25  0.3214  2019-01-26  0.5515  2019-01-27  0.5021  2019-01-28  0.5659  2019-01-29  0.2233  2019-01-30  0.8892
+
+julia&gt; y = TS(rand(252), x.index .- Month(6))
+252x1 TS{Float64,Dates.Date}: 2017-11-24 to 2018-07-30
+
+Index       A
+2017-11-24  0.0996
+2017-11-25  0.0261
+2017-11-26  0.0237
+2017-11-27  0.9844
+2017-11-28  0.4474
+2017-11-29  0.8495
+2017-11-30  0.975
+2017-11-30  0.6925
+⋮
+2018-07-21  0.2072  2018-07-22  0.0741  2018-07-23  0.2189  2018-07-24  0.1291  2018-07-25  0.0227  2018-07-26  0.7663  2018-07-27  0.481   2018-07-28  0.4546  2018-07-29  0.4797  2018-07-30  0.4869
+
+julia&gt; ijoin(x, y)
+ERROR: ArgumentError: number of rows of each array must match (got (67, 68))</code></pre><h2><a class="nav-anchor" id="Left/Right-Joins-1" href="#Left/Right-Joins-1">Left/Right Joins</a></h2><p>Left and right joins are performed similarly to inner joins and the typical SQL join queries using the objects&#39; <code>index</code> fields as the joining key.</p><ul><li><em>Left Join</em>: keep all observations of the LHS of the join, fill the RHS with NaN&#39;s where missing the corresponding time <code>index</code></li><li><em>Right Join</em>: keep all observations of the RHS of the join, fill the LHS with NaN&#39;s where missing the corresponding time <code>index</code></li></ul><pre><code class="language-julia-repl">
+julia&gt; x = TS(rand(252))
+252x1 TS{Float64,Dates.Date}: 2018-05-24 to 2019-01-30
+
+Index       A
+2018-05-24  0.5496
+2018-05-25  0.2713
+2018-05-26  0.0056
+2018-05-27  0.0508
+2018-05-28  0.9397
+2018-05-29  0.6181
+2018-05-30  0.8754
+2018-05-31  0.3477
+⋮
+2019-01-21  0.9547  2019-01-22  0.1062  2019-01-23  0.6344  2019-01-24  0.307   2019-01-25  0.8301  2019-01-26  0.2588  2019-01-27  0.7008  2019-01-28  0.7076  2019-01-29  0.1236  2019-01-30  0.6965
+
+julia&gt; y = TS(rand(252), x.index .- Month(6))
+252x1 TS{Float64,Dates.Date}: 2017-11-24 to 2018-07-30
+
+Index       A
+2017-11-24  0.4794
+2017-11-25  0.2039
+2017-11-26  0.1912
+2017-11-27  0.6876
+2017-11-28  0.5838
+2017-11-29  0.2061
+2017-11-30  0.9334
+2017-11-30  0.635
+⋮
+2018-07-21  0.8148  2018-07-22  0.4111  2018-07-23  0.6471  2018-07-24  0.4182  2018-07-25  0.3371  2018-07-26  0.3511  2018-07-27  0.5469  2018-07-28  0.4346  2018-07-29  0.0356  2018-07-30  0.4681
+
+julia&gt; ljoin(x, y)
+252x2 TS{Float64,Dates.Date}: 2018-05-24 to 2019-01-30
+
+Index       A       A
+2018-05-24  0.5496  0.324
+2018-05-25  0.2713  0.8246
+2018-05-26  0.0056  0.2999
+2018-05-27  0.0508  0.9941
+2018-05-28  0.9397  0.3557
+2018-05-29  0.6181  0.2583
+2018-05-30  0.8754  0.6285
+2018-05-31  0.3477  0.4681
+⋮
+2019-01-21  0.9547  NaN     2019-01-22  0.1062  NaN     2019-01-23  0.6344  NaN     2019-01-24  0.307   NaN     2019-01-25  0.8301  NaN     2019-01-26  0.2588  NaN     2019-01-27  0.7008  NaN     2019-01-28  0.7076  NaN     2019-01-29  0.1236  NaN     2019-01-30  0.6965  NaN
+
+julia&gt; rjoin(x, y)
+246x2 TS{Float64,Dates.Date}: 2017-11-24 to 2018-07-30
+
+Index       A       A
+2017-11-24  NaN     0.4794
+2017-11-25  NaN     0.2039
+2017-11-26  NaN     0.1912
+2017-11-27  NaN     0.6876
+2017-11-28  NaN     0.5838
+2017-11-29  NaN     0.2061
+2017-11-30  NaN     0.9334
+2017-12-01  NaN     0.635
+⋮
+2018-07-21  0.6138  0.9331  2018-07-22  0.7942  0.7038  2018-07-23  0.9174  0.6855  2018-07-24  0.8007  0.5221  2018-07-25  0.5686  0.7712  2018-07-26  0.162   0.2679  2018-07-27  0.2906  0.8148  2018-07-28  0.5443  0.4111  2018-07-29  0.5835  0.6471  2018-07-30  0.1735  0.4182</code></pre><footer><hr/><a class="previous" href="../indexing/"><span class="direction">Previous</span><span class="title">Indexing</span></a><a class="next" href="../aggregation/"><span class="direction">Next</span><span class="title">Aggregation</span></a></footer></article></body></html>
