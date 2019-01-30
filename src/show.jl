@@ -56,7 +56,7 @@ function show(io::IO, X::TS, padding::Int=PADDING, digits::Int=DECIMALS)::Nothin
     width_index, width_values = getwidths(io, X, padding)
     headerline = [rpad("Index", width_index); [rpad(string(X.fields[j]), width_values[j]) for j in 1:size(X,2)]]
     print(io, join(headerline), '\n')
-    if toprows[end] == bottomrows[1] - 1
+    if length(toprows) == 0 || length(bottomrows) == 0 || toprows[end] == bottomrows[1] - 1
         @inbounds for (t, x) in X
             datarow = [
                        rpad(t, width_index);
