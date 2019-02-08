@@ -11,11 +11,17 @@ import Base: hcat, vcat, merge
 # end
 
 """
+    ojoin(x::TS,y::TS)::TS
+
 Outer join two TS objects by index.
 
 Equivalent to `x` OUTER JOIN `y` ON `x.index` = `y.index`.
 
-`ojoin(x::TS, y::TS)::TS`
+...
+# Arguments
+- `x::TS`: Left side of the join.
+- `y::TS`: Right side of the join.
+...
 """
 function ojoin(x::TS, y::TS)::TS
     if isempty(x) && !isempty(y)
@@ -36,11 +42,17 @@ function ojoin(x::TS, y::TS)::TS
 end
 
 """
+    ijoin(x::TS,y::TS)::TS
+
 Inner join two TS objects by index.
 
 Equivalent to `x` INNER JOIN `y` on `x.index` = `y.index`.
 
-`ijoin(x::TS, y::TS)::TS`
+...
+# Arguments
+- `x::TS`: Left side of the join.
+- `y::TS`: Right side of the join.
+...
 """
 function ijoin(x::TS, y::TS)::TS
     if isempty(x) && !isempty(y)
@@ -55,29 +67,38 @@ function ijoin(x::TS, y::TS)::TS
 end
 
 """
+    ljoin(x::TS, y::TS)::TS
+
 Left join two TS objects by index.
 
 Equivalent to `x` LEFT JOIN `y` ON `x.index` = `y.index`.
 
-`ljoin(x::TS, y::TS)::TS`
+...
+# Arguments
+- `x::TS`: Left side of the join.
+- `y::TS`: Right side of the join.
+...
 """
 function ljoin(x::TS, y::TS)::TS
     return [x y[intersect(x.index, y.index)]]
 end
 
 """
+    rjoin(x::TS, y::TS)::TS
+
 Right join two TS objects by index.
 
 Equivalent to `x` RIGHT JOIN `y` ON `x.index` = `y.index`.
 
-`rjoin(x::TS, y::TS)::TS`
+...
+# Arguments
+- `x::TS`: Left side of the join.
+- `y::TS`: Right side of the join.
+...
 """
 function rjoin(x::TS, y::TS)::TS
     return [x[intersect(x.index, y.index)] y]
 end
-
-# ljoin(x::TS, y::TS) = ts([x.values partner(x,y).values], x.index, [x.fields; y.fields])
-# rjoin(x::TS, y::TS) = ts([partner(y,x).values y.values], y.index, [x.fields; y.fields])
 
 hcat(x::TS, y::TS)::TS = ojoin(x, y)
 hcat(x::TS)::TS = x
@@ -101,11 +122,17 @@ function vcat(series::TS...)
 end
 
 """
-Merge two TS objects by index.
+    merge(x::TS,y::TS;join::Char='o')::TS
 
-The `join` argument specifies the logic used to perform the merge, and may take on the values 'o' (outer join), 'i' (inner join), 'l' (left join), or 'r' (right join). Defaults to outer join, whose result is the same as `hcat(x, y)` or `[x y]`.
+Merge two time series objects together by index with an optionally specified join type parameter.
 
-`merge(x::TS, y::TS; join::Char='o')::TS`
+...
+# Arguments
+- `x::TS`: Left side of the join.
+- `y::TS`: Right side of the join.
+Optional args:
+- `join::Char='o'::TS`: Specifies the logic used to perform the merge, and may take on the values 'o' (outer join), 'i' (inner join), 'l' (left join), or 'r' (right join). Defaults to outer join, whose result is the same as `hcat(x, y)` or `[x y]`.
+...
 """
 function merge(x::TS, y::TS; join::Char='o')::TS
     @assert join == 'o' || join == 'i' || join == 'l' || join == 'r' "`join` must be 'o', 'i', 'l', or 'r'."
