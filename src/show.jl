@@ -13,12 +13,13 @@ _round(x, n=4) = ismissing(x) ? missing : round(x, digits=n)
 
 function getshowrows(io::IO, x::TS{V,T}) where {V,T}
     nrow = size(x,1)
-    dims = displaysize(io)
-    if nrow > dims[1]
-        row_chunk_size = fld(dims[1]-4, 2) - 1
+    display_rows, _ = displaysize(io)
+    display_rows -= 3
+    if nrow > display_rows
+        row_chunk_size = fld(display_rows-4, 2) - 1
         return (collect(1:row_chunk_size), collect(nrow-row_chunk_size:nrow))
     else
-        return (collect(1:fld(nrow,2)), collect(fld(nrow,2)+1:nrow))
+        return (collect(1:nrow), Int[])
     end
 end
 
@@ -56,7 +57,7 @@ function show(io::IO, X::TS, padding::Int=PADDING, digits::Int=DECIMALS)::Nothin
     width_index, width_values = getwidths(io, X, padding)
     headerline = [rpad("Index", width_index); [rpad(string(X.fields[j]), width_values[j]) for j in 1:size(X,2)]]
     print(io, join(headerline), '\n')
-    if length(toprows) == 0 || length(bottomrows) == 0 || toprows[end] == bottomrows[1] - 1
+    if isempty(bottomrows)
         @inbounds for (t, x) in X
             datarow = [
                        rpad(t, width_index);
@@ -65,7 +66,7 @@ function show(io::IO, X::TS, padding::Int=PADDING, digits::Int=DECIMALS)::Nothin
             print(io, join(datarow), '\n')
         end
     else
-        @inbounds for (t, x) in X[toprows[1:end-1]]
+        @inbounds for (t, x) in X[toprows]
             datarow = [
                        rpad(t, width_index);
                        [rpad(string(round(x[j], digits=digits)), width_values[j]) for j in 1:size(X,2)]
@@ -78,10 +79,7 @@ function show(io::IO, X::TS, padding::Int=PADDING, digits::Int=DECIMALS)::Nothin
                        rpad(t, width_index);
                        [rpad(string(round(x[j], digits=digits)), width_values[j]) for j in 1:size(X,2)]
                       ]
-            print(io, join(datarow))
-            if t != X[bottomrows].index[end]
-                print('\n')
-            end
+            print(io, join(datarow), '\n')
         end
     end
     return nothing
