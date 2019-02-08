@@ -3,9 +3,12 @@
 ## Flat Files
 
 ```@repl
-using Temporal, Pkg
-filepath = "Pkg.Pkg2.dir("Temporal")/data/Corn.csv"
-X = tsread(filepath)
+using Temporal
+X = TS(randn(252, 4))
+filepath = "tmp.csv"
+tswrite(X, filepath)
+Y = tsread(filepath)
+X == Y
 ```
 
 ## Yahoo
