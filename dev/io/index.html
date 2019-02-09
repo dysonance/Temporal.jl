@@ -1,5 +1,55 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Data Access · Temporal</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link href="../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>Temporal</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../">Home</a></li><li><a class="toctext" href="../ts/">TS Object</a></li><li><a class="toctext" href="../operations/">Operations</a></li><li class="current"><a class="toctext" href>Data Access</a><ul class="internal"><li><a class="toctext" href="#Flat-Files-1">Flat Files</a></li><li><a class="toctext" href="#Yahoo-1">Yahoo</a></li><li><a class="toctext" href="#Quandl-1">Quandl</a></li></ul></li><li><span class="toctext">Data Manipulation</span><ul><li><a class="toctext" href="../indexing/">Indexing</a></li><li><a class="toctext" href="../combining/">Joins</a></li><li><a class="toctext" href="../aggregation/">Aggregation</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li><a href>Data Access</a></li></ul><a class="edit-page" href="https://github.com/dysonance/Temporal.jl/blob/master/docs/src/io.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>Data Access</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="Data-Readers-1" href="#Data-Readers-1">Data Readers</a></h1><h2><a class="nav-anchor" id="Flat-Files-1" href="#Flat-Files-1">Flat Files</a></h2><pre><code class="language-julia-repl">julia&gt; using Temporal, Pkg</code></pre><h2><a class="nav-anchor" id="Yahoo-1" href="#Yahoo-1">Yahoo</a></h2><pre><code class="language-julia-repl">julia&gt; using Temporal
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Data Access · Temporal</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link href="../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>Temporal</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../">Home</a></li><li><a class="toctext" href="../ts/">TS Object</a></li><li><a class="toctext" href="../operations/">Operations</a></li><li class="current"><a class="toctext" href>Data Access</a><ul class="internal"><li><a class="toctext" href="#Flat-Files-1">Flat Files</a></li><li><a class="toctext" href="#Yahoo-1">Yahoo</a></li><li><a class="toctext" href="#Quandl-1">Quandl</a></li></ul></li><li><span class="toctext">Data Manipulation</span><ul><li><a class="toctext" href="../indexing/">Indexing</a></li><li><a class="toctext" href="../combining/">Joins</a></li><li><a class="toctext" href="../aggregation/">Aggregation</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li><a href>Data Access</a></li></ul><a class="edit-page" href="https://github.com/dysonance/Temporal.jl/blob/master/docs/src/io.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>Data Access</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="Data-Readers-1" href="#Data-Readers-1">Data Readers</a></h1><h2><a class="nav-anchor" id="Flat-Files-1" href="#Flat-Files-1">Flat Files</a></h2><pre><code class="language-julia-repl">julia&gt; using Temporal
+
+julia&gt; X = TS(randn(252, 4))
+252x4 TS{Float64,Dates.Date}: 2018-06-03 to 2019-02-09
+
+Index       A        B        C        D
+2018-06-03  0.4578   0.0059   0.2      -1.3
+2018-06-04  0.2636   0.1195   0.1817   -0.6416
+2018-06-05  -1.0601  1.0276   -0.6491  -0.4714
+2018-06-06  -0.5718  1.1259   0.2539   -0.8456
+2018-06-07  0.7713   0.1704   2.3494   -1.2973
+2018-06-08  -0.263   -0.3775  0.6735   0.6316
+2018-06-09  -1.6794  0.3799   -0.5121  -0.5426
+⋮
+2019-02-02  0.575    -0.7273  0.2261   0.0783
+2019-02-03  0.5171   0.4889   -1.5107  -0.0187
+2019-02-04  0.3974   1.5556   0.6963   -0.8415
+2019-02-05  1.6754   -0.2747  0.8731   0.8258
+2019-02-06  -0.2227  0.3846   0.1815   1.01
+2019-02-07  1.0013   -2.1395  1.4144   -0.5807
+2019-02-08  -0.124   2.2578   -0.37    0.6096
+2019-02-09  -1.5706  -0.9153  1.2459   2.02
+
+julia&gt; filepath = &quot;tmp.csv&quot;
+&quot;tmp.csv&quot;
+
+julia&gt; tswrite(X, filepath)
+
+julia&gt; Y = tsread(filepath)
+252x4 TS{Float64,Dates.Date}: 2018-06-03 to 2019-02-09
+
+Index       A        B        C        D
+2018-06-03  0.4578   0.0059   0.2      -1.3
+2018-06-04  0.2636   0.1195   0.1817   -0.6416
+2018-06-05  -1.0601  1.0276   -0.6491  -0.4714
+2018-06-06  -0.5718  1.1259   0.2539   -0.8456
+2018-06-07  0.7713   0.1704   2.3494   -1.2973
+2018-06-08  -0.263   -0.3775  0.6735   0.6316
+2018-06-09  -1.6794  0.3799   -0.5121  -0.5426
+⋮
+2019-02-02  0.575    -0.7273  0.2261   0.0783
+2019-02-03  0.5171   0.4889   -1.5107  -0.0187
+2019-02-04  0.3974   1.5556   0.6963   -0.8415
+2019-02-05  1.6754   -0.2747  0.8731   0.8258
+2019-02-06  -0.2227  0.3846   0.1815   1.01
+2019-02-07  1.0013   -2.1395  1.4144   -0.5807
+2019-02-08  -0.124   2.2578   -0.37    0.6096
+2019-02-09  -1.5706  -0.9153  1.2459   2.02
+
+julia&gt; X == Y
+true</code></pre><h2><a class="nav-anchor" id="Yahoo-1" href="#Yahoo-1">Yahoo</a></h2><pre><code class="language-julia-repl">julia&gt; using Temporal
 
 julia&gt; X = yahoo(&quot;FB&quot;)
 ERROR: TypeError: in #request, in typeassert, expected Dict{String,String}, got Bool</code></pre><h2><a class="nav-anchor" id="Quandl-1" href="#Quandl-1">Quandl</a></h2><pre><code class="language-julia-repl">julia&gt; using Temporal

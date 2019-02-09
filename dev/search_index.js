@@ -85,7 +85,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Data Access",
     "title": "Flat Files",
     "category": "section",
-    "text": "using Temporal, Pkg\nfilepath = \"Pkg.Pkg2.dir(\"Temporal\")/data/Corn.csv\"\nX = tsread(filepath)"
+    "text": "using Temporal\nX = TS(randn(252, 4))\nfilepath = \"tmp.csv\"\ntswrite(X, filepath)\nY = tsread(filepath)\nX == Y"
 },
 
 {
@@ -189,7 +189,23 @@ var documenterSearchIndex = {"docs": [
     "page": "Joins",
     "title": "Joins",
     "category": "section",
-    "text": ""
+    "text": "CurrentModule = Temporal"
+},
+
+{
+    "location": "combining/#Base.merge",
+    "page": "Joins",
+    "title": "Base.merge",
+    "category": "function",
+    "text": "merge(x::TS,y::TS;join::Char=\'o\')::TS\n\nMerge two time series objects together by index with an optionally specified join type parameter.\n\n...\n\nArguments\n\nx::TS: Left side of the join.\ny::TS: Right side of the join.\n\nOptional args:\n\njoin::Char=\'o\'::TS: Specifies the logic used to perform the merge, and may take on the values \'o\' (outer join), \'i\' (inner join), \'l\' (left join), or \'r\' (right join). Defaults to outer join, whose result is the same as hcat(x, y) or [x y].\n\n...\n\n\n\n\n\n"
+},
+
+{
+    "location": "combining/#Temporal.ojoin",
+    "page": "Joins",
+    "title": "Temporal.ojoin",
+    "category": "function",
+    "text": "ojoin(x::TS,y::TS)::TS\n\nOuter join two TS objects by index.\n\nEquivalent to x OUTER JOIN y ON x.index = y.index.\n\n...\n\nArguments\n\nx::TS: Left side of the join.\ny::TS: Right side of the join.\n\n...\n\n\n\n\n\n"
 },
 
 {
@@ -197,7 +213,23 @@ var documenterSearchIndex = {"docs": [
     "page": "Joins",
     "title": "Outer Joins",
     "category": "section",
-    "text": "One can perform a full outer join on the time indexes of two TS objects x and y in the following ways:merge(x, y)\nojoin(x, y)\n[x y]\nhcat(x, y)Where there are dates in the index of one that do not exist in the other, values will be filled with NaN objects. As the missing functionality matures in Julia\'s base syntax, it will eventually replace NaN in this context, since unfortunately NaN is only applicable for Float64 element types.using Temporal, Dates  # hide\nx = TS(rand(252))\ny = TS(rand(252), x.index .- Month(6))\n[x y]"
+    "text": "One can perform a full outer join on the time indexes of two TS objects x and y in the following ways:merge(x, y)\nojoin(x, y)\n[x y]\nhcat(x, y)Where there are dates in the index of one that do not exist in the other, values will be filled with NaN objects. As the missing functionality matures in Julia\'s base syntax, it will eventually replace NaN in this context, since unfortunately NaN is only applicable for Float64 element types.merge\nojoin"
+},
+
+{
+    "location": "combining/#Example-1",
+    "page": "Joins",
+    "title": "Example",
+    "category": "section",
+    "text": "using Temporal, Dates  # hide\nx = TS(rand(252))\ny = TS(rand(252), x.index .- Month(6))\n[x y]"
+},
+
+{
+    "location": "combining/#Temporal.ijoin",
+    "page": "Joins",
+    "title": "Temporal.ijoin",
+    "category": "function",
+    "text": "ijoin(x::TS,y::TS)::TS\n\nInner join two TS objects by index.\n\nEquivalent to x INNER JOIN y on x.index = y.index.\n\n...\n\nArguments\n\nx::TS: Left side of the join.\ny::TS: Right side of the join.\n\n...\n\n\n\n\n\n"
 },
 
 {
@@ -205,7 +237,31 @@ var documenterSearchIndex = {"docs": [
     "page": "Joins",
     "title": "Inner Joins",
     "category": "section",
-    "text": "You can do inner joins on TS objects using the ijoin function, which will remove any observations corresponding to time steps where at least one of the joined objects is missing a row. This will basically keep only the rows where the time index of the LHS and the RHS intersect.using Temporal, Dates  # hide\nx = TS(rand(252))\ny = TS(rand(252), x.index .- Month(6))\nijoin(x, y)"
+    "text": "You can do inner joins on TS objects using the ijoin function, which will remove any observations corresponding to time steps where at least one of the joined objects is missing a row. This will basically keep only the rows where the time index of the left side and the right side intersect.ijoin"
+},
+
+{
+    "location": "combining/#Example-2",
+    "page": "Joins",
+    "title": "Example",
+    "category": "section",
+    "text": "using Temporal, Dates  # hide\nx = TS(rand(252))\ny = TS(rand(252), x.index .- Month(6))\nijoin(x, y)"
+},
+
+{
+    "location": "combining/#Temporal.ljoin",
+    "page": "Joins",
+    "title": "Temporal.ljoin",
+    "category": "function",
+    "text": "ljoin(x::TS, y::TS)::TS\n\nLeft join two TS objects by index.\n\nEquivalent to x LEFT JOIN y ON x.index = y.index.\n\n...\n\nArguments\n\nx::TS: Left side of the join.\ny::TS: Right side of the join.\n\n...\n\n\n\n\n\n"
+},
+
+{
+    "location": "combining/#Temporal.rjoin",
+    "page": "Joins",
+    "title": "Temporal.rjoin",
+    "category": "function",
+    "text": "rjoin(x::TS, y::TS)::TS\n\nRight join two TS objects by index.\n\nEquivalent to x RIGHT JOIN y ON x.index = y.index.\n\n...\n\nArguments\n\nx::TS: Left side of the join.\ny::TS: Right side of the join.\n\n...\n\n\n\n\n\n"
 },
 
 {
@@ -213,7 +269,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Joins",
     "title": "Left/Right Joins",
     "category": "section",
-    "text": "Left and right joins are performed similarly to inner joins and the typical SQL join queries using the objects\' index fields as the joining key.Left Join: keep all observations of the LHS of the join, fill the RHS with NaN\'s where missing the corresponding time index\nRight Join: keep all observations of the RHS of the join, fill the LHS with NaN\'s where missing the corresponding time indexusing Temporal, Dates  # hide\nx = TS(rand(252))\ny = TS(rand(252), x.index .- Month(6))\nljoin(x, y)\nrjoin(x, y)"
+    "text": "Left and right joins are performed similarly to inner joins and the typical SQL join queries using the index field each object as the joining key.Left Join: keep all observations of the left side of the join, fill the right side with NaN\'s where missing the corresponding time index\nRight Join: keep all observations of the right side of the join, fill the left side with NaN\'s where missing the corresponding time indexljoin\nrjoin"
+},
+
+{
+    "location": "combining/#Example-3",
+    "page": "Joins",
+    "title": "Example",
+    "category": "section",
+    "text": "using Temporal, Dates  # hide\nx = TS(rand(252))\ny = TS(rand(252), x.index .- Month(6))\nljoin(x, y)\nrjoin(x, y)"
 },
 
 {
