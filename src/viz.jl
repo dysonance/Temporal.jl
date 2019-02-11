@@ -2,9 +2,9 @@
 Methods to simplify the plotting functionality for TS objects.
 =#
 
-const DEFAULT_COLORS = [:black, :red, :green, :blue, :cyan, :magenta, :orange, :pink]
-
 import RecipesBase: @recipe
+
+const DEFAULT_COLORS = [:black, :red, :green, :blue, :cyan, :magenta, :orange, :pink]
 
 function beautify_string(s::String;
                          preserve_acronyms::Bool=true,
