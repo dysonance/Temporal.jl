@@ -31,11 +31,6 @@ module Temporal
         # aggregation
         mondays, tuesdays, wednesdays, thursdays, fridays, saturdays, sundays,
         bow, eow, bom, eom, boq, eoq, boy, eoy, collapse, apply,
-        # data access
-        tsread, tswrite,
-        quandl, quandl_auth, quandl_meta, quandl_search,
-        yahoo_get_crumb, yahoo,
-        google,
         # financial
         has_open, has_high, has_low, has_close, has_volume, is_ohlc, is_ohlcv,
         op, hi, lo, cl, vo, ohlc, ohlcv, hlc, hl, hl2, hlc3, ohlc4,
@@ -45,20 +40,25 @@ module Temporal
         # models
         acf
     module Data
-        using HTTP
-        using JSON
-        using Dates
-        using Printf
-        using ..Temporal
-        include("data/local/flat.jl")
-        include("data/remote/yahoo.jl")
-        include("data/remote/google.jl")
-        include("data/remote/quandl.jl")
-        export
-            tsread, tswrite,
-            quandl, quandl_auth, quandl_meta, quandl_search,
-            yahoo_get_crumb, yahoo,
-            google
+        module Remote
+            using HTTP
+            using JSON
+            using Dates
+            using Printf
+            using ....Temporal
+            include("data/remote/web.jl")
+            include("data/remote/yahoo.jl")
+            include("data/remote/google.jl")
+            include("data/remote/quandl.jl")
+            export csvresp, quandl, quandl_auth, quandl_meta, quandl_search, yahoo, google
+        end
+        module Local
+            using Dates
+            using ....Temporal
+            include("data/local/flat.jl")
+            export tsread, tswrite
+        end
+        export tsread, tswrite, quandl, quandl_auth, quandl_meta, quandl_search, yahoo, google
     end
     module Visualization
         using RecipesBase
@@ -66,6 +66,8 @@ module Temporal
         using ..Temporal
         include("viz.jl")
     end
-    using .Data
+    using .Data.Remote
+    using .Data.Local
+    export tsread, tswrite, quandl, quandl_auth, quandl_meta, quandl_search, yahoo, google
     using .Visualization
 end

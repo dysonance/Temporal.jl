@@ -1,11 +1,3 @@
-# ==============================================================================
-# WEB INTERFACE ================================================================
-# ==============================================================================
-
-# function dateconv(s::String)
-#     Dates.datetime2unix(Dates.DateTime(s))
-# end
-
 function isdate(t::AbstractVector{T})::Bool where {T<:TimeType}
     h = Dates.hour.(t)
     m = Dates.minute.(t)
