@@ -49,19 +49,51 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "operations/#",
-    "page": "Operations",
-    "title": "Operations",
+    "location": "calculation/#",
+    "page": "Calculation",
+    "title": "Calculation",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "operations/#Operations-1",
-    "page": "Operations",
-    "title": "Operations",
+    "location": "calculation/#Computations-1",
+    "page": "Calculation",
+    "title": "Computations",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "calculation/#Operators-1",
+    "page": "Calculation",
+    "title": "Operators",
     "category": "section",
     "text": "Modules = [Temporal]\nPages = [\"operations.jl\"]"
+},
+
+{
+    "location": "calculation/#Scalars-1",
+    "page": "Calculation",
+    "title": "Scalars",
+    "category": "section",
+    "text": "using Temporal\nX = TS(rand(100, 4))\nX + 1\nX - 1\nX * 2\nX / 2\nX % 2\nX ^ 2"
+},
+
+{
+    "location": "calculation/#Time-Series-1",
+    "page": "Calculation",
+    "title": "Time Series",
+    "category": "section",
+    "text": "using Temporal\nX = TS(rand(100, 4))\nY = TS(randn(100, 4))\nX + Y\nX - Y\nX * Y\nX / Y\nX % Y\nX ^ Y"
+},
+
+{
+    "location": "calculation/#Statistics-1",
+    "page": "Calculation",
+    "title": "Statistics",
+    "category": "section",
+    "text": "using Temporal\nX = TS(randn(100, 4))\nmean(X)\nsum(X)\nprod(X)\ncumsum(X)\ncumprod(X)\nsign(X)\nlog(X)\nminimum(X)\ncummin(X)\nmaximum(X)\ncummax(X)"
 },
 
 {
