@@ -45,6 +45,7 @@ using Test, Dates, Temporal, Random
         x1 = TS(rand(100)) + 100
         x2 = TS(rand(100)) + 100
         c = Float64(pi)
+        # operating with two TS objects
         @test (x1 + x2).values == x1.values + x2.values
         @test (x1 - x2).values == x1.values - x2.values
         @test (x1 * x2).values == x1.values .* x2.values
@@ -52,8 +53,21 @@ using Test, Dates, Temporal, Random
         @test (x1 * c).values == x1.values * c
         @test (x1 / c).values == x1.values / c
         @test (x1 % c).values == x1.values .% c
+        # operating with arrays on LHS
         @test x1 + x1.values == x1 * 2
         @test x2 - x2.values == zeros(x2)
+        @test x1 * x2.values == TS(x1.values .* x2.values)
+        @test x1 / x1.values == ones(x1)
+        @test x1 % x1.values == zeros(x1)
+        @test x1 ^ x1.values == TS(x1.values .^ x1.values)
+        # operating with arrays on RHS
+        @test x1.values + x1 == x1 * 2
+        @test x2.values - x2 == zeros(x2)
+        @test x1.values * x2 == TS(x1.values .* x2.values)
+        @test x1.values / x1 == ones(x1)
+        @test x1.values % x1 == zeros(x1)
+        @test x1.values ^ x1 == TS(x1.values .^ x1.values)
+        # operating with scalars
         @test (c + x1).values == (c .+ x1.values)
         @test (c - x1).values == (c .- x1.values)
         @test (c * x1).values == (c .* x1.values)

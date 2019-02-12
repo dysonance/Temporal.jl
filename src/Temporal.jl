@@ -36,7 +36,7 @@ module Temporal
         # operations
         numfun, arrfun, operation,
         ones, zeros, trues, falses, isnan, countnz, sign, round,
-        sum, mean, maximum, minimum, prod, cumsum, cumprod, diff, lag, nans,
+        sum, mean, maximum, minimum, prod, cumsum, cumprod, diff, lag,
         shift, pct_change,
         rename!, rename,
         # aggregation

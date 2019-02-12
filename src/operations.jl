@@ -91,9 +91,6 @@ minimum(x::TS{V}, dim::Int) where {V} = minimum(x.values, dim)
 cumsum(x::TS; dims::Int=1) = TS(cumsum(x.values, dims=dims), x.index, x.fields)
 cumprod(x::TS; dims::Int=1) = TS(cumprod(x.values, dims=dims), x.index, x.fields)
 
-nans(r::Int, c::Int) = fill(NaN, 1, 2)
-nans(dims::Tuple{Int,Int}) = fill(NaN, dims)
-
 function rowdx!(dx::AbstractArray{T,N}, x::AbstractArray{T,N}, n::Int, r::Int=size(x,1)) where {T,N}
     idx = n > 0 ? (n+1:r) : (1:r+n)
     @inbounds for i=idx
@@ -214,12 +211,12 @@ end
 %(x::TS, y::AbstractArray) = x % TS(y, x.index, x.fields)
 ^(x::TS, y::AbstractArray) = x ^ TS(y, x.index, x.fields)
 
-+(y::AbstractArray, x::TS) = x + y
--(y::AbstractArray, x::TS) = x - y
-*(y::AbstractArray, x::TS) = y * x
-/(y::AbstractArray, x::TS) = y / x
-%(y::AbstractArray, x::TS) = y % x
-^(y::AbstractArray, x::TS) = y ^ x
++(y::AbstractArray, x::TS) = TS(y, x.index, x.fields) + x
+-(y::AbstractArray, x::TS) = TS(y, x.index, x.fields) - x
+*(y::AbstractArray, x::TS) = TS(y, x.index, x.fields) * x
+/(y::AbstractArray, x::TS) = TS(y, x.index, x.fields) / x
+%(y::AbstractArray, x::TS) = TS(y, x.index, x.fields) % x
+^(y::AbstractArray, x::TS) = TS(y, x.index, x.fields) ^ x
 
 +(x::TS, y::Number) = TS(x.values .+ y, x.index, x.fields)
 -(x::TS, y::Number) = TS(x.values .- y, x.index, x.fields)
