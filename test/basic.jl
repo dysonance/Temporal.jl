@@ -22,6 +22,7 @@ using Test, Dates, Temporal
     u = TS(rand(N), X.index, "under_score")
     @test u.fields[1] == :under_score
     show(stdout, TS(rand(252,4)))
+    show(stdout, TS(rand(252,4))[1,:])
     print("\n")
     # iterator protocol
     for (t, x) in X
