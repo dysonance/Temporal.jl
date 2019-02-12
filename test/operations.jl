@@ -44,22 +44,22 @@ using Test, Dates, Temporal, Random
     @testset "Arithmetic" begin
         x1 = TS(rand(100)) + 100
         x2 = TS(rand(100)) + 100
-        z = x1 + x2
-        @test z.values == x1.values + x2.values
-        z = x1 - x2
-        @test z.values == x1.values - x2.values
-        z = x1 * x2
-        @test z.values == x1.values .* x2.values
-        z = x1 / x2
-        @test z.values == x1.values ./ x2.values
-        z = x1 * 2.0
-        @test z.values == x1.values * 2.0
-        z = x1 / 2.0
-        @test z.values == x1.values / 2.0
-        z = x1 % 2.0
-        @test z.values == x1.values .% 2.0
+        c = Float64(pi)
+        @test (x1 + x2).values == x1.values + x2.values
+        @test (x1 - x2).values == x1.values - x2.values
+        @test (x1 * x2).values == x1.values .* x2.values
+        @test (x1 / x2).values == x1.values ./ x2.values
+        @test (x1 * c).values == x1.values * c
+        @test (x1 / c).values == x1.values / c
+        @test (x1 % c).values == x1.values .% c
         @test x1 + x1.values == x1 * 2
         @test x2 - x2.values == zeros(x2)
+        @test (c + x1).values == (c .+ x1.values)
+        @test (c - x1).values == (c .- x1.values)
+        @test (c * x1).values == (c .* x1.values)
+        @test (c / x1).values == (c ./ x1.values)
+        @test (c % x1).values == (c .% x1.values)
+        @test (c ^ x1).values == (c .^ x1.values)
     end
     @testset "Statistics" begin
         x = TS(rand(100)) + 100

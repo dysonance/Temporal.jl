@@ -43,8 +43,6 @@ convert(::Type{TS{Float64}}, x::TS{Bool}) = TS{Float64}(map(Float64, x.values), 
 convert(::Type{TS{Int}}, x::TS{Bool}) = TS{Int}(map(Int, x.values), x.index, x.fields)
 convert(::Type{TS{Bool}}, x::TS{V}) where {V<:Real} = TS{Bool}(map(V, x.values), x.index, x.fields)
 convert(x::TS{Bool}) = convert(TS{Int}, x::TS{Bool})
-# convert{V}(::Type{TS}, x::Array{V}) = TS{V,Date}(x, [Dates.Date() for i in 1:size(x,1)])
-# convert(x::TS{Bool}) = convert(TS{Float64}, x::TS{Bool})
 const ts = TS
 
 ################################################################################

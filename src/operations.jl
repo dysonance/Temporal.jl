@@ -66,16 +66,16 @@ randn(::Type{TS}, n::Int=1) = TS(randn(Float64, n))
 randn(::Type{TS}, r::Int, c::Int) = TS(randn(Float64, r, c))
 randn(::Type{TS}, dims::Tuple{Int,Int}) = TS(randn(Float64, dims))
 
-trues(x::TS) = ts(trues(size(x)), x.index, x.fields)
-falses(x::TS) = ts(falses(size(x)), x.index, x.fields)
-isnan(x::TS) = ts(isnan.(x.values), x.index, x.fields)
-sign(x::TS) = ts(sign.(x.values), x.index, x.fields)
-log(x::TS) = ts(log.(x.values), x.index, x.fields)
-log(b::Number, x::TS) = ts(log.(b, x.values), x.index, x.fields)
+trues(x::TS) = TS(trues(size(x)), x.index, x.fields)
+falses(x::TS) = TS(falses(size(x)), x.index, x.fields)
+isnan(x::TS) = TS(isnan.(x.values), x.index, x.fields)
+sign(x::TS) = TS(sign.(x.values), x.index, x.fields)
+log(x::TS) = TS(log.(x.values), x.index, x.fields)
+log(b::Number, x::TS) = TS(log.(b, x.values), x.index, x.fields)
 
 # Number functions
-round(x::TS{V}; digits::Int=0) where {V} = ts(round.(x.values, digits=digits), x.index, x.fields)
-round(::Type{R}, x::TS) where {R} = ts(round.(R, x.values), x.index, x.fields)
+round(x::TS{V}; digits::Int=0) where {V} = TS(round.(x.values, digits=digits), x.index, x.fields)
+round(::Type{R}, x::TS) where {R} = TS(round.(R, x.values), x.index, x.fields)
 sum(x::TS{V}) where {V} = sum(x.values)
 sum(x::TS{V}, dim::Int) where {V} = sum(x.values, dim)
 sum(f::Function, x::TS{V}) where {V} = sum(f, x.values)
@@ -88,10 +88,8 @@ maximum(x::TS{V}) where {V} = maximum(x.values)
 maximum(x::TS{V}, dim::Int) where {V} = maximum(x.values, dim)
 minimum(x::TS{V}) where {V} = minimum(x.values)
 minimum(x::TS{V}, dim::Int) where {V} = minimum(x.values, dim)
-cumsum(x::TS; dims::Int=1) = ts(cumsum(x.values, dims=dims), x.index, x.fields)
-cummin(x::TS; dims::Int=1) = ts(cummin(x.values, dims=dims), x.index, x.fields)
-cummax(x::TS; dims::Int=1) = ts(cummax(x.values, dims=dims), x.index, x.fields)
-cumprod(x::TS; dims::Int=1) = ts(cumprod(x.values, dims=dims), x.index, x.fields)
+cumsum(x::TS; dims::Int=1) = TS(cumsum(x.values, dims=dims), x.index, x.fields)
+cumprod(x::TS; dims::Int=1) = TS(cumprod(x.values, dims=dims), x.index, x.fields)
 
 nans(r::Int, c::Int) = fill(NaN, 1, 2)
 nans(dims::Tuple{Int,Int}) = fill(NaN, dims)
@@ -136,19 +134,19 @@ function diff(x::TS{V,T}, n::Int=1; dim::Int=1, pad::Bool=false, padval::V=zero(
         if pad
             idx = n>0 ? (1:n) : (r+n+1:r)
             dx[idx,:] .= padval
-            return ts(dx, x.index, x.fields)
+            return TS(dx, x.index, x.fields)
         else
             idx = n > 0 ? (n+1:r) : (1:r+n)
-            return ts(dx[idx,:], x.index[idx], x.fields)
+            return TS(dx[idx,:], x.index[idx], x.fields)
         end
     else
         if pad
             idx = n > 0 ? (1:c) : (c+1+1:c)
             dx[:,idx] .= padval
-            return ts(dx, x.index, x.fields[idx])
+            return TS(dx, x.index, x.fields[idx])
         else
             idx = n > 0 ? (n+1:c) : (1:c+n)
-            return ts(dx[:,idx], x.index, x.fields[idx])
+            return TS(dx[:,idx], x.index, x.fields[idx])
         end
     end
 end
@@ -169,10 +167,10 @@ function lag(x::TS{V,T}, n::Int=1; pad::Bool=false, padval::V=zero(V)) where {V,
     if pad
         idx = n>0 ? (1:n) : (r+n+1:r)
         out[idx,:] .= padval
-        return ts(out, x.index, x.fields)
+        return TS(out, x.index, x.fields)
     else
         idx = n > 0 ? (n+1:r) : (1:r+n)
-        return ts(out[idx,:], x.index[idx], x.fields)
+        return TS(out[idx,:], x.index[idx], x.fields)
     end
 end
 
@@ -196,11 +194,11 @@ function compare_elementwise(x::TS, y::TS, f::Function)
     y_cols = (1:size(y,2)) .+ size(x,2)
     merged = [x y]
     result = f.(merged.values[:,x_cols], merged.values[:,y_cols])
-    return ts(result, merged.index)
+    return TS(result, merged.index)
 end
 
-+(x::TS) = ts(+x.values, x.index, x.fields)
--(x::TS) = ts(-x.values, x.index, x.fields)
++(x::TS) = TS(+x.values, x.index, x.fields)
+-(x::TS) = TS(-x.values, x.index, x.fields)
 
 +(x::TS, y::TS) = compare_elementwise(x, y, +)
 -(x::TS, y::TS) = compare_elementwise(x, y, -)
@@ -223,19 +221,19 @@ end
 %(y::AbstractArray, x::TS) = y % x
 ^(y::AbstractArray, x::TS) = y ^ x
 
-+(x::TS, y::Number) = ts(x.values .+ y, x.index, x.fields)
--(x::TS, y::Number) = ts(x.values .- y, x.index, x.fields)
-*(x::TS, y::Number) = ts(x.values .* y, x.index, x.fields)
-/(x::TS, y::Number) = ts(x.values ./ y, x.index, x.fields)
-%(x::TS, y::Number) = ts(x.values .% y, x.index, x.fields)
-^(x::TS{B}, y::E) where {B<:Real,E<:Real} = ts(x.values .^ y, x.index, x.fields)
++(x::TS, y::Number) = TS(x.values .+ y, x.index, x.fields)
+-(x::TS, y::Number) = TS(x.values .- y, x.index, x.fields)
+*(x::TS, y::Number) = TS(x.values .* y, x.index, x.fields)
+/(x::TS, y::Number) = TS(x.values ./ y, x.index, x.fields)
+%(x::TS, y::Number) = TS(x.values .% y, x.index, x.fields)
+^(x::TS{B}, y::E) where {B<:Real,E<:Real} = TS(x.values .^ y, x.index, x.fields)
 
 +(y::Number, x::TS) = x + y
--(y::Number, x::TS) = x - y
+-(y::Number, x::TS) = TS(y .- x.values, x.index, x.fields)
 *(y::Number, x::TS) = x * y
-/(y::Number, x::TS) = x / y
-%(y::Number, x::TS) = x % y
-^(y::Number, x::TS) = x ^ y
+/(y::Number, x::TS) = TS(y ./ x.values, x.index, x.fields)
+%(y::Number, x::TS) = TS(y .% x.values, x.index, x.fields)
+^(y::Number, x::TS) = TS(y .^ x.values, x.index, x.fields)
 
 # Logical operators
 all(x::TS) = all(x.values)
@@ -243,7 +241,7 @@ any(x::TS) = any(x.values)
 
 !(x::TS) = TS(.!x.values, x.index, x.fields)
 
-# compared to another ts object
+# compared to another TS object
 ==(x::TS, y::TS) = x.values == y.values && x.index == y.index && x.fields == y.fields
 !=(x::TS, y::TS) = !(x == y)
 >(x::TS, y::TS) = compare_elementwise(x, y, >)
@@ -252,37 +250,37 @@ any(x::TS) = any(x.values)
 <=(x::TS, y::TS) = compare_elementwise(x, y, <=)
 
 #  # Vectorizized operations
-#  broadcast(::typeof(+), x::TS, y::TS) = ts(x.values .+ y.values, x.index, x.fields)
-#  broadcast(::typeof(-), x::TS, y::TS) = ts(x.values .- y.values, x.index, x.fields)
-#  broadcast(::typeof(*), x::TS, y::TS) = ts(x.values .* y.values, x.index, x.fields)
-#  broadcast(::typeof(/), x::TS, y::TS) = ts(x.values ./ y.values, x.index, x.fields)
-#  broadcast(::typeof(^), x::TS, y::TS) = ts(x.values .^ y.values, x.index, x.fields)
-#  broadcast(::typeof(%), x::TS, y::TS) = ts(x.values .% y.values, x.index, x.fields)
-#  broadcast(::typeof(+), x::TS, y::AbstractArray) = ts(x.values .+ y, x.index, x.fields)
-#  broadcast(::typeof(-), x::TS, y::AbstractArray) = ts(x.values .- y, x.index, x.fields)
-#  broadcast(::typeof(*), x::TS, y::AbstractArray) = ts(x.values .* y, x.index, x.fields)
-#  broadcast(::typeof(/), x::TS, y::AbstractArray) = ts(x.values ./ y, x.index, x.fields)
-#  broadcast(::typeof(%), x::TS, y::AbstractArray) = ts(x.values .% y, x.index, x.fields)
-#  broadcast(::typeof(^), x::TS, y::AbstractArray) = ts(x.values .^ y, x.index, x.fields)
+#  broadcast(::typeof(+), x::TS, y::TS) = TS(x.values .+ y.values, x.index, x.fields)
+#  broadcast(::typeof(-), x::TS, y::TS) = TS(x.values .- y.values, x.index, x.fields)
+#  broadcast(::typeof(*), x::TS, y::TS) = TS(x.values .* y.values, x.index, x.fields)
+#  broadcast(::typeof(/), x::TS, y::TS) = TS(x.values ./ y.values, x.index, x.fields)
+#  broadcast(::typeof(^), x::TS, y::TS) = TS(x.values .^ y.values, x.index, x.fields)
+#  broadcast(::typeof(%), x::TS, y::TS) = TS(x.values .% y.values, x.index, x.fields)
+#  broadcast(::typeof(+), x::TS, y::AbstractArray) = TS(x.values .+ y, x.index, x.fields)
+#  broadcast(::typeof(-), x::TS, y::AbstractArray) = TS(x.values .- y, x.index, x.fields)
+#  broadcast(::typeof(*), x::TS, y::AbstractArray) = TS(x.values .* y, x.index, x.fields)
+#  broadcast(::typeof(/), x::TS, y::AbstractArray) = TS(x.values ./ y, x.index, x.fields)
+#  broadcast(::typeof(%), x::TS, y::AbstractArray) = TS(x.values .% y, x.index, x.fields)
+#  broadcast(::typeof(^), x::TS, y::AbstractArray) = TS(x.values .^ y, x.index, x.fields)
 #  broadcast(::typeof(+), y::AbstractArray, x::TS) = x .+ y
 #  broadcast(::typeof(-), y::AbstractArray, x::TS) = x .- y
-#  broadcast(::typeof(*), y::AbstractArray, x::TS) = ts(y .* x.values, x.index, x.fields)
-#  broadcast(::typeof(/), y::AbstractArray, x::TS) = ts(y ./ x.values, x.index, x.fields)
-#  broadcast(::typeof(%), y::AbstractArray, x::TS) = ts(y .% x.values, x.index, x.fields)
-#  broadcast(::typeof(^), y::AbstractArray, x::TS) = ts(y .^ x.values, x.index, x.fields)
-#  broadcast(::typeof(+), x::TS, y::Number) = ts(x.values .+ y, x.index, x.fields)
-#  broadcast(::typeof(-), x::TS, y::Number) = ts(x.values .- y, x.index, x.fields)
-#  broadcast(::typeof(*), x::TS, y::Number) = ts(x.values .* y, x.index, x.fields)
-#  broadcast(::typeof(/), x::TS, y::Number) = ts(x.values ./ y, x.index, x.fields)
-#  broadcast(::typeof(%), x::TS, y::Number) = ts(x.values .% y, x.index, x.fields)
-#  broadcast(::typeof(^), x::TS, y::Number) = ts(x.values .^ y, x.index, x.fields)
-#  broadcast(::typeof(+), y::Number, x::TS) = ts(y .+ x.values, x.index, x.fields)
-#  broadcast(::typeof(-), y::Number, x::TS) = ts(y .- x.values, x.index, x.fields)
-#  broadcast(::typeof(*), y::Number, x::TS) = ts(y .* x.values, x.index, x.fields)
-#  broadcast(::typeof(/), y::Number, x::TS) = ts(y ./ x.values, x.index, x.fields)
-#  broadcast(::typeof(%), y::Number, x::TS) = ts(y .% x.values, x.index, x.fields)
-#  broadcast(::typeof(^), y::Number, x::TS) = ts(y .^ x.values, x.index, x.fields)
-#  broadcast(::typeof(!), x::TS) = ts(.!x.values, x.index, x.fields)
+#  broadcast(::typeof(*), y::AbstractArray, x::TS) = TS(y .* x.values, x.index, x.fields)
+#  broadcast(::typeof(/), y::AbstractArray, x::TS) = TS(y ./ x.values, x.index, x.fields)
+#  broadcast(::typeof(%), y::AbstractArray, x::TS) = TS(y .% x.values, x.index, x.fields)
+#  broadcast(::typeof(^), y::AbstractArray, x::TS) = TS(y .^ x.values, x.index, x.fields)
+#  broadcast(::typeof(+), x::TS, y::Number) = TS(x.values .+ y, x.index, x.fields)
+#  broadcast(::typeof(-), x::TS, y::Number) = TS(x.values .- y, x.index, x.fields)
+#  broadcast(::typeof(*), x::TS, y::Number) = TS(x.values .* y, x.index, x.fields)
+#  broadcast(::typeof(/), x::TS, y::Number) = TS(x.values ./ y, x.index, x.fields)
+#  broadcast(::typeof(%), x::TS, y::Number) = TS(x.values .% y, x.index, x.fields)
+#  broadcast(::typeof(^), x::TS, y::Number) = TS(x.values .^ y, x.index, x.fields)
+#  broadcast(::typeof(+), y::Number, x::TS) = TS(y .+ x.values, x.index, x.fields)
+#  broadcast(::typeof(-), y::Number, x::TS) = TS(y .- x.values, x.index, x.fields)
+#  broadcast(::typeof(*), y::Number, x::TS) = TS(y .* x.values, x.index, x.fields)
+#  broadcast(::typeof(/), y::Number, x::TS) = TS(y ./ x.values, x.index, x.fields)
+#  broadcast(::typeof(%), y::Number, x::TS) = TS(y .% x.values, x.index, x.fields)
+#  broadcast(::typeof(^), y::Number, x::TS) = TS(y .^ x.values, x.index, x.fields)
+#  broadcast(::typeof(!), x::TS) = TS(.!x.values, x.index, x.fields)
 #  broadcast(::typeof(!=), x::TS, y::TS) = compare_elementwise(x, y, !=)
 #  broadcast(::typeof(==), x::TS, y::TS) = compare_elementwise(x, y, ==)
 #  broadcast(::typeof(>), x::TS, y::TS) = compare_elementwise(x, y, >)
