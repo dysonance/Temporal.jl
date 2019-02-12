@@ -14,9 +14,16 @@ using Test, Dates, Temporal
         @testset "Quandl" begin
             crude = TS()
             try
-                crude = quandl("CHRIS/CME_CL1", from="2016-01-01", thru=string(today()))
+                database = "CHRIS"
+                table = "CME_CL1"
+                crude = quandl("$database/$table", from="2016-01-01", thru=string(today()))
                 @test size(crude, 2) == 8
                 @test op(crude).fields == [:Open]
+                meta = quandl_meta("CHRIS", "CME_CL1")
+                @test meta["database_code"] == database
+                perpage = 10
+                search = quandl_search(db="CHRIS", qry="corn", perpage=perpage)
+                @test length(search["datasets"]) == perpage
             catch
                 @test_skip !isempty(crude)
             end

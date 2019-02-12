@@ -4,20 +4,11 @@ const QUANDL_URL = "https://www.quandl.com/api/v3/datasets"  # for querying quan
 """
 Set up Quandl user account authorization. Run once passing your Quandl API key, and it will be saved for future use.
 
-`quandl_auth{T<:String}(key::T="")::String`
 
+    quandl_auth(key::String=""; authfile::String=expanduser("~/quandl-auth"))::String
 
-*Example*
-
-```
-julia> quandl_auth("Your_API_Key")
-"Your_API_Key"
-
-julia> quandl_auth()
-"Your_API_Key"
-```
 """
-function quandl_auth(key::T=""; authfile::T=expanduser("~/quandl-auth"))::String where {T<:String}
+function quandl_auth(key::String=""; authfile::String=expanduser("~/quandl-auth"))::String
     if key == ""
         if isfile(authfile)
             key = read(authfile, String)
@@ -32,6 +23,7 @@ end
 
 """
 Download time series data from Quandl as a TS object.
+
 ```
 quandl(code::String;
        from::String="",
@@ -43,22 +35,17 @@ quandl(code::String;
        auth::String=quandl_auth())::TS
 ```
 
+# Arguments
 
-# Example
+- `code::String;`: quandl code to query
+- `from::String=""`: start date from which the data should begin, expressed as a string of format yyyy-mm-dd
+- `thru::String=""`: end date through which the data should continue, expressed as a string of format yyyy-mm-dd
+- `freq::Char='d'`: frequency at which the data should occur (one of 'd', 'w', 'm', 'q', or 'a')
+- `calc::String="none"`: the calculation passed through to the Quandl engine (one of "none", "diff", "rdiff", "cumul", or "normalize")
+- `sort::Char='a'`: direction in which to sort results (one of 'a' or 'd')
+- `rows::Int=0`: number of rows to return from query (default corresponds to all rows)
+- `auth::String=quandl_auth()`: authorization token for the Quandl API dedicated to a user account
 
-```
-julia> quandl("CHRIS/CME_CL1", from="2010-01-01", thru=string(Dates.today()), freq='a')
-8x8 Temporal.TS{Float64,Date}: 2010-12-31 to 2017-12-31
-Index       Open   High    Low    Last   Change  Settle  Volume    PreviousDayOpenInterest
-2010-12-31  89.67  92.06   89.05  91.38  NaN     91.38   171010.0  311738.0
-2011-12-31  99.78  100.16  98.61  98.83  NaN     98.83   151380.0  233377.0
-2012-12-31  90.41  91.99   90.0   91.82  NaN     91.82   107767.0  277570.0
-2013-12-31  99.25  99.39   98.15  98.42  NaN     98.42   100104.0  259878.0
-2014-12-31  53.87  54.02   52.44  53.27  0.85    53.27   247510.0  309473.0
-2015-12-31  36.81  37.79   36.22  37.07  0.44    37.04   279553.0  436421.0
-2016-12-31  53.87  54.09   53.41  53.89  0.05    53.72   266762.0  457983.0
-2017-12-31  48.47  49.63   48.38  49.6   1.14    49.51   540748.0  606895.0
-```
 """
 function quandl(code::String;
                 from::String="",
@@ -94,7 +81,8 @@ end
 """
 Download Quandl metadata for a database and dataset into a Julia Dict object.
 
-`quandl_meta(database::String, dataset::String)`
+    quandl_meta(database::String, dataset::String)::Dict{String,Any}
+
 """
 function quandl_meta(database::String, dataset::String)::Dict{String,Any}
     resp = HTTP.get("$QUANDL_URL/$database/$dataset/metadata.json")
@@ -105,12 +93,13 @@ end
 """
 Search Quandl for data in a given database, `db`, or matching a given query, `qry`.
 
-`quandl_search(;db::String="", qry::String="", perpage::Int=1, pagenum::Int=1)`
+    quandl_search(;db::String="", qry::String="", perpage::Int=1, pagenum::Int=1)
+
 """
 function quandl_search(;db::String="", qry::String="", perpage::Int=1, pagenum::Int=1)
     @assert db!="" || qry!="" "Must enter a database or a search query."
     dbstr = db   == "" ? "" : "database_code=$db&"
-    qrystr = qry  == "" ? "" : "query=$(replace(qry, ' ', '+'))&"
+    qrystr = qry  == "" ? "" : "query=$(replace(qry, ' ' => '+'))&"
     resp = HTTP.get("$QUANDL_URL.json?$(dbstr)$(qrystr)per_page=$perpage&page=$pagenum")
     @assert resp.status == 200 "Error retrieving search results from Quandl"
     return JSON.parse(String(resp.body))
