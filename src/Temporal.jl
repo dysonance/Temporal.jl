@@ -1,7 +1,12 @@
-VERSION >= v"0.6-" && __precompile__(true)
+__precompile__(true)
 
 module Temporal
     using Dates
+    using HTTP
+    using JSON
+    using Dates
+    using Printf
+    using RecipesBase
     include("ts.jl")
     include("show.jl")
     include("utils.jl")
@@ -15,6 +20,12 @@ module Temporal
     include("slice.jl")
     include("ohlc.jl")
     include("convert.jl")
+    include("data/utils.jl")
+    include("data/yahoo.jl")
+    include("data/google.jl")
+    include("data/quandl.jl")
+    include("data/text.jl")
+    include("viz.jl")
     export
         # foundational
         TS, ts,
@@ -38,36 +49,7 @@ module Temporal
         namefix, namefix!, autoidx, findalphanum,
         SANITIZE_NAMES, RANGE_DELIMITER, set_sanitize_names_option, set_range_delimiter_option,
         # models
-        acf
-    module Data
-        module Remote
-            using HTTP
-            using JSON
-            using Dates
-            using Printf
-            using ....Temporal
-            include("data/remote/web.jl")
-            include("data/remote/yahoo.jl")
-            include("data/remote/google.jl")
-            include("data/remote/quandl.jl")
-            export csvresp, quandl, quandl_auth, quandl_meta, quandl_search, yahoo, google
-        end
-        module Local
-            using Dates
-            using ....Temporal
-            include("data/local/flat.jl")
-            export tsread, tswrite
-        end
-        export tsread, tswrite, quandl, quandl_auth, quandl_meta, quandl_search, yahoo, google
-    end
-    module Visualization
-        using RecipesBase
-        using Dates
-        using ..Temporal
-        include("viz.jl")
-    end
-    using .Data.Remote
-    using .Data.Local
-    export tsread, tswrite, quandl, quandl_auth, quandl_meta, quandl_search, yahoo, google
-    using .Visualization
+        acf,
+        # data
+        tsread, tswrite, quandl, quandl_auth, quandl_meta, quandl_search, yahoo, google
 end
