@@ -8,7 +8,7 @@ end
 
 # Find columns in a `TS` object corresponding to the given indexing indicator
 findcols(c::C, x::TS) where {C<:Symbol} = x.fields .== c
-findcols(c::C, x::TS) where {C<:AbstractVector{<:Symbol}} = map(sym->sym in c, x.fields)
+findcols(c::C, x::TS) where {C<:AbstractVector{<:Symbol}} = vcat([findall(c .== x.fields) for c in c]...)
 findcols(c::C, x::TS) where {C<:Int} = [c]
 findcols(c::C, x::TS) where {C<:AbstractVector{<:Integer}} = c
 
