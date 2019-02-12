@@ -1,8 +1,6 @@
-# module TestAggregation
-
 using Test, Dates, Temporal
 
-@testset "Reducing / Collapsing" begin
+@testset "Collapsing" begin
     @testset "Periods" begin
         x = TS(rand(7))
         @test length(mondays(x)) == 1
@@ -37,5 +35,3 @@ using Test, Dates, Temporal
         @test m[1] == mean(X.values[:,1])
     end
 end
-
-# end

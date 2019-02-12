@@ -18,6 +18,7 @@ test_scripts = [
     "combinations.jl",
     "operations.jl",
     "filter.jl",
+    "ohlc.jl",
     "aggregation.jl",
     "conversion.jl",
     "data.jl",
