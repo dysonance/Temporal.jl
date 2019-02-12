@@ -17,7 +17,7 @@ module Temporal
     include("collapse.jl")
     include("operations.jl")
     include("models.jl")
-    include("slice.jl")
+    include("filter.jl")
     include("ohlc.jl")
     include("convert.jl")
     include("data/utils.jl")

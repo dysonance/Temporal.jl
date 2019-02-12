@@ -2,14 +2,14 @@
 
 using Test, Dates, Temporal
 
-@testset "Slicing" begin
+@testset "Filtering" begin
     @testset "Head/Tail" begin
         X = TS(cumsum(randn(100,5), dims=1)) + 100
         n = 5
         @test head(X, n).values == X.values[1:n,:]
         @test tail(X, n).values == X.values[end-5+1:end,:]
     end
-    @testset "NaN Removal" begin
+    @testset "Missing Data Removal" begin
         @testset "Rows" begin
             X = TS(cumsum(randn(100,5), dims=1)) + 100
             X[1,1] = NaN
@@ -29,7 +29,7 @@ using Test, Dates, Temporal
             @test size(dropnan(X, dim=2, fun=all), 2) == size(X, 2) - 1
         end
     end
-    @testset "NaN Fills" begin
+    @testset "Missing Data Fills" begin
         X = TS(cumsum(randn(100), dims=1)) + 100
         X[3:5] = NaN
         @test size(dropnan(fillnan(X, :ffill)), 1) == size(X, 1)

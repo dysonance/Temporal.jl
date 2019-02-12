@@ -17,10 +17,10 @@ test_scripts = [
     "mutating.jl",
     "combinations.jl",
     "operations.jl",
-    "io.jl",
-    "slice.jl",
+    "filter.jl",
     "aggregation.jl",
-    "conversion.jl"
+    "conversion.jl",
+    "data.jl",
 ]
 
 for test_script in test_scripts
