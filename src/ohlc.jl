@@ -1,10 +1,10 @@
 # Methods to more easily handle financial data
 
 # Check for various key financial field names
-has_open(x::TS)::Bool = any(occursin.(r"(op)"i, String.(x.fields)))
-has_high(x::TS)::Bool = any(occursin.(r"(hi)"i, String.(x.fields)))
-has_low(x::TS)::Bool = any(occursin.(r"(lo)"i, String.(x.fields)))
-has_volume(x::TS)::Bool = any(occursin.(r"(vo)"i, String.(x.fields)))
+has_open(x::TS)::Bool = any([occursin(r"(op)"i, String(f)) for f in x.fields])
+has_high(x::TS)::Bool = any([occursin(r"(hi)"i, String(f)) for f in x.fields])
+has_low(x::TS)::Bool = any([occursin(r"(lo)"i, String(f)) for f in x.fields])
+has_volume(x::TS)::Bool = any([occursin(r"(vo)"i, String(f)) for f in x.fields])
 function has_close(x::TS; allow_settle::Bool=true, allow_last::Bool=true)::Bool
     columns = String.(x.fields)
     if allow_settle && allow_last
