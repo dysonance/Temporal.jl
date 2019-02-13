@@ -1,11 +1,7 @@
-import Base.getindex
+import Base: getindex, axes
 
-# define axes function for newer julia versions
-if VERSION >= v"0.7-"
-    import Base.axes
-    axes(x::TS) = axes(x.values)
-    axes(x::TS, d) = axes(x.values, d)
-end
+axes(x::TS) = axes(x.values)
+axes(x::TS, d) = axes(x.values, d)
 
 # all element indexing
 getindex(x::TS) = x
@@ -13,6 +9,7 @@ getindex(x::TS, ::Colon) = x
 getindex(x::TS, ::Colon, ::Colon) = x
 
 # cartesian index support
+getindex(x::TS, idx::CartesianIndex{2}) = x.values[idx.I[1], idx.I[2]]
 getindex(x::TS, idx::CI) where {CI<:AbstractArray{CartesianIndex{2}}} = TS(x.values[idx],
                                                                            x.index[[idx[i].I[1] for i in 1:length(idx)]],
                                                                            x.fields[unique([idx[i].I[2] for i in 1:length(idx)])])
