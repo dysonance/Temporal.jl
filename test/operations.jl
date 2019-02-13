@@ -1,5 +1,3 @@
-# module TestOperations
-
 using Test, Dates, Temporal, Random
 
 @testset "Operations" begin
@@ -99,5 +97,3 @@ using Test, Dates, Temporal, Random
         @test acf(x)[1] == 1.0
     end
 end
-
-# end
