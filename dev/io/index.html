@@ -1,26 +1,26 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Data Access · Temporal</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link href="../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>Temporal</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../">Home</a></li><li><a class="toctext" href="../ts/">TS Object</a></li><li><a class="toctext" href="../calculation/">Calculation</a></li><li class="current"><a class="toctext" href>Data Access</a><ul class="internal"><li><a class="toctext" href="#Flat-Files-1">Flat Files</a></li><li><a class="toctext" href="#Yahoo-1">Yahoo</a></li><li><a class="toctext" href="#Quandl-1">Quandl</a></li></ul></li><li><span class="toctext">Data Manipulation</span><ul><li><a class="toctext" href="../indexing/">Indexing</a></li><li><a class="toctext" href="../combining/">Joins</a></li><li><a class="toctext" href="../aggregation/">Aggregation</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li><a href>Data Access</a></li></ul><a class="edit-page" href="https://github.com/dysonance/Temporal.jl/blob/master/docs/src/io.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>Data Access</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="Data-Readers-1" href="#Data-Readers-1">Data Readers</a></h1><h2><a class="nav-anchor" id="Flat-Files-1" href="#Flat-Files-1">Flat Files</a></h2><pre><code class="language-julia-repl">julia&gt; using Temporal
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>I/O · Temporal</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link href="../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>Temporal</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../">Home</a></li><li><a class="toctext" href="../overview/">Overview</a></li><li><span class="toctext">Calculations</span><ul><li><a class="toctext" href="../calculation/">Methods</a></li><li><a class="toctext" href="../aggregation/">Aggregation</a></li></ul></li><li><span class="toctext">Data</span><ul><li class="current"><a class="toctext" href>I/O</a><ul class="internal"><li><a class="toctext" href="#Flat-Files-1">Flat Files</a></li><li><a class="toctext" href="#Yahoo-1">Yahoo</a></li><li><a class="toctext" href="#Quandl-1">Quandl</a></li></ul></li><li><a class="toctext" href="../indexing/">Subsetting</a></li><li><a class="toctext" href="../combining/">Combining</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>Data</li><li><a href>I/O</a></li></ul><a class="edit-page" href="https://github.com/dysonance/Temporal.jl/blob/master/docs/src/io.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>I/O</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="Data-Readers-1" href="#Data-Readers-1">Data Readers</a></h1><h2><a class="nav-anchor" id="Flat-Files-1" href="#Flat-Files-1">Flat Files</a></h2><pre><code class="language-julia-repl">julia&gt; using Temporal
 
 julia&gt; X = TS(randn(252, 4))
 252x4 TS{Float64,Dates.Date}: 2018-06-07 to 2019-02-13
 
 Index       A        B        C        D
-2018-06-07  1.1839   -0.8018  0.3045   2.2481
-2018-06-08  -2.2653  -2.2831  -0.0631  1.3312
-2018-06-09  0.5465   -1.0855  -0.4848  -0.158
-2018-06-10  1.109    0.3829   -0.2777  1.7632
-2018-06-11  -1.0644  -0.3826  0.3544   -0.326
-2018-06-12  -2.4162  2.2267   -1.8424  -2.4753
-2018-06-13  0.462    -0.7342  -1.3673  -0.1254
+2018-06-07  1.0      -0.4631  0.5702   -0.0676
+2018-06-08  0.2878   0.3332   -1.5066  0.1337
+2018-06-09  -0.2187  0.2706   0.7176   -0.3976
+2018-06-10  -0.0085  -0.4031  0.3597   -0.9333
+2018-06-11  -2.4992  0.1572   -0.1302  -1.3033
+2018-06-12  1.0316   0.0029   1.9212   0.7308
+2018-06-13  1.4809   -0.3656  0.2274   -1.3472
 ⋮
-2019-02-06  -0.0667  -1.0376  -0.6147  0.1688
-2019-02-07  0.5902   -0.8474  -0.3044  -0.9401
-2019-02-08  0.9776   2.1846   -1.3008  0.4574
-2019-02-09  -0.6765  0.3412   0.9101   1.75
-2019-02-10  0.2718   1.8062   -2.0385  -0.0867
-2019-02-11  -1.3538  -0.7042  0.645    -0.3126
-2019-02-12  -0.8126  -0.2408  1.638    0.5355
-2019-02-13  -0.0547  -0.329   -0.8987  0.6211
+2019-02-06  0.0968   -0.3926  -0.9724  0.4224
+2019-02-07  -1.0786  0.4228   0.1206   -0.476
+2019-02-08  -0.7165  -0.5944  -0.4485  -1.2933
+2019-02-09  -0.0211  -1.8693  -0.4454  2.3354
+2019-02-10  -1.4874  -0.4509  -0.2519  1.0879
+2019-02-11  -1.4893  -1.1806  -0.732   -1.6839
+2019-02-12  -1.1233  -0.2048  0.218    0.0461
+2019-02-13  0.9839   0.892    1.2615   -1.5886
 
 julia&gt; filepath = &quot;tmp.csv&quot;
 &quot;tmp.csv&quot;
@@ -31,22 +31,22 @@ julia&gt; Y = tsread(filepath)
 252x4 TS{Float64,Dates.Date}: 2018-06-07 to 2019-02-13
 
 Index       A        B        C        D
-2018-06-07  1.1839   -0.8018  0.3045   2.2481
-2018-06-08  -2.2653  -2.2831  -0.0631  1.3312
-2018-06-09  0.5465   -1.0855  -0.4848  -0.158
-2018-06-10  1.109    0.3829   -0.2777  1.7632
-2018-06-11  -1.0644  -0.3826  0.3544   -0.326
-2018-06-12  -2.4162  2.2267   -1.8424  -2.4753
-2018-06-13  0.462    -0.7342  -1.3673  -0.1254
+2018-06-07  1.0      -0.4631  0.5702   -0.0676
+2018-06-08  0.2878   0.3332   -1.5066  0.1337
+2018-06-09  -0.2187  0.2706   0.7176   -0.3976
+2018-06-10  -0.0085  -0.4031  0.3597   -0.9333
+2018-06-11  -2.4992  0.1572   -0.1302  -1.3033
+2018-06-12  1.0316   0.0029   1.9212   0.7308
+2018-06-13  1.4809   -0.3656  0.2274   -1.3472
 ⋮
-2019-02-06  -0.0667  -1.0376  -0.6147  0.1688
-2019-02-07  0.5902   -0.8474  -0.3044  -0.9401
-2019-02-08  0.9776   2.1846   -1.3008  0.4574
-2019-02-09  -0.6765  0.3412   0.9101   1.75
-2019-02-10  0.2718   1.8062   -2.0385  -0.0867
-2019-02-11  -1.3538  -0.7042  0.645    -0.3126
-2019-02-12  -0.8126  -0.2408  1.638    0.5355
-2019-02-13  -0.0547  -0.329   -0.8987  0.6211
+2019-02-06  0.0968   -0.3926  -0.9724  0.4224
+2019-02-07  -1.0786  0.4228   0.1206   -0.476
+2019-02-08  -0.7165  -0.5944  -0.4485  -1.2933
+2019-02-09  -0.0211  -1.8693  -0.4454  2.3354
+2019-02-10  -1.4874  -0.4509  -0.2519  1.0879
+2019-02-11  -1.4893  -1.1806  -0.732   -1.6839
+2019-02-12  -1.1233  -0.2048  0.218    0.0461
+2019-02-13  0.9839   0.892    1.2615   -1.5886
 
 julia&gt; X == Y
 true</code></pre><h2><a class="nav-anchor" id="Yahoo-1" href="#Yahoo-1">Yahoo</a></h2><pre><code class="language-julia-repl">julia&gt; using Temporal
@@ -73,4 +73,4 @@ Index       Open    High    Low     Last    Change  Settle  Volume      Previous
 2019-02-07  53.94   54.21   51.8    52.61   1.37    52.64   732639.0    413688.0
 2019-02-08  52.59   52.99   52.08   52.71   0.08    52.72   606331.0    371226.0
 2019-02-11  52.66   52.78   51.23   52.45   0.31    52.41   728941.0    318986.0
-2019-02-12  52.47   54.05   52.29   53.34   0.69    53.1    699203.0    264681.0</code></pre><footer><hr/><a class="previous" href="../calculation/"><span class="direction">Previous</span><span class="title">Calculation</span></a><a class="next" href="../indexing/"><span class="direction">Next</span><span class="title">Indexing</span></a></footer></article></body></html>
+2019-02-12  52.47   54.05   52.29   53.34   0.69    53.1    699203.0    264681.0</code></pre><footer><hr/><a class="previous" href="../aggregation/"><span class="direction">Previous</span><span class="title">Aggregation</span></a><a class="next" href="../indexing/"><span class="direction">Next</span><span class="title">Subsetting</span></a></footer></article></body></html>
