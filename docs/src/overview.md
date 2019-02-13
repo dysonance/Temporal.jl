@@ -115,12 +115,14 @@ crude[1:100, :Volume]
 A series of financial extractor convenience functions are also made available for commonly used tasks involving the selection of specific fields from historical financial market data.
 
 ```@repl overview
-op(crude)
-hi(crude)
-lo(crude)
-# (note `cl` function will take fields named :Close, :AdjClose, :Settle, and :Last)
-cl(crude)
-vo(crude)
+vo(crude)  # volume
+op(crude)  # open
+hi(crude)  # high
+lo(crude)  # low
+cl(crude)  # close (note: will take fields named :Close, :AdjClose, :Settle, and :Last)
+```
+
+```@example overview
 ohlc(crude)
 ohlcv(crude)
 hl(crude)
@@ -143,7 +145,8 @@ crude[end-100:end, 1:4]
 Additionally, rows can be selected/indexed using `Date` or `DateTime` objects (whichever type corresponds to the element type of the object's `index` member).
 
 ```@repl overview
-crude[today()]  # select the row corresponding to today's date
+final_date = crude.index[end]
+crude[final_date]
 crude[collect(today()-Year(1):Day(1):today())]
 ```
 
@@ -154,19 +157,19 @@ On a tangential note, it's interesting to observe that while this indexing logic
 ```@repl overview
 crude["2016"]  # retrieve all rows from the year 2016
 crude["2015", 6]  # retrive the sixth column from 2015
-crude["/2012", 1:4]  # retrieve first four columns for all rows through 2012
-crude["2010/", end-2:end]  # retrieve last three columns for the year 2010 and on
+crude["/2017", 1:4]  # retrieve first four columns for all rows through 2017
+crude["2015/", end-2:end]  # retrieve last three columns for the year 2015 and on
 crude["2014/2015", :Settle]  # retrieve settle prices for the years 2014 and 2015
 ```
 
 ## Combining/Joining
 
 ```@repl overview
-crude = quandl("CHRIS/CME_CL1")
 gasoline = quandl("CHRIS/CME_RB1")
+gasoline_settles = cl(gasoline)
+gasoline_settles.fields = [:Gasoline]
 
 crude_settles = cl(crude)
-gasoline_settles = cl(gasoline)
 crude_settles.fields[1] = :Crude;
 
 # full outer join
