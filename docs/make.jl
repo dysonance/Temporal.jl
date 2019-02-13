@@ -6,11 +6,13 @@ makedocs(modules=[Temporal],
          format=Documenter.HTML(),
          authors="Jacob Amos",
          sitename="Temporal",
-         pages=Any["Home" => "index.md",
-                   "TS Object" => "ts.md",
-                   "Calculation" => "calculation.md",
-                   "Data Access" => "io.md",
-                   "Data Manipulation" => ["indexing.md", "combining.md", "aggregation.md"]])
+         pages=["Home" => "index.md",
+                "Overview" => "overview.md",
+                "Calculations" => ["Methods" => "calculation.md",
+                                   "Aggregation" => "aggregation.md"],
+                "Data" => ["I/O" => "io.md",
+                           "Subsetting" => "indexing.md",
+                           "Combining" => "combining.md"]])
 
 deploydocs(deps=Deps.pip("mkdocs", "python-markdown-math"),
            repo="github.com/dysonance/Temporal.jl.git",

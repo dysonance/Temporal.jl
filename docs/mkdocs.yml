@@ -19,11 +19,3 @@ markdown_extensions:
     - mdx_math
 
 docs_dir: 'build'
-
-pages:
-    - Home: index.md
-    - TS: ts.md
-    - Operations: operations.md
-    - Indexing: indexing.md
-    - Combining: combining.md
-    - Aggregation: aggregation.md
