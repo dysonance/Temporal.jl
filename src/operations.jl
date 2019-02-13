@@ -34,11 +34,14 @@ import Base: +,
              findfirst,
              findlast,
              log
-             #  broadcast
-
-import Base.Broadcast.broadcast
 
 import Statistics: mean
+import Base.Broadcast: broadcasted, broadcastable, broadcast, materialize
+
+# enable use of functions using dot operator
+broadcastable(X::TS) = TS(X)
+broadcast(f::F, X::TS) where {F<:Function} = TS(f.(X.values), X.index, X.fields)
+broadcasted(f, X::TS) = TS(f.(X.values), X.index, X.fields)
 
 findall(x::TS) = findall(x.values)
 findfirst(x::TS) = findfirst(x.values)

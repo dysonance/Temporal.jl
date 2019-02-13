@@ -96,4 +96,7 @@ using Test, Dates, Temporal, Random
         @test dropnan(bx) == dropnan(shift(x, pad=true, padval=NaN))
         @test acf(x)[1] == 1.0
     end
+    @testset "Broadcast" begin
+        @test abs.(sin.(X)).values == abs.(sin.(X.values))
+    end
 end
