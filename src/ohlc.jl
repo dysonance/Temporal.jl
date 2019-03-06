@@ -57,6 +57,10 @@ function cl(x::TS; use_adj::Bool=true, allow_settle::Bool=true, allow_last::Bool
             return x[:,j]
         end
     end
+    j = findfirst([occursin(r"(cl)"i, column) for column in columns])
+    if !isa(j, Nothing)
+        return x[:,j]
+    end
     error("No closing prices found.")
 end
 ohlc(x::TS)::TS = [op(x) hi(x) lo(x) cl(x)]
