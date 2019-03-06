@@ -13,8 +13,8 @@ matrix:
 notifications:
     email: false
 after_success:
-  - julia -e 'using Pkg; cd(Pkg.dir("Temporal")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
-  - julia -e 'using Pkg; cd(Pkg.dir("Temporal")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+  - julia -e 'using Pkg; cd(joinpath(dirname(pathof(Temporal)), "..")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
+  - julia -e 'using Pkg; cd(joinpath(dirname(pathof(Temporal)), "..")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
 jobs:
     include:
         - stage: "Documentation"
