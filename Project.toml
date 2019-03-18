@@ -1,7 +1,7 @@
 name = "Temporal"
-uuid = "e78aedec-3448-11e9-3704-3f5cb8079241"
+uuid = "a110ec8f-48c8-5d59-8f7e-f91bc4cc0c3d"
 authors = ["Jacob Amos <jamos125@gmail.com>"]
-version = "0.6.0"
+version = "0.6.1"
 
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
