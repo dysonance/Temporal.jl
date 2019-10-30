@@ -1,6 +1,6 @@
 The Temporal.jl package is licensed under the MIT "Expat" License:
 
-> Copyright (c) 2017: Jacob Amos.
+> Copyright (c) 2019: Jacob Amos.
 >
 > Permission is hereby granted, free of charge, to any person obtaining
 > a copy of this software and associated documentation files (the
