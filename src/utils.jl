@@ -1,10 +1,4 @@
-global SANITIZE_NAMES = false
-
-function set_sanitize_names_option(value::Bool = false)
-    global SANITIZE_NAMES
-    SANITIZE_NAMES = value
-    return nothing
-end
+const global SANITIZE_NAMES = false
 
 # Find columns in a `TS` object corresponding to the given indexing indicator
 findcols(c::C, x::TS) where {C<:Symbol} = x.fields .== c

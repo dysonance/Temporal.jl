@@ -31,9 +31,6 @@ module Temporal
         # financial
         has_open, has_high, has_low, has_close, has_volume, is_ohlc, is_ohlcv,
         op, hi, lo, cl, vo, ohlc, ohlcv, hlc, hl, hl2, hlc3, ohlc4,
-        # utilities
-        namefix, namefix!, autoidx, findalphanum,
-        SANITIZE_NAMES, RANGE_DELIMITER, set_sanitize_names_option, set_range_delimiter_option,
         # models
         acf,
         # data
@@ -52,15 +49,15 @@ module Temporal
     include("ohlc.jl")
     include("convert.jl")
     include("viz.jl")
-    module TemporalIO
+    module Feeds
         using Temporal
         using Dates
         export csvresp, tsread, tswrite, quandl, quandl_auth, quandl_meta, quandl_search, yahoo, google
-        include("data/utils.jl")
-        include("data/yahoo.jl")
-        include("data/google.jl")
-        include("data/quandl.jl")
-        include("data/text.jl")
+        include("io/utils.jl")
+        include("io/yahoo.jl")
+        include("io/google.jl")
+        include("io/quandl.jl")
+        include("io/text.jl")
     end
-    using .TemporalIO
+    using .Feeds
 end

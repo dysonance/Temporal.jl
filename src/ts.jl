@@ -4,8 +4,6 @@ import Base: size, length, show, iterate, lastindex, isempty, convert, ndims, fl
 # TYPE DEFINITION ##############################################################
 ################################################################################
 
-abstract type AbstractTS end
-
 """
 Time series type aimed at efficiency and simplicity.
 
