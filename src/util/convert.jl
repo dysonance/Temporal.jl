@@ -1,3 +1,6 @@
+import Temporal.TS
+
+
 function find_index_col(fields)::Int
     regex = r"date|time|index"i
     @inbounds for (j, field) in enumerate(fields)
