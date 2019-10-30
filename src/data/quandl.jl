@@ -1,5 +1,8 @@
 const QUANDL_URL = "https://www.quandl.com/api/v3/datasets"  # for querying quandl's servers
 
+import JSON
+import HTTP
+
 
 """
 Set up Quandl user account authorization. Run once passing your Quandl API key, and it will be saved for future use.
@@ -74,7 +77,7 @@ function quandl(code::String;
     else
         url = "$QUANDL_URL/$code.csv?&rows=$rows&order=$sort_arg&collapse=$freq_arg&transform=$calc&api_key=$auth"
     end
-    indata = csvresp(HTTP.get(url), sort=sort)
+    indata = Temporal.csvresp(HTTP.get(url), sort=sort)
     return TS(indata[1], indata[2], indata[3][2:end])
 end
 

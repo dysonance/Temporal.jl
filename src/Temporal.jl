@@ -12,30 +12,6 @@ Inspired by the pandas DataFrame in python and the xts package in R
 """
 module Temporal
     using Dates
-    using HTTP
-    using JSON
-    using Dates
-    using Printf
-    using RecipesBase
-    include("ts.jl")
-    include("show.jl")
-    include("utils.jl")
-    include("indexing/getindex.jl")
-    include("indexing/setindex.jl")
-    include("indexing/stringrange.jl")
-    include("combine.jl")
-    include("collapse.jl")
-    include("operations.jl")
-    include("models.jl")
-    include("filter.jl")
-    include("ohlc.jl")
-    include("convert.jl")
-    include("data/utils.jl")
-    include("data/yahoo.jl")
-    include("data/google.jl")
-    include("data/quandl.jl")
-    include("data/text.jl")
-    include("viz.jl")
     export
         # foundational
         TS, ts,
@@ -62,4 +38,29 @@ module Temporal
         acf,
         # data
         tsread, tswrite, quandl, quandl_auth, quandl_meta, quandl_search, yahoo, google
+    include("ts.jl")
+    include("show.jl")
+    include("utils.jl")
+    include("indexing/getindex.jl")
+    include("indexing/setindex.jl")
+    include("indexing/stringrange.jl")
+    include("combine.jl")
+    include("collapse.jl")
+    include("operations.jl")
+    include("models.jl")
+    include("filter.jl")
+    include("ohlc.jl")
+    include("convert.jl")
+    include("viz.jl")
+    module TemporalIO
+        using Temporal
+        using Dates
+        export csvresp, tsread, tswrite, quandl, quandl_auth, quandl_meta, quandl_search, yahoo, google
+        include("data/utils.jl")
+        include("data/yahoo.jl")
+        include("data/google.jl")
+        include("data/quandl.jl")
+        include("data/text.jl")
+    end
+    using .TemporalIO
 end
