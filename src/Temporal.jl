@@ -11,6 +11,7 @@ Inspired by the pandas DataFrame in python and the xts package in R
 
 """
 module Temporal
+    const SANITIZE_NAMES = false
     using Dates
     export
         # foundational
@@ -37,21 +38,32 @@ module Temporal
         tsread, tswrite, quandl, quandl_auth, quandl_meta, quandl_search, yahoo, google
     include("ts.jl")
     include("show.jl")
-    include("utils.jl")
     include("indexing/getindex.jl")
     include("indexing/setindex.jl")
     include("indexing/stringrange.jl")
     include("combine.jl")
     include("collapse.jl")
-    include("operations.jl")
-    include("models.jl")
     include("filter.jl")
-    include("ohlc.jl")
-    include("convert.jl")
     include("viz.jl")
+    module Util
+        using Temporal, Dates
+        export
+            findcols, findrows, namefix, namefix!, autocol, autoidx, isalphanum, findalphanum,
+            has_open, has_high, has_low, has_close, has_volume, is_ohlc, is_ohlcv,
+            op, hi, lo, cl, vo, ohlc, ohlcv, hlc, hl, hl2, hlc3, ohlc4,
+            find_index_col
+        include("util/utils.jl")
+        include("util/ohlc.jl")
+        include("util/convert.jl")
+    end
+    module Calcs
+        using Temporal, Dates
+        export acf
+        include("calcs/models.jl")
+        include("calcs/operations.jl")
+    end
     module Feeds
-        using Temporal
-        using Dates
+        using Temporal, Dates
         export csvresp, tsread, tswrite, quandl, quandl_auth, quandl_meta, quandl_search, yahoo, google
         include("io/utils.jl")
         include("io/yahoo.jl")
@@ -59,5 +71,7 @@ module Temporal
         include("io/quandl.jl")
         include("io/text.jl")
     end
+    using .Util
+    using .Calcs
     using .Feeds
 end

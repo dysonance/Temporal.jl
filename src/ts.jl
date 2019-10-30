@@ -17,7 +17,7 @@ mutable struct TS{V<:Real,T<:TimeType}
         @assert size(values,1)==length(index) "Length of index not equal to number of value rows."
         @assert size(values,2)==length(fields) "Length of fields not equal to number of columns in values."
         order = sortperm(index)
-        return new(values[order,:], index[order], SANITIZE_NAMES ? namefix.(fields) : fields)
+        return new(values[order,:], index[order], Temporal.SANITIZE_NAMES ? namefix.(fields) : fields)
     end
 end
 
@@ -71,14 +71,12 @@ function rename!(ts::TS, args::Pair{Symbol, Symbol}...)
             flag = true
         end
     end
-    flag
 end
 
 function rename!(f::Base.Callable, ts::TS, colnametyp::Type{Symbol} = Symbol)
     for (i, field) in enumerate(ts.fields)
         ts.fields[i] = f(field)
     end
-    true
 end
 
 function rename!(f::Base.Callable, ts::TS, colnametyp::Type{String})
