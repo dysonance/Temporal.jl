@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Package Options · Temporal</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link href="../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>Temporal</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../">Home</a></li><li><a class="toctext" href="../overview/">Overview</a></li><li><span class="toctext">Calculations</span><ul><li><a class="toctext" href="../calculation/">Methods</a></li><li><a class="toctext" href="../aggregation/">Aggregation</a></li></ul></li><li><span class="toctext">Data</span><ul><li><a class="toctext" href="../io/">I/O</a></li><li><a class="toctext" href="../indexing/">Subsetting</a></li><li><a class="toctext" href="../combining/">Combining</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li><a href>Package Options</a></li></ul><a class="edit-page" href="https://github.com/dysonance/Temporal.jl/blob/master/docs/src/utils.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>Package Options</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="Package-Options-1" href="#Package-Options-1">Package Options</a></h1><p>There are two package options that can be adjusted to change the way that Temporal behaves.</p><h2><a class="nav-anchor" id="Range-Delimiter-1" href="#Range-Delimiter-1">Range Delimiter</a></h2><p>The <code>RANGE_DELIMITER</code> option specifies what value should separate the <code>String</code>s when indexing a <code>TS</code> object&#39;s rows using the <code>String</code> indexing syntax.</p><p>By default, <code>RANGE_DELIMITER</code> is set to <code>&#39;/&#39;</code>, and can be changed dynamically using the function <code>set_range_delimiter_option</code>.</p><pre><code class="language-julia-repl">julia&gt; using Temporal, Dates;
+
+julia&gt; t = Date(&quot;2017-01-01&quot;):Day(1):Date(&quot;2017-12-31&quot;);
+
+julia&gt; vals = rand(length(t), 4);
+
+julia&gt; X = TS(vals, t)
+365x4 TS{Float64,Dates.Date}: 2017-01-01 to 2017-12-31
+
+Index       A       B       C       D
+2017-01-01  0.4971  0.7659  0.2807  0.0038
+2017-01-02  0.6297  0.9973  0.6836  0.7792
+2017-01-03  0.0991  0.6687  0.3738  0.5571
+2017-01-04  0.806   0.4308  0.7127  0.5152
+2017-01-05  0.6152  0.5676  0.8241  0.7112
+2017-01-06  0.8681  0.3613  0.3464  0.2403
+2017-01-07  0.182   0.3529  0.5405  0.5873
+⋮
+2017-12-24  0.9317  0.0494  0.4283  0.1212
+2017-12-25  0.5524  0.2508  0.7597  0.5348
+2017-12-26  0.4268  0.5343  0.2528  0.8734
+2017-12-27  0.2054  0.337   0.7663  0.4129
+2017-12-28  0.9657  0.6718  0.3551  0.5532
+2017-12-29  0.6152  0.0745  0.9033  0.8986
+2017-12-30  0.3675  0.3607  0.0963  0.8276
+2017-12-31  0.7471  0.127   0.2828  0.2383
+
+julia&gt; X[&quot;2017-03-15/2017-06-15&quot;]
+93x4 TS{Float64,Dates.Date}: 2017-03-15 to 2017-06-15
+
+Index       A       B       C       D
+2017-03-15  0.0074  0.3134  0.8866  0.1929
+2017-03-16  0.5826  0.3768  0.555   0.0805
+2017-03-17  0.4994  0.6826  0.4122  0.6087
+2017-03-18  0.3313  0.1902  0.6845  0.3055
+2017-03-19  0.4757  0.9761  0.0297  0.0396
+2017-03-20  0.029   0.7715  0.9095  0.0309
+2017-03-21  0.2696  0.6335  0.8771  0.3806
+⋮
+2017-06-08  0.8084  0.8718  0.3944  0.1758
+2017-06-09  0.4457  0.618   0.3579  0.4147
+2017-06-10  0.5262  0.8514  0.6246  0.0328
+2017-06-11  0.2586  0.2549  0.2462  0.5375
+2017-06-12  0.4816  0.5914  0.1775  0.4876
+2017-06-13  0.8399  0.0983  0.3573  0.4694
+2017-06-14  0.5155  0.3725  0.3132  0.3156
+2017-06-15  0.2771  0.5035  0.0042  0.0249
+
+julia&gt; set_range_delimiter_option(&quot;::&quot;)
+&quot;::&quot;
+
+julia&gt; X[&quot;2017-03-15::2017-06-15&quot;]
+93x4 TS{Float64,Dates.Date}: 2017-03-15 to 2017-06-15
+
+Index       A       B       C       D
+2017-03-15  0.0074  0.3134  0.8866  0.1929
+2017-03-16  0.5826  0.3768  0.555   0.0805
+2017-03-17  0.4994  0.6826  0.4122  0.6087
+2017-03-18  0.3313  0.1902  0.6845  0.3055
+2017-03-19  0.4757  0.9761  0.0297  0.0396
+2017-03-20  0.029   0.7715  0.9095  0.0309
+2017-03-21  0.2696  0.6335  0.8771  0.3806
+⋮
+2017-06-08  0.8084  0.8718  0.3944  0.1758
+2017-06-09  0.4457  0.618   0.3579  0.4147
+2017-06-10  0.5262  0.8514  0.6246  0.0328
+2017-06-11  0.2586  0.2549  0.2462  0.5375
+2017-06-12  0.4816  0.5914  0.1775  0.4876
+2017-06-13  0.8399  0.0983  0.3573  0.4694
+2017-06-14  0.5155  0.3725  0.3132  0.3156
+2017-06-15  0.2771  0.5035  0.0042  0.0249</code></pre><h2><a class="nav-anchor" id="Name-Sanitization-1" href="#Name-Sanitization-1">Name Sanitization</a></h2><p>The <code>SANITIZE_NAMES</code> option is a boolean value indicating whether the column names (that is, the object&#39;s <code>fields</code> member), should be cleaned of whitespace and non-alphanumeric characters before constructing <code>TS</code> objects. This can make it easier to deal with names of columns more quickly and easily in some cases.</p><p>By default, <code>SANITIZE_NAMES</code> is set to <code>false</code>, so that generally speaking the raw user input data is used. This option can be changed with the <code>set_sanitize_names_option</code> function.</p><p>Notice in the sample below how the <code>Adj Close</code> column name becomes <code>AdjClose</code> after changing the setting to <code>true</code>.</p><pre><code class="language-julia-repl">julia&gt; using Temporal, Dates;
+
+julia&gt; A = tsread(Pkg.dir(&quot;Temporal&quot;, &quot;data&quot;, &quot;XOM.csv&quot;))
+ERROR: UndefVarError: Pkg not defined
+
+julia&gt; set_sanitize_names_option(true)
+
+julia&gt; B = tsread(Pkg.dir(&quot;Temporal&quot;, &quot;data&quot;, &quot;XOM.csv&quot;))
+ERROR: UndefVarError: Pkg not defined</code></pre><h2><a class="nav-anchor" id="Rename-columns-1" href="#Rename-columns-1">Rename columns</a></h2><h3><a class="nav-anchor" id="Not-in-place-1" href="#Not-in-place-1">Not in place</a></h3><p><code>rename</code> function return a <code>TS</code>.</p><pre><code class="language-julia-repl">julia&gt; using Temporal
+
+julia&gt; N = 252*3
+756
+
+julia&gt; K = 4
+4
+
+julia&gt; data = cumsum(randn(N,K), dims=1)
+756×4 Array{Float64,2}:
+  0.0650972    0.403424  0.420672  -1.45037
+ -0.246623     2.68642   1.39282    0.103943
+  0.394014     1.81244   1.98548    0.511132
+  0.39668      1.96817   3.1615    -0.346442
+  0.252597     1.60531   2.78416   -0.598763
+ -0.898115     2.32206   1.73123   -0.492496
+ -1.28417      4.58585   3.41778   -1.25798
+ -0.283594     7.27279   4.62111    0.884647
+  0.455703     7.48902   4.89294   -0.690553
+  1.28512      7.04645   6.26444   -0.540446
+  ⋮
+  8.31281    -15.9125    5.08421   18.165
+  8.9687     -16.5825    5.45666   16.9687
+  8.99306    -16.5807    6.37989   16.9108
+ 10.7631     -17.3977    7.14536   18.0218
+ 11.8247     -16.6298    7.34232   17.8256
+ 11.0494     -18.0005    6.19953   16.3867
+ 11.4362     -16.2238    7.07974   15.2262
+ 11.7499     -15.9877    7.87178   13.9529
+ 11.0224     -15.3238    6.66428   13.4211
+
+julia&gt; dates = today()-Day(N-1):Day(1):today()
+ERROR: UndefVarError: today not defined
+
+julia&gt; ts = TS(data, dates, [:a, :b, :c, :d])
+ERROR: UndefVarError: dates not defined
+
+julia&gt; rename(ts, :a =&gt; :A, :d =&gt; :D)
+ERROR: MethodError: no method matching rename(::Type{TS}, ::Pair{Symbol,Symbol}, ::Pair{Symbol,Symbol})
+Closest candidates are:
+  rename(!Matched::TS, ::Pair{Symbol,Symbol}...) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:98
+  rename(::Union{Function, Type}, !Matched::TS) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:104
+  rename(::Union{Function, Type}, !Matched::TS, !Matched::Type{Symbol}) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:104
+  ...
+
+julia&gt; rename(ts, Dict(:a =&gt; :A, :d =&gt; :D)...)
+ERROR: MethodError: no method matching rename(::Type{TS}, ::Pair{Symbol,Symbol}, ::Pair{Symbol,Symbol})
+Closest candidates are:
+  rename(!Matched::TS, ::Pair{Symbol,Symbol}...) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:98
+  rename(::Union{Function, Type}, !Matched::TS) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:104
+  rename(::Union{Function, Type}, !Matched::TS, !Matched::Type{Symbol}) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:104
+  ...
+
+julia&gt; rename(Symbol ∘ uppercase ∘ string, ts)
+ERROR: MethodError: no method matching rename(::getfield(Base, Symbol(&quot;##58#59&quot;)){getfield(Base, Symbol(&quot;##58#59&quot;)){DataType,typeof(uppercase)},typeof(string)}, ::Type{TS})
+Closest candidates are:
+  rename(::Union{Function, Type}, !Matched::TS) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:104
+  rename(::Union{Function, Type}, !Matched::TS, !Matched::Type{Symbol}) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:104
+  rename(::Union{Function, Type}, !Matched::TS, !Matched::Type{String}) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:110
+
+julia&gt; rename(uppercase, ts, String)
+ERROR: MethodError: no method matching rename(::typeof(uppercase), ::Type{TS}, ::Type{String})
+Closest candidates are:
+  rename(::Union{Function, Type}, !Matched::TS, ::Type{String}) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:110
+  rename(::Union{Function, Type}, !Matched::TS) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:104
+  rename(::Union{Function, Type}, !Matched::TS, !Matched::Type{Symbol}) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:104</code></pre><h3><a class="nav-anchor" id="In-place-1" href="#In-place-1">In place</a></h3><p><code>rename!</code> function modify name of columns in place and return <code>true</code> when a <code>TS</code> is renamed.</p><pre><code class="language-julia">rename!(ts, :a =&gt; :A, :d =&gt; :D)
+rename!(ts, Dict(:a =&gt; :A, :d =&gt; :D)...)
+rename!(Symbol ∘ uppercase ∘ string, ts)
+rename!(uppercase, ts, String)</code></pre><footer><hr/></footer></article></body></html>

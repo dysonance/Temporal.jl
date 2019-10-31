@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Subsetting · Temporal</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link href="../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>Temporal</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../">Home</a></li><li><a class="toctext" href="../overview/">Overview</a></li><li><span class="toctext">Calculations</span><ul><li><a class="toctext" href="../calculation/">Methods</a></li><li><a class="toctext" href="../aggregation/">Aggregation</a></li></ul></li><li><span class="toctext">Data</span><ul><li><a class="toctext" href="../io/">I/O</a></li><li class="current"><a class="toctext" href>Subsetting</a><ul class="internal"><li><a class="toctext" href="#Overview-1">Overview</a></li><li><a class="toctext" href="#Numerical-Indexing-1">Numerical Indexing</a></li><li><a class="toctext" href="#Symbol-Indexing-1">Symbol Indexing</a></li><li><a class="toctext" href="#String-Indexing-1">String Indexing</a></li></ul></li><li><a class="toctext" href="../combining/">Combining</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>Data</li><li><a href>Subsetting</a></li></ul><a class="edit-page" href="https://github.com/dysonance/Temporal.jl/blob/master/docs/src/indexing.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>Subsetting</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="Indexing-1" href="#Indexing-1">Indexing</a></h1><h2><a class="nav-anchor" id="Overview-1" href="#Overview-1">Overview</a></h2><p>One of the chief aims of the <code>Temporal.jl</code> package is to simplify the process of extracting a desired subset from a time series dataset. To that end, there are quite a few different methods by which one can index specific rows/columns of a <code>TS</code> object.</p><p>One goal has been to keep as much of the relevant indexing operations from the base <code>Array</code> type as possible to maintain consistency. However, there are certain indexing idioms that are specifically more familiar and meaningful to tabular time series data, particularly when prototyping in the REPL.</p><p>In other words, if you want to use standard <code>Array</code> indexing syntax, it should work as you would expect, but you should also be able to essentially say, &quot;give me all the observations from the year <em>2017</em> in the <em>price</em> column.&quot;</p><h2><a class="nav-anchor" id="Numerical-Indexing-1" href="#Numerical-Indexing-1">Numerical Indexing</a></h2><h3><a class="nav-anchor" id="Integer-1" href="#Integer-1">Integer</a></h3><pre><code class="language-julia-repl">julia&gt; using Temporal
+
+julia&gt; X = TS(cumsum(randn(252, 4), dims=1)) + 100.0
+252x4 TS{Float64,Dates.Date}: 2019-02-22 to 2019-10-31
+
+Index       A         B         C         D
+2019-02-22  101.1868  101.0201  100.961   99.3326
+2019-02-23  102.1543  100.098   100.3912  100.0846
+2019-02-24  103.6157  99.7836   101.4366  100.5558
+2019-02-25  103.742   99.1665   100.2826  100.7803
+2019-02-26  103.4065  99.0106   99.6128   98.7088
+2019-02-27  102.5091  98.3488   100.7538  99.057
+2019-02-28  102.68    99.0968   100.8313  98.7343
+⋮
+2019-10-24  78.7435   96.2653   111.7871  112.8089
+2019-10-25  79.6059   95.2387   114.1225  112.5001
+2019-10-26  79.886    95.2133   114.355   111.6956
+2019-10-27  78.6331   95.7896   114.319   110.9494
+2019-10-28  79.1975   95.4625   113.3264  110.0471
+2019-10-29  78.3817   94.0795   112.0315  110.7635
+2019-10-30  80.654    92.7598   114.4519  111.5172
+2019-10-31  80.9054   92.6866   114.4856  111.077
+
+julia&gt; X[1]
+1x4 TS{Float64,Dates.Date}: 2019-02-22 to 2019-02-22
+
+Index       A         B         C        D
+2019-02-22  101.1868  101.0201  100.961  99.3326
+
+julia&gt; X[1, :]
+1x4 TS{Float64,Dates.Date}: 2019-02-22 to 2019-02-22
+
+Index       A         B         C        D
+2019-02-22  101.1868  101.0201  100.961  99.3326
+
+julia&gt; X[:, 1]
+252x1 TS{Float64,Dates.Date}: 2019-02-22 to 2019-10-31
+
+Index       A
+2019-02-22  101.1868
+2019-02-23  102.1543
+2019-02-24  103.6157
+2019-02-25  103.742
+2019-02-26  103.4065
+2019-02-27  102.5091
+2019-02-28  102.68
+⋮
+2019-10-24  78.7435
+2019-10-25  79.6059
+2019-10-26  79.886
+2019-10-27  78.6331
+2019-10-28  79.1975
+2019-10-29  78.3817
+2019-10-30  80.654
+2019-10-31  80.9054
+
+julia&gt; X[1, 1]
+1x1 TS{Float64,Dates.Date}: 2019-02-22 to 2019-02-22
+
+Index       A
+2019-02-22  101.1868</code></pre><h3><a class="nav-anchor" id="Boolean-1" href="#Boolean-1">Boolean</a></h3><pre><code class="language-julia-repl">julia&gt; using Temporal
+
+julia&gt; X = TS(cumsum(randn(252, 4), dims=1)) + 100.0
+252x4 TS{Float64,Dates.Date}: 2019-02-22 to 2019-10-31
+
+Index       A         B         C         D
+2019-02-22  99.8187   101.0847  98.6926   100.1978
+2019-02-23  99.752    101.4904  98.057    100.1625
+2019-02-24  100.0005  99.8147   98.0567   100.37
+2019-02-25  98.8859   101.342   99.9203   103.1868
+2019-02-26  100.9651  99.3852   100.028   102.1326
+2019-02-27  99.0889   98.0741   100.97    102.9503
+2019-02-28  100.2296  97.3573   101.4997  103.0925
+⋮
+2019-10-24  94.4576   83.5144   94.8607   92.0723
+2019-10-25  95.056    83.8865   94.3668   91.3856
+2019-10-26  95.0408   83.49     94.3138   91.2392
+2019-10-27  94.0341   84.8028   96.9774   90.4986
+2019-10-28  93.9678   85.4924   97.2215   89.0142
+2019-10-29  93.5491   83.954    98.7119   88.2536
+2019-10-30  91.8485   84.5195   99.3296   88.6938
+2019-10-31  92.6573   85.5568   100.6951  90.5179
+
+julia&gt; X[trues(size(X,1)), :]
+252x4 TS{Float64,Dates.Date}: 2019-02-22 to 2019-10-31
+
+Index       A         B         C         D
+2019-02-22  99.8187   101.0847  98.6926   100.1978
+2019-02-23  99.752    101.4904  98.057    100.1625
+2019-02-24  100.0005  99.8147   98.0567   100.37
+2019-02-25  98.8859   101.342   99.9203   103.1868
+2019-02-26  100.9651  99.3852   100.028   102.1326
+2019-02-27  99.0889   98.0741   100.97    102.9503
+2019-02-28  100.2296  97.3573   101.4997  103.0925
+⋮
+2019-10-24  94.4576   83.5144   94.8607   92.0723
+2019-10-25  95.056    83.8865   94.3668   91.3856
+2019-10-26  95.0408   83.49     94.3138   91.2392
+2019-10-27  94.0341   84.8028   96.9774   90.4986
+2019-10-28  93.9678   85.4924   97.2215   89.0142
+2019-10-29  93.5491   83.954    98.7119   88.2536
+2019-10-30  91.8485   84.5195   99.3296   88.6938
+2019-10-31  92.6573   85.5568   100.6951  90.5179
+
+julia&gt; X[rand(Bool, size(X,1)), 1]
+139x1 TS{Float64,Dates.Date}: 2019-02-26 to 2019-10-29
+
+Index       A
+2019-02-26  100.9651
+2019-03-01  97.7211
+2019-03-02  98.9667
+2019-03-04  99.8571
+2019-03-05  100.0348
+2019-03-07  97.928
+2019-03-08  96.4969
+⋮
+2019-10-19  92.7476
+2019-10-21  92.6943
+2019-10-22  93.8881
+2019-10-25  95.056
+2019-10-26  95.0408
+2019-10-27  94.0341
+2019-10-28  93.9678
+2019-10-29  93.5491
+
+julia&gt; X[rand(Bool, size(X,1)), [true, false, false, false]]
+139x1 TS{Float64,Dates.Date}: 2019-02-25 to 2019-10-30
+
+Index       A
+2019-02-25  98.8859
+2019-02-26  100.9651
+2019-02-27  99.0889
+2019-03-01  97.7211
+2019-03-02  98.9667
+2019-03-07  97.928
+2019-03-08  96.4969
+⋮
+2019-10-18  93.6486
+2019-10-20  92.774
+2019-10-22  93.8881
+2019-10-24  94.4576
+2019-10-26  95.0408
+2019-10-27  94.0341
+2019-10-28  93.9678
+2019-10-30  91.8485</code></pre><h3><a class="nav-anchor" id="Arrays-and-Ranges-1" href="#Arrays-and-Ranges-1">Arrays &amp; Ranges</a></h3><pre><code class="language-julia-repl">julia&gt; using Temporal
+
+julia&gt; X = TS(cumsum(randn(252, 4), dims=1)) + 100.0
+252x4 TS{Float64,Dates.Date}: 2019-02-22 to 2019-10-31
+
+Index       A         B         C        D
+2019-02-22  98.2797   100.1454  99.5578  99.9243
+2019-02-23  97.7192   98.7909   97.9767  99.8929
+2019-02-24  97.1789   98.8452   98.6861  100.7011
+2019-02-25  97.6627   98.7495   97.9879  102.2938
+2019-02-26  97.6144   96.6315   97.9505  101.4693
+2019-02-27  96.9423   97.0296   98.1797  100.2484
+2019-02-28  97.9186   96.8427   98.0226  100.004
+⋮
+2019-10-24  119.4262  100.0544  87.3472  141.7287
+2019-10-25  119.1091  100.2597  86.4342  141.685
+2019-10-26  118.6178  102.5003  88.4479  139.9584
+2019-10-27  120.112   102.3647  88.4866  140.9218
+2019-10-28  118.7185  101.5149  88.6123  140.4907
+2019-10-29  118.9168  100.6709  88.6535  139.9623
+2019-10-30  119.0627  101.1833  87.2455  140.8368
+2019-10-31  119.8179  102.3143  86.8771  141.7734
+
+julia&gt; X[1:10, :]
+10x4 TS{Float64,Dates.Date}: 2019-02-22 to 2019-03-03
+
+Index       A        B         C        D
+2019-02-22  98.2797  100.1454  99.5578  99.9243
+2019-02-23  97.7192  98.7909   97.9767  99.8929
+2019-02-24  97.1789  98.8452   98.6861  100.7011
+2019-02-25  97.6627  98.7495   97.9879  102.2938
+2019-02-26  97.6144  96.6315   97.9505  101.4693
+2019-02-27  96.9423  97.0296   98.1797  100.2484
+2019-02-28  97.9186  96.8427   98.0226  100.004
+2019-03-01  96.9929  97.0024   97.5868  101.1789
+2019-03-02  96.9896  96.9793   97.7629  102.0407
+2019-03-03  96.908   96.6308   98.5484  102.6447
+
+julia&gt; X[end-100:end, 2:3]
+101x2 TS{Float64,Dates.Date}: 2019-07-23 to 2019-10-31
+
+Index       B         C
+2019-07-23  105.812   83.0871
+2019-07-24  105.1778  85.2005
+2019-07-25  105.8812  85.165
+2019-07-26  105.522   83.892
+2019-07-27  106.2161  83.5839
+2019-07-28  108.541   83.8236
+2019-07-29  108.1838  83.6078
+⋮
+2019-10-24  100.0544  87.3472
+2019-10-25  100.2597  86.4342
+2019-10-26  102.5003  88.4479
+2019-10-27  102.3647  88.4866
+2019-10-28  101.5149  88.6123
+2019-10-29  100.6709  88.6535
+2019-10-30  101.1833  87.2455
+2019-10-31  102.3143  86.8771
+
+julia&gt; X[end, 2:end]
+1x3 TS{Float64,Dates.Date}: 2019-10-31 to 2019-10-31
+
+Index       B         C        D
+2019-10-31  102.3143  86.8771  141.7734</code></pre><h2><a class="nav-anchor" id="Symbol-Indexing-1" href="#Symbol-Indexing-1">Symbol Indexing</a></h2><p>You can also index specific columns you want using the <code>fields</code> member of the <code>TS</code> object, so that columns can be fetched by name rather than by numerical index.</p><pre><code class="language-julia-repl">julia&gt; using Temporal
+
+julia&gt; X = TS(cumsum(randn(252, 4), dims=1)) + 100.0
+252x4 TS{Float64,Dates.Date}: 2019-02-22 to 2019-10-31
+
+Index       A         B         C         D
+2019-02-22  100.1943  100.0304  98.9807   101.9315
+2019-02-23  100.1854  100.8908  99.1654   101.3315
+2019-02-24  99.0353   101.3784  99.7858   101.1554
+2019-02-25  99.9065   102.3482  97.8603   101.7268
+2019-02-26  100.1227  102.7883  97.1747   101.3881
+2019-02-27  100.2234  102.2259  98.9444   101.0829
+2019-02-28  99.9731   101.5122  98.6362   100.6559
+⋮
+2019-10-24  115.4501  111.4071  105.2328  106.1121
+2019-10-25  115.1954  111.5256  104.6916  105.1391
+2019-10-26  114.302   112.535   104.2089  104.4367
+2019-10-27  115.1169  112.7285  104.8698  104.6235
+2019-10-28  116.2551  113.3939  102.87    102.2157
+2019-10-29  115.3753  113.0684  102.3457  102.9118
+2019-10-30  115.4796  113.8895  102.7361  102.596
+2019-10-31  115.1159  113.6176  100.5005  102.7629
+
+julia&gt; X[:, :A]
+252x1 TS{Float64,Dates.Date}: 2019-02-22 to 2019-10-31
+
+Index       A
+2019-02-22  100.1943
+2019-02-23  100.1854
+2019-02-24  99.0353
+2019-02-25  99.9065
+2019-02-26  100.1227
+2019-02-27  100.2234
+2019-02-28  99.9731
+⋮
+2019-10-24  115.4501
+2019-10-25  115.1954
+2019-10-26  114.302
+2019-10-27  115.1169
+2019-10-28  116.2551
+2019-10-29  115.3753
+2019-10-30  115.4796
+2019-10-31  115.1159
+
+julia&gt; X[:, [:B, :D]]
+252x2 TS{Float64,Dates.Date}: 2019-02-22 to 2019-10-31
+
+Index       B         D
+2019-02-22  100.0304  101.9315
+2019-02-23  100.8908  101.3315
+2019-02-24  101.3784  101.1554
+2019-02-25  102.3482  101.7268
+2019-02-26  102.7883  101.3881
+2019-02-27  102.2259  101.0829
+2019-02-28  101.5122  100.6559
+⋮
+2019-10-24  111.4071  106.1121
+2019-10-25  111.5256  105.1391
+2019-10-26  112.535   104.4367
+2019-10-27  112.7285  104.6235
+2019-10-28  113.3939  102.2157
+2019-10-29  113.0684  102.9118
+2019-10-30  113.8895  102.596
+2019-10-31  113.6176  102.7629</code></pre><h2><a class="nav-anchor" id="String-Indexing-1" href="#String-Indexing-1">String Indexing</a></h2><p>One of the more powerful features of Temporal&#39;s indexing functionality is that you can index rows of a <code>TS</code> object using <code>String</code>s formatted in such a way as to express specific periods of time in a natural idiomatic way. (If you have used the <code>xts</code> package in R this functionality will feel very familiar.)</p><pre><code class="language-julia-repl">julia&gt; using Dates, Temporal
+
+julia&gt; t = Date(2016,1,1):Day(1):Date(2017,12,31)
+2016-01-01:1 day:2017-12-31
+
+julia&gt; X = TS(cumsum(randn(length(t), 4), dims=1), t) + 100.0
+731x4 TS{Float64,Dates.Date}: 2016-01-01 to 2017-12-31
+
+Index       A         B         C         D
+2016-01-01  100.2198  99.6634   99.8306   100.3643
+2016-01-02  98.461    97.5047   99.5216   102.4711
+2016-01-03  99.6608   98.7157   98.2592   102.234
+2016-01-04  99.1325   99.097    97.4873   101.0642
+2016-01-05  99.4346   100.9448  96.6342   100.3027
+2016-01-06  100.1872  100.1815  96.2498   99.5514
+2016-01-07  100.1762  101.4745  95.9126   99.6248
+⋮
+2017-12-24  116.6495  106.2216  131.3047  88.1862
+2017-12-25  116.9541  103.9748  130.9221  88.0163
+2017-12-26  116.5522  105.0704  130.9033  88.1152
+2017-12-27  115.8645  105.6053  129.7413  87.9083
+2017-12-28  114.9235  104.9562  130.3688  88.3076
+2017-12-29  114.3019  106.0746  130.8572  87.1785
+2017-12-30  114.2191  106.9627  131.5857  86.7909
+2017-12-31  114.085   105.7998  131.3368  86.8667
+
+julia&gt; X[&quot;2017-07-01&quot;]  # single day
+1x4 TS{Float64,Dates.Date}: 2017-07-01 to 2017-07-01
+
+Index       A         B         C        D
+2017-07-01  123.7689  105.2364  115.528  96.7579
+
+julia&gt; X[&quot;2016&quot;]  # whole year
+366x4 TS{Float64,Dates.Date}: 2016-01-01 to 2016-12-31
+
+Index       A         B         C         D
+2016-01-01  100.2198  99.6634   99.8306   100.3643
+2016-01-02  98.461    97.5047   99.5216   102.4711
+2016-01-03  99.6608   98.7157   98.2592   102.234
+2016-01-04  99.1325   99.097    97.4873   101.0642
+2016-01-05  99.4346   100.9448  96.6342   100.3027
+2016-01-06  100.1872  100.1815  96.2498   99.5514
+2016-01-07  100.1762  101.4745  95.9126   99.6248
+⋮
+2016-12-24  98.5603   117.3868  122.0714  113.141
+2016-12-25  98.3077   116.129   120.4328  113.3045
+2016-12-26  98.4107   115.3652  122.9344  112.1863
+2016-12-27  97.6164   116.6821  124.2659  111.3101
+2016-12-28  95.7585   116.8798  125.3516  111.0119
+2016-12-29  96.0748   117.3075  124.9955  110.1705
+2016-12-30  98.1164   116.1822  124.315   110.8756
+2016-12-31  100.1933  114.759   124.0656  109.7891
+
+julia&gt; X[&quot;2016-09-15/&quot;]  # everything after a specific day
+473x4 TS{Float64,Dates.Date}: 2016-09-15 to 2017-12-31
+
+Index       A         B         C         D
+2016-09-15  96.1971   114.6339  112.4828  113.1617
+2016-09-16  95.3634   114.6841  113.1854  112.6009
+2016-09-17  97.0816   114.7177  114.8398  112.8977
+2016-09-18  97.884    115.1999  116.5285  112.8015
+2016-09-19  98.9446   112.7511  115.9374  112.5029
+2016-09-20  100.6157  114.803   114.3346  112.8871
+2016-09-21  99.9987   116.1762  114.364   113.5099
+⋮
+2017-12-24  116.6495  106.2216  131.3047  88.1862
+2017-12-25  116.9541  103.9748  130.9221  88.0163
+2017-12-26  116.5522  105.0704  130.9033  88.1152
+2017-12-27  115.8645  105.6053  129.7413  87.9083
+2017-12-28  114.9235  104.9562  130.3688  88.3076
+2017-12-29  114.3019  106.0746  130.8572  87.1785
+2017-12-30  114.2191  106.9627  131.5857  86.7909
+2017-12-31  114.085   105.7998  131.3368  86.8667
+
+julia&gt; X[&quot;/2017-07-01&quot;]  # everything up through a specific month
+548x4 TS{Float64,Dates.Date}: 2016-01-01 to 2017-07-01
+
+Index       A         B         C         D
+2016-01-01  100.2198  99.6634   99.8306   100.3643
+2016-01-02  98.461    97.5047   99.5216   102.4711
+2016-01-03  99.6608   98.7157   98.2592   102.234
+2016-01-04  99.1325   99.097    97.4873   101.0642
+2016-01-05  99.4346   100.9448  96.6342   100.3027
+2016-01-06  100.1872  100.1815  96.2498   99.5514
+2016-01-07  100.1762  101.4745  95.9126   99.6248
+⋮
+2017-06-24  121.443   106.4452  112.3503  102.5992
+2017-06-25  121.973   105.103   113.8244  102.2938
+2017-06-26  123.2675  104.3343  114.9985  101.764
+2017-06-27  121.8247  104.1015  114.4131  100.3719
+2017-06-28  122.553   102.2605  113.8675  97.6221
+2017-06-29  121.9026  103.496   116.7124  95.65
+2017-06-30  122.9969  104.33    115.7359  95.8698
+2017-07-01  123.7689  105.2364  115.528   96.7579
+
+julia&gt; X[&quot;2016-09-15/2017-07-01&quot;]  # mix &amp; match
+290x4 TS{Float64,Dates.Date}: 2016-09-15 to 2017-07-01
+
+Index       A         B         C         D
+2016-09-15  96.1971   114.6339  112.4828  113.1617
+2016-09-16  95.3634   114.6841  113.1854  112.6009
+2016-09-17  97.0816   114.7177  114.8398  112.8977
+2016-09-18  97.884    115.1999  116.5285  112.8015
+2016-09-19  98.9446   112.7511  115.9374  112.5029
+2016-09-20  100.6157  114.803   114.3346  112.8871
+2016-09-21  99.9987   116.1762  114.364   113.5099
+⋮
+2017-06-24  121.443   106.4452  112.3503  102.5992
+2017-06-25  121.973   105.103   113.8244  102.2938
+2017-06-26  123.2675  104.3343  114.9985  101.764
+2017-06-27  121.8247  104.1015  114.4131  100.3719
+2017-06-28  122.553   102.2605  113.8675  97.6221
+2017-06-29  121.9026  103.496   116.7124  95.65
+2017-06-30  122.9969  104.33    115.7359  95.8698
+2017-07-01  123.7689  105.2364  115.528   96.7579</code></pre><footer><hr/><a class="previous" href="../io/"><span class="direction">Previous</span><span class="title">I/O</span></a><a class="next" href="../combining/"><span class="direction">Next</span><span class="title">Combining</span></a></footer></article></body></html>

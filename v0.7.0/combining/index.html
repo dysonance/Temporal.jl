@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Combining · Temporal</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link href="../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>Temporal</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../">Home</a></li><li><a class="toctext" href="../overview/">Overview</a></li><li><span class="toctext">Calculations</span><ul><li><a class="toctext" href="../calculation/">Methods</a></li><li><a class="toctext" href="../aggregation/">Aggregation</a></li></ul></li><li><span class="toctext">Data</span><ul><li><a class="toctext" href="../io/">I/O</a></li><li><a class="toctext" href="../indexing/">Subsetting</a></li><li class="current"><a class="toctext" href>Combining</a><ul class="internal"><li><a class="toctext" href="#Outer-Joins-1">Outer Joins</a></li><li><a class="toctext" href="#Inner-Joins-1">Inner Joins</a></li><li><a class="toctext" href="#Left/Right-Joins-1">Left/Right Joins</a></li></ul></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>Data</li><li><a href>Combining</a></li></ul><a class="edit-page" href="https://github.com/dysonance/Temporal.jl/blob/master/docs/src/combining.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>Combining</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="Joins-1" href="#Joins-1">Joins</a></h1><h2><a class="nav-anchor" id="Outer-Joins-1" href="#Outer-Joins-1">Outer Joins</a></h2><p>One can perform a full outer join on the time <code>index</code>es of two <code>TS</code> objects <span>$x$</span> and <span>$y$</span> in the following ways:</p><ul><li><code>merge(x, y)</code></li><li><code>ojoin(x, y)</code></li><li><code>[x y]</code></li><li><code>hcat(x, y)</code></li></ul><p>Where there are dates in the <code>index</code> of one that do not exist in the other, values will be filled with <code>NaN</code> objects. As the <code>missing</code> functionality matures in Julia&#39;s base syntax, it will eventually replace <code>NaN</code> in this context, since unfortunately <code>NaN</code> is only applicable for <code>Float64</code> element types.</p><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Base.merge" href="#Base.merge"><code>Base.merge</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">merge(x::TS,y::TS;join::Char=&#39;o&#39;)::TS</code></pre><p>Merge two time series objects together by index with an optionally specified join type parameter.</p><p>...</p><p><strong>Arguments</strong></p><ul><li><code>x::TS</code>: Left side of the join.</li><li><code>y::TS</code>: Right side of the join.</li></ul><p>Optional args:</p><ul><li><code>join::Char=&#39;o&#39;::TS</code>: Specifies the logic used to perform the merge, and may take on the values &#39;o&#39; (outer join), &#39;i&#39; (inner join), &#39;l&#39; (left join), or &#39;r&#39; (right join). Defaults to outer join, whose result is the same as <code>hcat(x, y)</code> or <code>[x y]</code>.</li></ul><p>...</p></div></div><a class="source-link" target="_blank" href="https://github.com/dysonance/Temporal.jl/blob/8ee2dd7e1a8cb75b824344017c7ca87e48d310c7/src/combine.jl#L124-L136">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Temporal.ojoin" href="#Temporal.ojoin"><code>Temporal.ojoin</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">ojoin(x::TS,y::TS)::TS</code></pre><p>Outer join two TS objects by index.</p><p>Equivalent to <code>x</code> OUTER JOIN <code>y</code> ON <code>x.index</code> = <code>y.index</code>.</p><p>...</p><p><strong>Arguments</strong></p><ul><li><code>x::TS</code>: Left side of the join.</li><li><code>y::TS</code>: Right side of the join.</li></ul><p>...</p></div></div><a class="source-link" target="_blank" href="https://github.com/dysonance/Temporal.jl/blob/8ee2dd7e1a8cb75b824344017c7ca87e48d310c7/src/combine.jl#L13-L25">source</a></section><h3><a class="nav-anchor" id="Example-1" href="#Example-1">Example</a></h3><pre><code class="language-julia-repl">
+julia&gt; x = TS(rand(252))
+252x1 TS{Float64,Dates.Date}: 2019-02-22 to 2019-10-31
+
+Index       A
+2019-02-22  0.4709
+2019-02-23  0.7173
+2019-02-24  0.929
+2019-02-25  0.2008
+2019-02-26  0.698
+2019-02-27  0.0843
+2019-02-28  0.1383
+⋮
+2019-10-24  0.3034
+2019-10-25  0.872
+2019-10-26  0.8789
+2019-10-27  0.8131
+2019-10-28  0.1707
+2019-10-29  0.0077
+2019-10-30  0.7711
+2019-10-31  0.4758
+
+julia&gt; y = TS(rand(252), x.index .- Month(6))
+252x1 TS{Float64,Dates.Date}: 2018-08-22 to 2019-04-30
+
+Index       A
+2018-08-22  0.5
+2018-08-23  0.9022
+2018-08-24  0.9373
+2018-08-25  0.4267
+2018-08-26  0.6933
+2018-08-27  0.4479
+2018-08-28  0.8178
+⋮
+2019-04-24  0.434
+2019-04-25  0.2474
+2019-04-26  0.3573
+2019-04-27  0.6212
+2019-04-28  0.4275
+2019-04-29  0.6416
+2019-04-30  0.9795
+2019-04-30  0.7951
+
+julia&gt; [x y]
+431x2 TS{Float64,Dates.Date}: 2018-08-22 to 2019-10-31
+
+Index       A       A
+2018-08-22  NaN     0.5
+2018-08-23  NaN     0.9022
+2018-08-24  NaN     0.9373
+2018-08-25  NaN     0.4267
+2018-08-26  NaN     0.6933
+2018-08-27  NaN     0.4479
+2018-08-28  NaN     0.8178
+⋮
+2019-10-24  0.3034  NaN
+2019-10-25  0.872   NaN
+2019-10-26  0.8789  NaN
+2019-10-27  0.8131  NaN
+2019-10-28  0.1707  NaN
+2019-10-29  0.0077  NaN
+2019-10-30  0.7711  NaN
+2019-10-31  0.4758  NaN</code></pre><h2><a class="nav-anchor" id="Inner-Joins-1" href="#Inner-Joins-1">Inner Joins</a></h2><p>You can do inner joins on <code>TS</code> objects using the <code>ijoin</code> function, which will remove any observations corresponding to time steps where at least one of the joined objects is missing a row. This will basically keep only the rows where the time <code>index</code> of the left side and the right side intersect.</p><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Temporal.ijoin" href="#Temporal.ijoin"><code>Temporal.ijoin</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">ijoin(x::TS,y::TS)::TS</code></pre><p>Inner join two TS objects by index.</p><p>Equivalent to <code>x</code> INNER JOIN <code>y</code> on <code>x.index</code> = <code>y.index</code>.</p><p>...</p><p><strong>Arguments</strong></p><ul><li><code>x::TS</code>: Left side of the join.</li><li><code>y::TS</code>: Right side of the join.</li></ul><p>...</p></div></div><a class="source-link" target="_blank" href="https://github.com/dysonance/Temporal.jl/blob/8ee2dd7e1a8cb75b824344017c7ca87e48d310c7/src/combine.jl#L44-L56">source</a></section><h3><a class="nav-anchor" id="Example-2" href="#Example-2">Example</a></h3><pre><code class="language-julia-repl">
+julia&gt; x = TS(rand(252))
+252x1 TS{Float64,Dates.Date}: 2019-02-22 to 2019-10-31
+
+Index       A
+2019-02-22  0.7325
+2019-02-23  0.2349
+2019-02-24  0.0834
+2019-02-25  0.4714
+2019-02-26  0.6905
+2019-02-27  0.7022
+2019-02-28  0.2997
+⋮
+2019-10-24  0.9365
+2019-10-25  0.4683
+2019-10-26  0.3854
+2019-10-27  0.7364
+2019-10-28  0.9663
+2019-10-29  0.2793
+2019-10-30  0.0586
+2019-10-31  0.9931
+
+julia&gt; y = TS(rand(252), x.index .- Month(6))
+252x1 TS{Float64,Dates.Date}: 2018-08-22 to 2019-04-30
+
+Index       A
+2018-08-22  0.9327
+2018-08-23  0.3373
+2018-08-24  0.7192
+2018-08-25  0.7764
+2018-08-26  0.8713
+2018-08-27  0.2731
+2018-08-28  0.1833
+⋮
+2019-04-24  0.6783
+2019-04-25  0.1502
+2019-04-26  0.1712
+2019-04-27  0.0927
+2019-04-28  0.0592
+2019-04-29  0.2427
+2019-04-30  0.1454
+2019-04-30  0.7558
+
+julia&gt; ijoin(x, y)
+ERROR: ArgumentError: number of rows of each array must match (got (67, 71))</code></pre><h2><a class="nav-anchor" id="Left/Right-Joins-1" href="#Left/Right-Joins-1">Left/Right Joins</a></h2><p>Left and right joins are performed similarly to inner joins and the typical SQL join queries using the <code>index</code> field each object as the joining key.</p><ul><li><em>Left Join</em>: keep all observations of the left side of the join, fill the right side with NaN&#39;s where missing the corresponding time <code>index</code></li><li><em>Right Join</em>: keep all observations of the right side of the join, fill the left side with NaN&#39;s where missing the corresponding time <code>index</code></li></ul><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Temporal.ljoin" href="#Temporal.ljoin"><code>Temporal.ljoin</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">ljoin(x::TS, y::TS)::TS</code></pre><p>Left join two TS objects by index.</p><p>Equivalent to <code>x</code> LEFT JOIN <code>y</code> ON <code>x.index</code> = <code>y.index</code>.</p><p>...</p><p><strong>Arguments</strong></p><ul><li><code>x::TS</code>: Left side of the join.</li><li><code>y::TS</code>: Right side of the join.</li></ul><p>...</p></div></div><a class="source-link" target="_blank" href="https://github.com/dysonance/Temporal.jl/blob/8ee2dd7e1a8cb75b824344017c7ca87e48d310c7/src/combine.jl#L69-L81">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Temporal.rjoin" href="#Temporal.rjoin"><code>Temporal.rjoin</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">rjoin(x::TS, y::TS)::TS</code></pre><p>Right join two TS objects by index.</p><p>Equivalent to <code>x</code> RIGHT JOIN <code>y</code> ON <code>x.index</code> = <code>y.index</code>.</p><p>...</p><p><strong>Arguments</strong></p><ul><li><code>x::TS</code>: Left side of the join.</li><li><code>y::TS</code>: Right side of the join.</li></ul><p>...</p></div></div><a class="source-link" target="_blank" href="https://github.com/dysonance/Temporal.jl/blob/8ee2dd7e1a8cb75b824344017c7ca87e48d310c7/src/combine.jl#L86-L98">source</a></section><h3><a class="nav-anchor" id="Example-3" href="#Example-3">Example</a></h3><pre><code class="language-julia-repl">
+julia&gt; x = TS(rand(252))
+252x1 TS{Float64,Dates.Date}: 2019-02-22 to 2019-10-31
+
+Index       A
+2019-02-22  0.0599
+2019-02-23  0.8793
+2019-02-24  0.5537
+2019-02-25  0.776
+2019-02-26  0.2592
+2019-02-27  0.1286
+2019-02-28  0.9161
+⋮
+2019-10-24  0.8053
+2019-10-25  0.4895
+2019-10-26  0.7212
+2019-10-27  0.6559
+2019-10-28  0.6169
+2019-10-29  0.3758
+2019-10-30  0.0116
+2019-10-31  0.6539
+
+julia&gt; y = TS(rand(252), x.index .- Month(6))
+252x1 TS{Float64,Dates.Date}: 2018-08-22 to 2019-04-30
+
+Index       A
+2018-08-22  0.6687
+2018-08-23  0.5618
+2018-08-24  0.4914
+2018-08-25  0.9989
+2018-08-26  0.7093
+2018-08-27  0.682
+2018-08-28  0.0983
+⋮
+2019-04-24  0.2081
+2019-04-25  0.4179
+2019-04-26  0.7255
+2019-04-27  0.2485
+2019-04-28  0.1703
+2019-04-29  0.4803
+2019-04-30  0.441
+2019-04-30  0.4178
+
+julia&gt; ljoin(x, y)
+252x2 TS{Float64,Dates.Date}: 2019-02-22 to 2019-10-31
+
+Index       A       A
+2019-02-22  0.0599  0.9952
+2019-02-23  0.8793  0.1679
+2019-02-24  0.5537  0.121
+2019-02-25  0.776   0.5999
+2019-02-26  0.2592  0.2562
+2019-02-27  0.1286  0.7764
+2019-02-28  0.9161  0.8445
+⋮
+2019-10-24  0.8053  NaN
+2019-10-25  0.4895  NaN
+2019-10-26  0.7212  NaN
+2019-10-27  0.6559  NaN
+2019-10-28  0.6169  NaN
+2019-10-29  0.3758  NaN
+2019-10-30  0.0116  NaN
+2019-10-31  0.6539  NaN
+
+julia&gt; rjoin(x, y)
+246x2 TS{Float64,Dates.Date}: 2018-08-22 to 2019-04-30
+
+Index       A       A
+2018-08-22  NaN     0.6687
+2018-08-23  NaN     0.5618
+2018-08-24  NaN     0.4914
+2018-08-25  NaN     0.9989
+2018-08-26  NaN     0.7093
+2018-08-27  NaN     0.682
+2018-08-28  NaN     0.0983
+⋮
+2019-04-23  0.0148  0.4893
+2019-04-24  0.5372  0.108
+2019-04-25  0.3635  0.8487
+2019-04-26  0.1542  0.5338
+2019-04-27  0.9407  0.0312
+2019-04-28  0.9111  0.7765
+2019-04-29  0.4999  0.2081
+2019-04-30  0.5692  0.4179</code></pre><footer><hr/><a class="previous" href="../indexing/"><span class="direction">Previous</span><span class="title">Subsetting</span></a></footer></article></body></html>
