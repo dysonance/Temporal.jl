@@ -1,5 +1,14 @@
-import Temporal.TS
-
+# constructors
+TS(v::AbstractArray{V}, t::AbstractVector{T}, f::Union{Symbol,String,Char}) where {V,T} = TS{V,T}(v, t, [Symbol(f)])
+TS(v::AbstractArray{V}, t::AbstractVector{T}, f::Union{AbstractVector{Symbol},AbstractVector{String},AbstractVector{Char}}) where {V,T} = TS{V,T}(v, t, Symbol.(f))
+TS(v::AbstractArray{V}, t::AbstractVector{T}) where {V,T} = TS{V,T}(v, t, autocol(1:size(v,2)))
+TS(v::AbstractArray{V}, t::T, f) where {V,T} = TS{V,T}(v, [t], f)
+TS(v::V, t::AbstractVector{T}, f) where {V,T} = TS{V,T}([v], t, f)
+TS(v::V, t::T, f) where {V,T} = TS{V,T}([v][:,:], [t], f)
+TS(v::V, t::T) where {V,T} = TS{V,T}([v], [t], [:A])
+TS(v::AbstractArray{V}) where {V} = TS{V,Date}(v, autoidx(size(v,1)), autocol(1:size(v,2)))
+TS() = TS{Float64,Date}(Matrix{Float64}(UndefInitializer(),0,0), Date[], Symbol[])
+TS(X::TS) = TS(X.values, X.index, X.fields)
 
 function find_index_col(fields)::Int
     regex = r"date|time|index"i
@@ -21,3 +30,9 @@ function TS(named_tuple::NamedTuple, index_element::Int=find_index_col(keys(name
     end
     return TS(array, index, fields)
 end
+
+# conversions
+convert(::Type{TS{Float64}}, x::TS{Bool}) = TS{Float64}(map(Float64, x.values), x.index, x.fields)
+convert(::Type{TS{Int}}, x::TS{Bool}) = TS{Int}(map(Int, x.values), x.index, x.fields)
+convert(::Type{TS{Bool}}, x::TS{V}) where {V<:Real} = TS{Bool}(map(V, x.values), x.index, x.fields)
+convert(x::TS{Bool}) = convert(TS{Int}, x::TS{Bool})

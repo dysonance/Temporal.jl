@@ -11,7 +11,7 @@ str_width(::Missing) = 7
 
 _round(x, n=4) = ismissing(x) ? missing : round(x, digits=n)
 
-function getshowrows(io::IO, x::TS{V,T}) where {V,T}
+function getshowrows(io::IO, x::TS)
     nrow = size(x,1)
     display_rows, _ = displaysize(io)
     display_rows -= 3
