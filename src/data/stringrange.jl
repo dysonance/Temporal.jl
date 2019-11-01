@@ -1,8 +1,8 @@
-const RANGE_DELIMITER = '/'
-const DATE_STRING_LENGTHS = [4, 7, 10]
-const DATETIME_STRING_LENGTHS = [4, 7, 10, 13, 16, 19]
-
 import Base: ==, !=
+
+const RANGE_DELIMITER = '/'
+const DATE_STRING_LENGTHS = (4, 7, 10)
+const DATETIME_STRING_LENGTHS = (4, 7, 10, 13, 16, 19)
 
 function thrudt(s::AbstractString, t::Vector{Date})
     n = length(s)
@@ -58,13 +58,11 @@ function thisdt(s::AbstractString, t::Vector{Date})
         m = parse(Int, a[2])
         return (year.(t) .== y) .& (month.(t) .== m)
     elseif n == 10  # yyyy-mm-dd given
-
         a = split(s, '-')
         y = parse(Int, a[1])
         m = parse(Int, a[2])
         d = parse(Int, a[3])
         idx = (year.(t) .== y) .& (month.(t) .== m) .& (day.(t) .== d)
-
     end
 end
 
@@ -315,4 +313,3 @@ function dtidx(s::AbstractString, t::Vector{DateTime})
         end
     end
 end
-
