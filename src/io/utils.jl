@@ -1,3 +1,6 @@
+import HTTP
+
+
 function isdate(t::AbstractVector{T})::Bool where {T<:TimeType}
     h = Dates.hour.(t)
     m = Dates.minute.(t)
@@ -43,10 +46,8 @@ function csvresp(resp::HTTP.Response; sort::Char='d')
     else
         # Standard logic
         @inbounds for i in 1:N
-            #  j = (v[i] .== "")
-            #  v[i][findall(j)] .= "NaN"
-            for j in 2:k
-                if v[i][j] == ""
+            @inbounds for j in 2:k
+                if v[i][j] == "" || v[i][j] == "null"
                     v[i][j] = "NaN"
                 end
                 data[i,j-1] = parse(Float64, v[i][j])

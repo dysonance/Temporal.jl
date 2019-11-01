@@ -1,6 +1,9 @@
 const YAHOO_URL = "https://query1.finance.yahoo.com/v7/finance/download"  # for querying yahoo's servers
 const YAHOO_TMP = "https://ca.finance.yahoo.com/quote/^GSPC/history?p=^GSPC"  # for getting the cookies and crumbs
 
+import HTTP
+import Dates
+
 
 function yahoo_get_crumb()::Tuple{SubString{String}, Dict{String, Set{HTTP.Cookies.Cookie}}}
     response = HTTP.request("GET", YAHOO_TMP)
@@ -77,7 +80,7 @@ function yahoo(symb::String;
     period2 = Int(floor(Dates.datetime2unix(Dates.DateTime(thru))))
     urlstr = "$(YAHOO_URL)/$(symb)?period1=$(period1)&period2=$(period2)&interval=1$(freq)&events=$(event)&crumb=$(crumb_tuple[1])"
     response = HTTP.request("POST",HTTP.URIs.URI(urlstr), cookies=true, cookiejar=crumb_tuple[2])
-    indata = Temporal.csvresp(response)
+    indata = csvresp(response)
     return TS(indata[1], indata[2], indata[3][2:end])
 end
 
@@ -88,7 +91,7 @@ function yahoo(syms::Vector{String};
                event::String="history",
                crumb_tuple::Tuple{SubString{String}, Dict{String, HTTP.Cookie}}=yahoo_get_crumb())::Dict{String,TS}
     out = Dict()
-    for s = syms
+    @inbounds for s = syms
         out[s] .= yahoo(s, from=from, thru=thru, freq=freq, event=event, crumb_tuple=crumb_tuple)
     end
     return out

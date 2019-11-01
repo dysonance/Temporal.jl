@@ -1,14 +1,8 @@
-global RANGE_DELIMITER = '/'
-
-import Base: !=, ==
-
-function set_range_delimiter_option(value = '/')
-    global RANGE_DELIMITER
-    RANGE_DELIMITER = value
-end
-
+const RANGE_DELIMITER = '/'
 const DATE_STRING_LENGTHS = [4, 7, 10]
 const DATETIME_STRING_LENGTHS = [4, 7, 10, 13, 16, 19]
+
+import Base: ==, !=
 
 function thrudt(s::AbstractString, t::Vector{Date})
     n = length(s)

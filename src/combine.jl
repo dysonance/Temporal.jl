@@ -1,5 +1,5 @@
 #=
-Utilities for combining and manipulating TS objects using their indexes
+Utilities for combining and manipulating TS objects with their indexes
 =#
 
 import Base: hcat, vcat, merge

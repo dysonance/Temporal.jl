@@ -1,4 +1,5 @@
-using Temporal, Dates
+import Temporal.TS
+
 
 function find_index_col(fields)::Int
     regex = r"date|time|index"i

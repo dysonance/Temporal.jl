@@ -1,5 +1,9 @@
 const GOOGLE_URL = "http://finance.google.com/finance/historical?"  # for querying google finance's servers
 
+import Printf: @sprintf
+import HTTP
+
+
 """
 Download stock price data from Google Finance into a TS object.
 
