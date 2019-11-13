@@ -1,28 +1,31 @@
 # constructors
 
 # values array + index array + fields singleton
-TS(v::V, t::T, f::F) where {V<:VALARR,T<:IDXARR,F<:eltype(FLDARR)} = TS(v, t, Symbol(f))
+TS(v::V, t::T, f::F) where {V<:VALARR,T<:IDXARR,F<:FLDTYPE} = TS(collect(v), collect(t), [Symbol(f)])
 
 # values array + index array + fields array
-TS(v::V, t::T, f::F) where {V<:VALARR,T<:IDXARR,F<:FLDARR} = TS(v, t, Symbol.(f))
+TS(v::V, t::T, f::F) where {V<:VALARR,T<:IDXARR,F<:FLDARR} = TS(collect(v), collect(t), Symbol.(f))
 
 # values array + index array
-TS(v::V, t::T) where {V<:VALARR,T<:IDXARR} = TS(v, t, autocol(1:size(v,2)))
+TS(v::V, t::T) where {V<:VALARR,T<:IDXARR} = TS(collect(v), collect(t), autocol(1:size(v,2)))
 
 # values array + index singleton + fields any
-TS(v::V, t::T, f) where {V<:VALARR,T<:IDXTYPE} = TS(v, [t], f)
+TS(v::V, t::T, f) where {V<:VALARR,T<:IDXTYPE} = TS(collect(v), [t], f)
 
 # values singleton + index array + fields any
-TS(v::V, t::T, f) where {V<:VALTYPE,T<:IDXARR} = TS([v], t, f)
+TS(v::V, t::T, f) where {V<:VALTYPE,T<:IDXARR} = TS([v], collect(t), f)
 
 # values singleton + index singelton + fields any
 TS(v::V, t::T, f) where {V<:VALTYPE,T<:IDXTYPE} = TS([v][:,:], [t], f)
 
+# values singleton + index array
+TS(v::V, t::T) where {V<:VALTYPE, T<:IDXARR} = TS([v], collect(t), [:A])
+
 # values singleton + index singleton
-TS(v::V, t::T) where {V<:VALTYPE,T<:IDXTYPE} = TS([v], [t], [:A])
+TS(v::V, t::T) where {V<:VALTYPE, T<:IDXTYPE} = TS([v], [t], [:A])
 
 # values array
-TS(v::V) where {V<:VALARR} = TS(v, autoidx(size(v,1)), autocol(1:size(v,2)))
+TS(v::V) where {V<:VALARR} = TS(collect(v), autoidx(size(v,1)), autocol(1:size(v,2)))
 
 # default constructor
 TS() = TS(zeros((0,0)), Date[], Symbol[])

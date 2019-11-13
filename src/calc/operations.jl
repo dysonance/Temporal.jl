@@ -39,7 +39,6 @@ import Base.Broadcast:
     broadcasted,
     broadcastable,
     broadcast,
-    materialize,
     result_style
 
 # enable use of functions using dot operator

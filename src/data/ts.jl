@@ -18,7 +18,7 @@ const IDXTYPE = TimeType
 const FLDTYPE = Symbol
 const VALARR = AbstractArray{<:VALTYPE}
 const IDXARR = AbstractVector{<:IDXTYPE}
-const FLDARR = AbstractArray{<:Union{Symbol,String,Char}}
+const FLDARR = AbstractVector{<:Union{Symbol,String,Char}}
 
 
 # type definition/constructor
@@ -27,11 +27,11 @@ Time series type aimed at efficiency and simplicity.
 
 Motivated by the `xts` package in R and the `pandas` package in Python.
 """
-mutable struct TS{V<:VALTYPE,T<:IDXTYPE}
+mutable struct TS{V<:Real,T<:TimeType}
     values::Matrix{V}
     index::Vector{T}
-    fields::Vector{FLDTYPE}
-    function TS(values::Matrix{V}, index::Vector{T}, fields::Vector{FLDTYPE}) where {V<:VALTYPE,T<:IDXTYPE}
+    fields::Vector{Symbol}
+    function TS(values::Matrix{V}, index::Vector{T}, fields::Vector{Symbol}) where {V<:Real, T<:TimeType}
         @assert size(values,1)==length(index) "Length of index not equal to number of value rows."
         @assert size(values,2)==length(fields) "Length of fields not equal to number of columns in values."
         order = sortperm(index)
