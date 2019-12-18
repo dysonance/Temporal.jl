@@ -163,13 +163,13 @@ Return a time series containing all observations occuring at the ends of the yea
 eoy(x::TS; cal::Bool=false) = x[eoy(x.index, cal=cal)]
 
 
-function collapse(x::TS{V,T}, at::AbstractArray{Bool,1}; fun::Function=last, args...)::TS{V,T} where {V,T}
+function collapse(x::TS, at::AbstractArray{Bool,1}; fun::Function=last, args...)::TS
     @assert size(at,1) == size(x,1) "Arguments `x` and `at` must have same number of rows."
     idx = findall(at)
     if fun == last
         return x[idx]
     end
-    out = zeros(V, (length(idx), size(x,2)))
+    out = zeros((length(idx), size(x,2)))
     @inbounds for j in 1:size(x,2)
         out[1,j] = fun(x.values[1:idx[1], j]; args...)
     end
@@ -182,36 +182,37 @@ function collapse(x::TS{V,T}, at::AbstractArray{Bool,1}; fun::Function=last, arg
 end
 
 """
-    collapse(x::TS{V,T}, at::Function; fun::Function=last, args...)::TS{V,T} where {V,T}
+    collapse(x::TS, at::Function; fun::Function=last, args...)::TS
 
 Compute the function `fun` over period boundaries defined by `at` (e.g. `eom`, `boq`, etc.) and returng a time series of the results.
 
 Keyword arguments (`args...`) are passed to the function `fun`.
 """
-function collapse(x::TS{V,T}, at::Function; fun::Function=last, args...)::TS{V,T} where {V,T}
+function collapse(x::TS, at::Function; fun::Function=last, args...)::TS
     # Here `at` is a function of the index of `x` which generates a BitArray to be used as above
     return collapse(x, at(x.index), fun=fun; args...)
 end
 
 """
-    apply(x::TS{V}, dim::Int=1; fun=sum) where {V}
+    apply(x::TS, dim::Int=1; fun::Function=sum)
 
 Apply function `fun` across dimension `dim` of a time series `x`.
 
 - If `dim` is 1, then apply `fun` to each row of `x`, returning a time series (`TS`) object of the results
 - If `dim` is 2, then apply `fun` to each column of `x`, returning an `Array` of the results
 """
-function apply(x::TS{V}, dim::Int=1; fun=sum) where {V}
+function apply(x::TS, dim::Int=1; fun::Function=sum)
+    @assert dim == 1 || dim == 2 "dimension must be either 1 (rows) or 2 (columns)"
     if dim == 1
         n = size(x,1)
-        out = zeros(V, n)
+        out = zeros(n)
         @inbounds for i in 1:n
             out[i] = fun(x.values[i,:])
         end
         return ts(out, x.index, Symbol(uppercasefirst(string(fun))))
     elseif dim == 2
         k = size(x,2)
-        out = zeros(V, k)
+        out = zeros(k)
         @inbounds for j in 1:k
             out[j] = fun(x.values[:,j])
         end

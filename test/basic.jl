@@ -1,5 +1,3 @@
-# module TestBasics
-
 using Test, Dates, Temporal
 
 @testset "Initialization" begin
@@ -112,5 +110,3 @@ end
         end
     end
 end
-
-# end

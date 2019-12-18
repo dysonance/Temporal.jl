@@ -1,6 +1,4 @@
-using Temporal
-using Test
-using Dates
+using Temporal, Dates, Test
 
 # constant variables
 N = 252*3
