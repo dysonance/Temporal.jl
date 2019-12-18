@@ -1,3 +1,8 @@
+import Dates:
+    Date,
+    DateTime,
+    TimeType
+
 import Base:
     collect,
     convert,
@@ -13,8 +18,8 @@ import Base:
     size
 
 # outermost allowed element type
-const VALTYPE = Real
-const IDXTYPE = TimeType
+const VALTYPE = Union{Float64,Int64,Bool}
+const IDXTYPE = Union{Date,DateTime}
 const FLDTYPE = Symbol
 const VALARR = AbstractArray{<:VALTYPE}
 const IDXARR = AbstractVector{<:IDXTYPE}
@@ -22,16 +27,20 @@ const FLDARR = AbstractVector{<:Union{Symbol,String,Char}}
 
 
 # type definition/constructor
-"""
+@doc """
 Time series type aimed at efficiency and simplicity.
 
-Motivated by the `xts` package in R and the `pandas` package in Python.
-"""
-mutable struct TS{V<:Real,T<:TimeType}
+_Fields_:
+
+    - `values`: 2-dimensional array of numerical data
+    - `index`: 1-dimensional array of `Date` or `DateTime` representing index where element t corresponds t'th row of `values`
+    - `fields`: 1-dimensional array of `Symbol` representing columns where element j corresponds to j'th column of `values`
+""" ->
+mutable struct TS{V<:VALTYPE,T<:IDXTYPE}
     values::Matrix{V}
     index::Vector{T}
     fields::Vector{Symbol}
-    function TS(values::Matrix{V}, index::Vector{T}, fields::Vector{Symbol}) where {V<:Real, T<:TimeType}
+    function TS(values::Matrix{V}, index::Vector{T}, fields::Vector{Symbol}) where {V<:VALTYPE, T<:IDXTYPE}
         @assert size(values,1)==length(index) "Length of index not equal to number of value rows."
         @assert size(values,2)==length(fields) "Length of fields not equal to number of columns in values."
         order = sortperm(index)
