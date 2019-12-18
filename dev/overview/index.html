@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Overview · Temporal</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link href="../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>Temporal</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../">Home</a></li><li class="current"><a class="toctext" href>Overview</a><ul class="internal"><li><a class="toctext" href="#Installation-1">Installation</a></li><li><a class="toctext" href="#Introduction-1">Introduction</a></li><li class="toplevel"><a class="toctext" href="#Usage-1">Usage</a></li><li><a class="toctext" href="#Data-Input/Output-1">Data Input/Output</a></li><li><a class="toctext" href="#Subsetting/Indexing-1">Subsetting/Indexing</a></li><li><a class="toctext" href="#Combining/Joining-1">Combining/Joining</a></li><li><a class="toctext" href="#Collapsing/Aggregating-1">Collapsing/Aggregating</a></li><li class="toplevel"><a class="toctext" href="#Visualization-1">Visualization</a></li><li class="toplevel"><a class="toctext" href="#Miscellany-1">Miscellany</a></li><li><a class="toctext" href="#Acknowledgements-1">Acknowledgements</a></li><li><a class="toctext" href="#Temporal-vs.-TimeSeries-1">Temporal vs. TimeSeries</a></li></ul></li><li><span class="toctext">Calculations</span><ul><li><a class="toctext" href="../calculation/">Methods</a></li><li><a class="toctext" href="../aggregation/">Aggregation</a></li></ul></li><li><span class="toctext">Data</span><ul><li><a class="toctext" href="../io/">I/O</a></li><li><a class="toctext" href="../indexing/">Subsetting</a></li><li><a class="toctext" href="../combining/">Combining</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li><a href>Overview</a></li></ul><a class="edit-page" href="https://github.com/dysonance/Temporal.jl/blob/master/docs/src/overview.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>Overview</span><a class="fa fa-bars" href="#"></a></div></header><div></div><h1><a class="nav-anchor" id="Temporal-1" href="#Temporal-1">Temporal</a></h1><p>This package provides a flexible &amp; efficient time series class, <code>TS</code>, for the <a href="http://julialang.org/">Julia</a> programming language. While still early in development, the overarching goal is for the class to be able to slice &amp; dice data with the rapid prototyping speed of <a href="https://www.r-project.org/">R</a>&#39;s <a href="https://github.com/joshuaulrich/xts"><code>xts</code></a> and <a href="https://www.python.org/">Python</a>&#39;s <a href="http://pandas.pydata.org/"><code>pandas</code></a> packages, while retaining the performance one expects from Julia.</p><h2><a class="nav-anchor" id="Installation-1" href="#Installation-1">Installation</a></h2><p>Temporal can be easily installed using Julia&#39;s built-in package manager.</p><pre><code class="language-julia">using Pkg
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Overview · Temporal</title><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit">Temporal</span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li class="is-active"><a class="tocitem" href>Overview</a><ul class="internal"><li><a class="tocitem" href="#Installation-1"><span>Installation</span></a></li><li><a class="tocitem" href="#Introduction-1"><span>Introduction</span></a></li><li class="toplevel"><a class="tocitem" href="#Usage-1"><span>Usage</span></a></li><li><a class="tocitem" href="#Data-Input/Output-1"><span>Data Input/Output</span></a></li><li><a class="tocitem" href="#Subsetting/Indexing-1"><span>Subsetting/Indexing</span></a></li><li><a class="tocitem" href="#Combining/Joining-1"><span>Combining/Joining</span></a></li><li><a class="tocitem" href="#Collapsing/Aggregating-1"><span>Collapsing/Aggregating</span></a></li><li class="toplevel"><a class="tocitem" href="#Visualization-1"><span>Visualization</span></a></li><li class="toplevel"><a class="tocitem" href="#Miscellany-1"><span>Miscellany</span></a></li><li><a class="tocitem" href="#Acknowledgements-1"><span>Acknowledgements</span></a></li><li><a class="tocitem" href="#Temporal-vs.-TimeSeries-1"><span>Temporal vs. TimeSeries</span></a></li></ul></li><li><span class="tocitem">Calculations</span><ul><li><a class="tocitem" href="../calculation/">Methods</a></li><li><a class="tocitem" href="../aggregation/">Aggregation</a></li></ul></li><li><span class="tocitem">Data</span><ul><li><a class="tocitem" href="../io/">I/O</a></li><li><a class="tocitem" href="../indexing/">Subsetting</a></li><li><a class="tocitem" href="../combining/">Combining</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Overview</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Overview</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/dysonance/Temporal.jl/blob/master/docs/src/overview.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Temporal-1"><a class="docs-heading-anchor" href="#Temporal-1">Temporal</a><a class="docs-heading-anchor-permalink" href="#Temporal-1" title="Permalink"></a></h1><p>This package provides a flexible &amp; efficient time series class, <code>TS</code>, for the <a href="http://julialang.org/">Julia</a> programming language. While still early in development, the overarching goal is for the class to be able to slice &amp; dice data with the rapid prototyping speed of <a href="https://www.r-project.org/">R</a>&#39;s <a href="https://github.com/joshuaulrich/xts"><code>xts</code></a> and <a href="https://www.python.org/">Python</a>&#39;s <a href="http://pandas.pydata.org/"><code>pandas</code></a> packages, while retaining the performance one expects from Julia.</p><h2 id="Installation-1"><a class="docs-heading-anchor" href="#Installation-1">Installation</a><a class="docs-heading-anchor-permalink" href="#Installation-1" title="Permalink"></a></h2><p>Temporal can be easily installed using Julia&#39;s built-in package manager.</p><pre><code class="language-julia">using Pkg
 Pkg.add(&quot;Temporal&quot;)
-using Temporal</code></pre><h2><a class="nav-anchor" id="Introduction-1" href="#Introduction-1">Introduction</a></h2><h3><a class="nav-anchor" id="The-TS-Type-1" href="#The-TS-Type-1">The <code>TS</code> Type</a></h3><h4><a class="nav-anchor" id="Member-Variables-1" href="#Member-Variables-1">Member Variables</a></h4><p><code>TS</code> objects store three member variables to facilitate data manipulation and analysis.</p><ul><li><code>values</code>: an <code>Array</code> of the values of the time series data</li><li><code>index</code>: a <code>Vector</code> whose elements are either of type <code>Date</code> or <code>DateTime</code> indexing the values of the time series</li><li><code>fields</code>: a <code>Vector</code> whose elements are of type <code>Symbol</code> representing the column names of the time series data</li></ul><h4><a class="nav-anchor" id="Constructors-1" href="#Constructors-1">Constructors</a></h4><p>The <code>TS</code> object type can be created in a number of ways. One thing to note is that when constructing the <code>TS</code> object, passing only the <code>Array</code> of <code>values</code> will automatically create the <code>index</code> and the <code>fields</code> members. When not passed explicitly, the <code>index</code> defaults to a series of dates that ends with today&#39;s date, and begins <code>N-1</code> days before (where <code>N</code> is the number of rows of the <code>values</code>). The <code>fields</code> (or column names) are automatically set in a similar fashion as Excel when not given explicitly (A, B, C, ..., X, Y, Z, AA, AB, ...).</p><pre><code class="language-julia-repl">julia&gt; using Temporal, Dates
+using Temporal</code></pre><h2 id="Introduction-1"><a class="docs-heading-anchor" href="#Introduction-1">Introduction</a><a class="docs-heading-anchor-permalink" href="#Introduction-1" title="Permalink"></a></h2><h3 id="The-TS-Type-1"><a class="docs-heading-anchor" href="#The-TS-Type-1">The <code>TS</code> Type</a><a class="docs-heading-anchor-permalink" href="#The-TS-Type-1" title="Permalink"></a></h3><h4 id="Member-Variables-1"><a class="docs-heading-anchor" href="#Member-Variables-1">Member Variables</a><a class="docs-heading-anchor-permalink" href="#Member-Variables-1" title="Permalink"></a></h4><p><code>TS</code> objects store three member variables to facilitate data manipulation and analysis.</p><ul><li><code>values</code>: an <code>Array</code> of the values of the time series data</li><li><code>index</code>: a <code>Vector</code> whose elements are either of type <code>Date</code> or <code>DateTime</code> indexing the values of the time series</li><li><code>fields</code>: a <code>Vector</code> whose elements are of type <code>Symbol</code> representing the column names of the time series data</li></ul><h4 id="Constructors-1"><a class="docs-heading-anchor" href="#Constructors-1">Constructors</a><a class="docs-heading-anchor-permalink" href="#Constructors-1" title="Permalink"></a></h4><p>The <code>TS</code> object type can be created in a number of ways. One thing to note is that when constructing the <code>TS</code> object, passing only the <code>Array</code> of <code>values</code> will automatically create the <code>index</code> and the <code>fields</code> members. When not passed explicitly, the <code>index</code> defaults to a series of dates that ends with today&#39;s date, and begins <code>N-1</code> days before (where <code>N</code> is the number of rows of the <code>values</code>). The <code>fields</code> (or column names) are automatically set in a similar fashion as Excel when not given explicitly (A, B, C, ..., X, Y, Z, AA, AB, ...).</p><pre><code class="language-julia-repl">julia&gt; using Temporal, Dates
 
 julia&gt; N, K = 100, 4;
 
@@ -11,179 +11,179 @@ ERROR: UndefVarError: Random not defined
 julia&gt; values = rand(N, K);
 
 julia&gt; TS(values)
-100x4 TS{Float64,Dates.Date}: 2019-07-24 to 2019-10-31
+100x4 TS{Float64,Dates.Date}: 2019-09-10 to 2019-12-18
 
 Index       A       B       C       D
-2019-07-24  0.7697  0.5683  0.8946  0.8781
-2019-07-25  0.7299  0.1295  0.8336  0.216
-2019-07-26  0.5283  0.3127  0.597   0.5271
-2019-07-27  0.9539  0.7469  0.8591  0.3898
-2019-07-28  0.2166  0.6402  0.8718  0.0205
-2019-07-29  0.8139  0.9404  0.5577  0.6754
-2019-07-30  0.1067  0.1333  0.3028  0.1332
+2019-09-10  0.8079  0.2776  0.3343  0.2129
+2019-09-11  0.3867  0.3151  0.6388  0.8765
+2019-09-12  0.569   0.2328  0.8684  0.7149
+2019-09-13  0.8417  0.332   0.2692  0.5106
+2019-09-14  0.9125  0.7113  0.0285  0.261
+2019-09-15  0.6425  0.7224  0.2991  0.0264
+2019-09-16  0.1333  0.5969  0.2619  0.7391
 ⋮
-2019-10-24  0.1719  0.6159  0.6206  0.4797
-2019-10-25  0.3045  0.8366  0.9837  0.4584
-2019-10-26  0.1869  0.4037  0.16    0.54
-2019-10-27  0.6922  0.4972  0.7176  0.2426
-2019-10-28  0.2019  0.9882  0.0251  0.0965
-2019-10-29  0.4385  0.0633  0.464   0.1489
-2019-10-30  0.2268  0.8227  0.2824  0.7378
-2019-10-31  0.0422  0.4867  0.4951  0.4135
+2019-12-11  0.0886  0.1516  0.0556  0.8431
+2019-12-12  0.0694  0.4561  0.4452  0.822
+2019-12-13  0.5463  0.7002  0.0517  0.1802
+2019-12-14  0.3684  0.5961  0.8552  0.9233
+2019-12-15  0.3644  0.9127  0.1141  0.8279
+2019-12-16  0.9235  0.4599  0.6676  0.8493
+2019-12-17  0.6949  0.9855  0.7653  0.7916
+2019-12-18  0.5806  0.0845  0.1912  0.9566
 
 julia&gt; index = today()-Day(N-1):Day(1):today();
 
 julia&gt; TS(values, index)
-100x4 TS{Float64,Dates.Date}: 2019-07-24 to 2019-10-31
+100x4 TS{Float64,Dates.Date}: 2019-09-10 to 2019-12-18
 
 Index       A       B       C       D
-2019-07-24  0.7697  0.5683  0.8946  0.8781
-2019-07-25  0.7299  0.1295  0.8336  0.216
-2019-07-26  0.5283  0.3127  0.597   0.5271
-2019-07-27  0.9539  0.7469  0.8591  0.3898
-2019-07-28  0.2166  0.6402  0.8718  0.0205
-2019-07-29  0.8139  0.9404  0.5577  0.6754
-2019-07-30  0.1067  0.1333  0.3028  0.1332
+2019-09-10  0.8079  0.2776  0.3343  0.2129
+2019-09-11  0.3867  0.3151  0.6388  0.8765
+2019-09-12  0.569   0.2328  0.8684  0.7149
+2019-09-13  0.8417  0.332   0.2692  0.5106
+2019-09-14  0.9125  0.7113  0.0285  0.261
+2019-09-15  0.6425  0.7224  0.2991  0.0264
+2019-09-16  0.1333  0.5969  0.2619  0.7391
 ⋮
-2019-10-24  0.1719  0.6159  0.6206  0.4797
-2019-10-25  0.3045  0.8366  0.9837  0.4584
-2019-10-26  0.1869  0.4037  0.16    0.54
-2019-10-27  0.6922  0.4972  0.7176  0.2426
-2019-10-28  0.2019  0.9882  0.0251  0.0965
-2019-10-29  0.4385  0.0633  0.464   0.1489
-2019-10-30  0.2268  0.8227  0.2824  0.7378
-2019-10-31  0.0422  0.4867  0.4951  0.4135
+2019-12-11  0.0886  0.1516  0.0556  0.8431
+2019-12-12  0.0694  0.4561  0.4452  0.822
+2019-12-13  0.5463  0.7002  0.0517  0.1802
+2019-12-14  0.3684  0.5961  0.8552  0.9233
+2019-12-15  0.3644  0.9127  0.1141  0.8279
+2019-12-16  0.9235  0.4599  0.6676  0.8493
+2019-12-17  0.6949  0.9855  0.7653  0.7916
+2019-12-18  0.5806  0.0845  0.1912  0.9566
 
 julia&gt; fields = [:A, :B, :C, :D];
 
 julia&gt; X = TS(values, index, fields)
-100x4 TS{Float64,Dates.Date}: 2019-07-24 to 2019-10-31
+100x4 TS{Float64,Dates.Date}: 2019-09-10 to 2019-12-18
 
 Index       A       B       C       D
-2019-07-24  0.7697  0.5683  0.8946  0.8781
-2019-07-25  0.7299  0.1295  0.8336  0.216
-2019-07-26  0.5283  0.3127  0.597   0.5271
-2019-07-27  0.9539  0.7469  0.8591  0.3898
-2019-07-28  0.2166  0.6402  0.8718  0.0205
-2019-07-29  0.8139  0.9404  0.5577  0.6754
-2019-07-30  0.1067  0.1333  0.3028  0.1332
+2019-09-10  0.8079  0.2776  0.3343  0.2129
+2019-09-11  0.3867  0.3151  0.6388  0.8765
+2019-09-12  0.569   0.2328  0.8684  0.7149
+2019-09-13  0.8417  0.332   0.2692  0.5106
+2019-09-14  0.9125  0.7113  0.0285  0.261
+2019-09-15  0.6425  0.7224  0.2991  0.0264
+2019-09-16  0.1333  0.5969  0.2619  0.7391
 ⋮
-2019-10-24  0.1719  0.6159  0.6206  0.4797
-2019-10-25  0.3045  0.8366  0.9837  0.4584
-2019-10-26  0.1869  0.4037  0.16    0.54
-2019-10-27  0.6922  0.4972  0.7176  0.2426
-2019-10-28  0.2019  0.9882  0.0251  0.0965
-2019-10-29  0.4385  0.0633  0.464   0.1489
-2019-10-30  0.2268  0.8227  0.2824  0.7378
-2019-10-31  0.0422  0.4867  0.4951  0.4135</code></pre><p>Equivalently, one can construct a TS object using the standard <code>rand</code> construction approach.</p><pre><code class="language-julia-repl">julia&gt; Random.seed!(1);
+2019-12-11  0.0886  0.1516  0.0556  0.8431
+2019-12-12  0.0694  0.4561  0.4452  0.822
+2019-12-13  0.5463  0.7002  0.0517  0.1802
+2019-12-14  0.3684  0.5961  0.8552  0.9233
+2019-12-15  0.3644  0.9127  0.1141  0.8279
+2019-12-16  0.9235  0.4599  0.6676  0.8493
+2019-12-17  0.6949  0.9855  0.7653  0.7916
+2019-12-18  0.5806  0.0845  0.1912  0.9566</code></pre><p>Equivalently, one can construct a TS object using the standard <code>rand</code> construction approach.</p><pre><code class="language-julia-repl">julia&gt; Random.seed!(1);
 ERROR: UndefVarError: Random not defined
 
 julia&gt; Y = rand(TS, (N,K))
-100x4 TS{Float64,Dates.Date}: 2019-07-24 to 2019-10-31
+100x4 TS{Float64,Dates.Date}: 2019-09-10 to 2019-12-18
 
 Index       A       B       C       D
-2019-07-24  0.3194  0.7995  0.4136  0.8551
-2019-07-25  0.039   0.0154  0.2423  0.0973
-2019-07-26  0.0452  0.9931  0.903   0.0067
-2019-07-27  0.3139  0.6355  0.3405  0.1853
-2019-07-28  0.3837  0.7293  0.8249  0.2305
-2019-07-29  0.2663  0.0814  0.7611  0.6877
-2019-07-30  0.4654  0.5472  0.5466  0.9366
+2019-09-10  0.6761  0.7831  0.1714  0.0165
+2019-09-11  0.2745  0.6495  0.4663  0.651
+2019-09-12  0.5652  0.0662  0.9272  0.4995
+2019-09-13  0.5009  0.7298  0.9665  0.5455
+2019-09-14  0.6617  0.5171  0.9879  0.3603
+2019-09-15  0.9707  0.3696  0.5151  0.5319
+2019-09-16  0.2001  0.9122  0.952   0.7088
 ⋮
-2019-10-24  0.6502  0.3434  0.285   0.4201
-2019-10-25  0.8362  0.4151  0.8557  0.894
-2019-10-26  0.4698  0.5156  0.4183  0.3143
-2019-10-27  0.4654  0.9319  0.0888  0.2109
-2019-10-28  0.3075  0.1981  0.0913  0.2779
-2019-10-29  0.7322  0.068   0.9318  0.7782
-2019-10-30  0.9855  0.5253  0.8041  0.6244
-2019-10-31  0.5141  0.357   0.8647  0.9656
+2019-12-11  0.4048  0.2387  0.8422  0.8687
+2019-12-12  0.5193  0.4387  0.1969  0.489
+2019-12-13  0.6129  0.5526  0.5965  0.4845
+2019-12-14  0.8285  0.4548  0.1709  0.7671
+2019-12-15  0.6398  0.731   0.3505  0.4168
+2019-12-16  0.8212  0.0703  0.5282  0.1419
+2019-12-17  0.7984  0.9445  0.6952  0.0199
+2019-12-18  0.0908  0.2492  0.9687  0.4736
 
 julia&gt; X == Y
-false</code></pre><h3><a class="nav-anchor" id="Operations-1" href="#Operations-1">Operations</a></h3><p>The standard operations that apply to <code>Array</code> objects will generally also work for <code>TS</code> objects. (If there is an operation that does <em>not</em> have a method defined for the <code>TS</code> type that you feel is missing, please don&#39;t hesitate to submit an <a href="https://github.com/dysonance/Temporal.jl/issues">issue</a> and we will get it added ASAP.)</p><pre><code class="language-julia-repl">julia&gt; cumsum(X)
-100x4 TS{Float64,Dates.Date}: 2019-07-24 to 2019-10-31
+false</code></pre><h3 id="Operations-1"><a class="docs-heading-anchor" href="#Operations-1">Operations</a><a class="docs-heading-anchor-permalink" href="#Operations-1" title="Permalink"></a></h3><p>The standard operations that apply to <code>Array</code> objects will generally also work for <code>TS</code> objects. (If there is an operation that does <em>not</em> have a method defined for the <code>TS</code> type that you feel is missing, please don&#39;t hesitate to submit an <a href="https://github.com/dysonance/Temporal.jl/issues">issue</a> and we will get it added ASAP.)</p><pre><code class="language-julia-repl">julia&gt; cumsum(X)
+100x4 TS{Float64,Dates.Date}: 2019-09-10 to 2019-12-18
 
 Index       A        B        C        D
-2019-07-24  0.7697   0.5683   0.8946   0.8781
-2019-07-25  1.4996   0.6979   1.7282   1.0941
-2019-07-26  2.0279   1.0106   2.3253   1.6213
-2019-07-27  2.9818   1.7575   3.1844   2.011
-2019-07-28  3.1984   2.3976   4.0562   2.0315
-2019-07-29  4.0123   3.338    4.6139   2.707
-2019-07-30  4.119    3.4713   4.9166   2.8402
+2019-09-10  0.8079   0.2776   0.3343   0.2129
+2019-09-11  1.1945   0.5927   0.9732   1.0894
+2019-09-12  1.7635   0.8255   1.8416   1.8043
+2019-09-13  2.6053   1.1575   2.1108   2.3148
+2019-09-14  3.5178   1.8687   2.1393   2.5758
+2019-09-15  4.1603   2.5912   2.4384   2.6022
+2019-09-16  4.2936   3.188    2.7002   3.3413
 ⋮
-2019-10-24  45.1736  53.3289  48.2636  43.7768
-2019-10-25  45.478   54.1655  49.2473  44.2351
-2019-10-26  45.6649  54.5692  49.4074  44.7751
-2019-10-27  46.3571  55.0663  50.1249  45.0178
-2019-10-28  46.559   56.0546  50.1501  45.1143
-2019-10-29  46.9976  56.1179  50.6141  45.2631
-2019-10-30  47.2243  56.9406  50.8965  46.0009
-2019-10-31  47.2665  57.4273  51.3916  46.4144
+2019-12-11  51.7332  48.5354  45.7007  44.0034
+2019-12-12  51.8026  48.9914  46.1459  44.8254
+2019-12-13  52.3489  49.6917  46.1976  45.0055
+2019-12-14  52.7173  50.2878  47.0528  45.9288
+2019-12-15  53.0817  51.2005  47.1669  46.7567
+2019-12-16  54.0052  51.6604  47.8345  47.606
+2019-12-17  54.7001  52.6459  48.5999  48.3977
+2019-12-18  55.2807  52.7304  48.791   49.3543
 
 julia&gt; cumprod(1 + diff(log(Y)))
-99x4 TS{Float64,Dates.Date}: 2019-07-25 to 2019-10-31
+99x4 TS{Float64,Dates.Date}: 2019-09-11 to 2019-12-18
 
-Index       A             B                  C             D
-2019-07-25  -1.1018       -2.9528            0.4652        -1.173
-2019-07-26  -1.2643       -15.2654           1.0773        1.958
-2019-07-27  -3.7131       -8.4507            0.0268        8.4442
-2019-07-28  -4.4591       -9.6137            0.0505        10.2887
-2019-07-29  -2.8312       11.4685            0.0464        21.5359
-2019-07-30  -4.4114       33.3239            0.031         28.1896
-2019-07-31  3.0128        38.5686            0.0159        8.1612
+Index       A          B            C         D
+2019-09-11  0.0986     0.8129       2.0005    4.6775
+2019-09-12  0.1698     -1.0431      3.3756    3.4386
+2019-09-13  0.1493     -3.5464      3.5156    3.7412
+2019-09-14  0.1909     -2.3247      3.5927    2.1901
+2019-09-15  0.264      -1.5437      1.2534    3.0429
+2019-09-16  -0.1529    -2.9386      2.023     3.9164
+2019-09-17  -0.3763    1.7092       -4.1113   5.2466
 ⋮
-2019-10-24  479.1739      -5.81613227511e7   133.6134      -0.0
-2019-10-25  599.7315      -6.9188151904e7    280.5133      -0.0
-2019-10-26  253.8942      -8.41907524485e7   79.7114       0.0
-2019-10-27  251.543       -1.340147632725e8  -43.8392      0.0
-2019-10-28  147.2632      7.34736835158e7    -45.0764      0.0
-2019-10-29  275.0377      -5.0795079875e6    -149.7786     0.0
-2019-10-30  356.7486      -1.54632455085e7   -127.7074     0.0
-2019-10-31  124.5799      -9.4902898546e6    -136.9855     0.0
+2019-12-11  0.0014     -10610.071   0.0       6.3878
+2019-12-12  0.0017     -17067.8375  -0.0      2.7174
+2019-12-13  0.002      -21006.9092  -0.0      2.6924
+2019-12-14  0.0026     -16913.9739  0.0       3.9296
+2019-12-15  0.0019     -24939.4561  0.0       1.5318
+2019-12-16  0.0024     33450.1541   0.0       -0.1183
+2019-12-17  0.0024     120339.5839  0.0       0.1144
+2019-12-18  -0.0028    -40002.6707  0.0       0.4773
 
 julia&gt; X + Y
-100x4 TS{Float64,Dates.Date}: 2019-07-24 to 2019-10-31
+100x4 TS{Float64,Dates.Date}: 2019-09-10 to 2019-12-18
 
 Index       A       B       C       D
-2019-07-24  1.089   1.3678  1.3083  1.7332
-2019-07-25  0.769   0.1449  1.0759  0.3134
-2019-07-26  0.5736  1.3058  1.5     0.5339
-2019-07-27  1.2678  1.3824  1.1997  0.575
-2019-07-28  0.6003  1.3695  1.6967  0.251
-2019-07-29  1.0802  1.0218  1.3187  1.3631
-2019-07-30  0.5721  0.6805  0.8493  1.0699
+2019-09-10  1.4839  1.0607  0.5058  0.2294
+2019-09-11  0.6611  0.9646  1.1051  1.5275
+2019-09-12  1.1342  0.299   1.7957  1.2144
+2019-09-13  1.3427  1.0618  1.2357  1.056
+2019-09-14  1.5743  1.2284  1.0164  0.6213
+2019-09-15  1.6132  1.092   0.8142  0.5583
+2019-09-16  0.3334  1.5091  1.2138  1.4478
 ⋮
-2019-10-24  0.8221  0.9593  0.9056  0.8998
-2019-10-25  1.1407  1.2517  1.8394  1.3524
-2019-10-26  0.6567  0.9193  0.5783  0.8543
-2019-10-27  1.1576  1.429   0.8064  0.4536
-2019-10-28  0.5094  1.1864  0.1164  0.3744
-2019-10-29  1.1708  0.1313  1.3959  0.9271
-2019-10-30  1.2123  1.3481  1.0866  1.3622
-2019-10-31  0.5563  0.8437  1.3598  1.3792
+2019-12-11  0.4934  0.3904  0.8978  1.7118
+2019-12-12  0.5887  0.8948  0.6421  1.311
+2019-12-13  1.1592  1.2529  0.6483  0.6647
+2019-12-14  1.1969  1.0509  1.0261  1.6904
+2019-12-15  1.0043  1.6437  0.4646  1.2447
+2019-12-16  1.7447  0.5302  1.1958  0.9912
+2019-12-17  1.4933  1.9301  1.4605  0.8115
+2019-12-18  0.6714  0.3337  1.1599  1.4302
 
 julia&gt; abs.(sin.(X))
-100x4 TS{Float64,Dates.Date}: 2019-07-24 to 2019-10-31
+100x4 TS{Float64,Dates.Date}: 2019-09-10 to 2019-12-18
 
 Index       A       B       C       D
-2019-07-24  0.6959  0.5382  0.78    0.7695
-2019-07-25  0.6668  0.1291  0.7404  0.2144
-2019-07-26  0.5041  0.3076  0.5622  0.503
-2019-07-27  0.8157  0.6794  0.7573  0.38
-2019-07-28  0.2149  0.5973  0.7655  0.0205
-2019-07-29  0.7269  0.8078  0.5292  0.6252
-2019-07-30  0.1065  0.1329  0.2982  0.1328
+2019-09-10  0.7228  0.2741  0.3281  0.2113
+2019-09-11  0.3771  0.3099  0.5963  0.7685
+2019-09-12  0.5388  0.2307  0.7633  0.6555
+2019-09-13  0.7458  0.3259  0.2659  0.4887
+2019-09-14  0.7911  0.6528  0.0285  0.258
+2019-09-15  0.5992  0.6612  0.2946  0.0264
+2019-09-16  0.1329  0.5621  0.2589  0.6736
 ⋮
-2019-10-24  0.171   0.5777  0.5815  0.4615
-2019-10-25  0.2998  0.7424  0.8325  0.4425
-2019-10-26  0.1858  0.3928  0.1594  0.5141
-2019-10-27  0.6382  0.4769  0.6576  0.2403
-2019-10-28  0.2006  0.8351  0.0251  0.0963
-2019-10-29  0.4246  0.0632  0.4476  0.1483
-2019-10-30  0.2248  0.733   0.2787  0.6727
-2019-10-31  0.0422  0.4677  0.4751  0.4019</code></pre><h1><a class="nav-anchor" id="Usage-1" href="#Usage-1">Usage</a></h1><h2><a class="nav-anchor" id="Data-Input/Output-1" href="#Data-Input/Output-1">Data Input/Output</a></h2><p>There are currently several options for how to get time series data into the Julia environment as <code>Temporal.TS</code> objects.</p><ul><li>Data Vendor Downloads<ul><li><a href="https://www.quandl.com/">Quandl</a></li><li><a href="https://finance.yahoo.com/">Yahoo! Finance</a></li><li><a href="https://finance.google.com">Google Finance</a></li></ul></li><li>Local Flat Files (CSV, TSV, etc.)</li></ul><h3><a class="nav-anchor" id="Quandl-Data-Downloads-1" href="#Quandl-Data-Downloads-1">Quandl Data Downloads</a></h3><pre><code class="language-julia-repl">julia&gt; corn = quandl(&quot;CHRIS/CME_C1&quot;, from=&quot;2010-06-09&quot;, thru=string(Dates.today()), freq=&#39;w&#39;)  # weekly corn price history
-491x8 TS{Float64,Dates.Date}: 2010-06-13 to 2019-11-03
+2019-12-11  0.0885  0.1511  0.0555  0.7467
+2019-12-12  0.0694  0.4404  0.4306  0.7325
+2019-12-13  0.5195  0.6444  0.0517  0.1792
+2019-12-14  0.3601  0.5614  0.7547  0.7976
+2019-12-15  0.3564  0.7912  0.1139  0.7365
+2019-12-16  0.7977  0.4438  0.6191  0.7508
+2019-12-17  0.6403  0.8336  0.6928  0.7115
+2019-12-18  0.5486  0.0844  0.19    0.8172</code></pre><h1 id="Usage-1"><a class="docs-heading-anchor" href="#Usage-1">Usage</a><a class="docs-heading-anchor-permalink" href="#Usage-1" title="Permalink"></a></h1><h2 id="Data-Input/Output-1"><a class="docs-heading-anchor" href="#Data-Input/Output-1">Data Input/Output</a><a class="docs-heading-anchor-permalink" href="#Data-Input/Output-1" title="Permalink"></a></h2><p>There are currently several options for how to get time series data into the Julia environment as <code>Temporal.TS</code> objects.</p><ul><li>Data Vendor Downloads<ul><li><a href="https://www.quandl.com/">Quandl</a></li><li><a href="https://finance.yahoo.com/">Yahoo! Finance</a></li><li><a href="https://finance.google.com">Google Finance</a></li></ul></li><li>Local Flat Files (CSV, TSV, etc.)</li></ul><h3 id="Quandl-Data-Downloads-1"><a class="docs-heading-anchor" href="#Quandl-Data-Downloads-1">Quandl Data Downloads</a><a class="docs-heading-anchor-permalink" href="#Quandl-Data-Downloads-1" title="Permalink"></a></h3><pre><code class="language-julia-repl">julia&gt; corn = quandl(&quot;CHRIS/CME_C1&quot;, from=&quot;2010-06-09&quot;, thru=string(Dates.today()), freq=&#39;w&#39;)  # weekly corn price history
+498x8 TS{Float64,Dates.Date}: 2010-06-13 to 2019-12-22
 
 Index       Open    High    Low     Last    Change  Settle  Volume    Previous Day Open Interest
 2010-06-13  345.5   349.75  345.25  349.5   NaN     349.5   161773.0  353285.0
@@ -194,17 +194,17 @@ Index       Open    High    Low     Last    Change  Settle  Volume    Previous D
 2010-07-18  391.0   395.5   387.75  394.75  NaN     394.75  87390.0   400595.0
 2010-07-25  377.0   377.5   370.0   371.25  NaN     371.25  68229.0   401677.0
 ⋮
-2019-09-15  358.5   358.5   358.5   358.5   1.0     355.5   122.0     124.0
-2019-09-22  372.75  374.5   369.5   370.5   2.0     370.75  117457.0  890569.0
-2019-09-29  371.25  373.0   369.75  371.5   1.0     371.5   81035.0   876952.0
-2019-10-06  387.0   389.0   383.75  384.75  4.0     384.75  103288.0  813673.0
-2019-10-13  380.75  398.75  380.5   397.25  17.5    397.75  253205.0  783974.0
-2019-10-20  394.0   395.75  389.75  390.25  3.75    391.0   110414.0  739371.0
-2019-10-27  387.0   390.0   385.75  387.0   1.0     386.75  116327.0  731514.0
-2019-11-03  385.75  391.25  385.25  390.25  4.5     390.75  154228.0  701621.0
+2019-11-03  389.25  391.75  386.25  388.25  0.75    389.25  133939.0  674573.0
+2019-11-10  375.25  383.75  372.5   376.5   2.0     377.25  316923.0  621743.0
+2019-11-17  375.5   376.5   370.75  371.0   4.5     371.25  126643.0  493957.0
+2019-11-24  368.0   370.25  367.5   368.0   0.25    368.75  188613.0  370345.0
+2019-12-01  365.75  372.25  365.0   370.5   8.5     371.25  15409.0   18148.0
+2019-12-08  364.75  368.75  364.75  366.5   1.0     366.5   960.0     2286.0
+2019-12-15  373.75  374.5   366.25  366.25  0.75    366.25  88.0      165.0
+2019-12-22  387.5   390.5   386.25  389.25  2.0     390.0   105079.0  783847.0
 
 julia&gt; corn = dropnan(corn)  # remove rows with any NaN
-298x8 TS{Float64,Dates.Date}: 2014-02-23 to 2019-11-03
+305x8 TS{Float64,Dates.Date}: 2014-02-23 to 2019-12-22
 
 Index       Open    High    Low     Last    Change  Settle  Volume    Previous Day Open Interest
 2014-02-23  455.5   456.5   450.25  452.2   2.6     453.0   145346.0  244376.0
@@ -215,45 +215,45 @@ Index       Open    High    Low     Last    Change  Settle  Volume    Previous D
 2014-03-30  491.0   496.25  489.0   490.0   7.4     492.0   120358.0  530465.0
 2014-04-06  498.0   502.0   492.5   502.0   1.5     501.5   104110.0  482614.0
 ⋮
-2019-09-15  358.5   358.5   358.5   358.5   1.0     355.5   122.0     124.0
-2019-09-22  372.75  374.5   369.5   370.5   2.0     370.75  117457.0  890569.0
-2019-09-29  371.25  373.0   369.75  371.5   1.0     371.5   81035.0   876952.0
-2019-10-06  387.0   389.0   383.75  384.75  4.0     384.75  103288.0  813673.0
-2019-10-13  380.75  398.75  380.5   397.25  17.5    397.75  253205.0  783974.0
-2019-10-20  394.0   395.75  389.75  390.25  3.75    391.0   110414.0  739371.0
-2019-10-27  387.0   390.0   385.75  387.0   1.0     386.75  116327.0  731514.0
-2019-11-03  385.75  391.25  385.25  390.25  4.5     390.75  154228.0  701621.0</code></pre><h3><a class="nav-anchor" id="Yahoo!-Finance-Downloads-1" href="#Yahoo!-Finance-Downloads-1">Yahoo! Finance Downloads</a></h3><pre><code class="language-julia-repl">julia&gt; snapchat_prices = yahoo(&quot;SNAP&quot;, from=&quot;2017-03-03&quot;)  # historical prices for Snapchat since its IPO date
-671x6 TS{Float64,Dates.Date}: 2017-03-03 to 2019-10-30
+2019-11-03  389.25  391.75  386.25  388.25  0.75    389.25  133939.0  674573.0
+2019-11-10  375.25  383.75  372.5   376.5   2.0     377.25  316923.0  621743.0
+2019-11-17  375.5   376.5   370.75  371.0   4.5     371.25  126643.0  493957.0
+2019-11-24  368.0   370.25  367.5   368.0   0.25    368.75  188613.0  370345.0
+2019-12-01  365.75  372.25  365.0   370.5   8.5     371.25  15409.0   18148.0
+2019-12-08  364.75  368.75  364.75  366.5   1.0     366.5   960.0     2286.0
+2019-12-15  373.75  374.5   366.25  366.25  0.75    366.25  88.0      165.0
+2019-12-22  387.5   390.5   386.25  389.25  2.0     390.0   105079.0  783847.0</code></pre><h3 id="Yahoo!-Finance-Downloads-1"><a class="docs-heading-anchor" href="#Yahoo!-Finance-Downloads-1">Yahoo! Finance Downloads</a><a class="docs-heading-anchor-permalink" href="#Yahoo!-Finance-Downloads-1" title="Permalink"></a></h3><pre><code class="language-julia-repl">julia&gt; snapchat_prices = yahoo(&quot;SNAP&quot;, from=&quot;2017-03-03&quot;)  # historical prices for Snapchat since its IPO date
+704x6 TS{Float64,Dates.Date}: 2017-03-03 to 2019-12-17
 
-Index       Open    High    Low     Close  Adj Close  Volume
-2017-03-03  26.39   29.44   26.06   27.09  27.09      1.481664e8
-2017-03-06  28.17   28.25   23.77   23.77  23.77      7.2903e7
-2017-03-07  22.21   22.5    20.64   21.44  21.44      7.18578e7
-2017-03-08  22.03   23.43   21.31   22.81  22.81      4.98191e7
-2017-03-09  23.17   23.68   22.51   22.71  22.71      2.58032e7
-2017-03-10  23.36   23.4    22.0    22.07  22.07      1.83376e7
-2017-03-13  22.05   22.15   20.96   21.09  21.09      2.06059e7
+Index       Open    High    Low     Close  AdjClose  Volume
+2017-03-03  26.39   29.44   26.06   27.09  27.09     1.481664e8
+2017-03-06  28.17   28.25   23.77   23.77  23.77     7.2903e7
+2017-03-07  22.21   22.5    20.64   21.44  21.44     7.18578e7
+2017-03-08  22.03   23.43   21.31   22.81  22.81     4.98191e7
+2017-03-09  23.17   23.68   22.51   22.71  22.71     2.58032e7
+2017-03-10  23.36   23.4    22.0    22.07  22.07     1.83376e7
+2017-03-13  22.05   22.15   20.96   21.09  21.09     2.06059e7
 ⋮
-2019-10-21  13.76   14.63   13.725  14.58  14.58      4.49582e7
-2019-10-22  15.0    15.03   13.91   14.0   14.0       7.65855e7
-2019-10-23  13.91   14.38   12.93   13.18  13.18      1.124474e8
-2019-10-24  13.18   13.65   12.71   13.52  13.52      5.43614e7
-2019-10-25  13.41   14.01   13.32   13.96  13.96      2.82998e7
-2019-10-28  14.04   14.73   14.01   14.68  14.68      3.76364e7
-2019-10-29  14.5    14.95   14.37   14.64  14.64      2.10494e7
-2019-10-30  14.71   14.9    14.432  14.86  14.86      1.91157e7
+2019-12-06  14.86   14.95   14.7    14.74  14.74     1.12189e7
+2019-12-09  14.64   14.885  14.21   14.23  14.23     2.01973e7
+2019-12-10  14.23   14.33   13.97   14.09  14.09     2.0375e7
+2019-12-11  14.01   14.25   13.96   14.23  14.23     1.16969e7
+2019-12-12  14.16   14.47   14.07   14.45  14.45     1.64289e7
+2019-12-13  14.75   15.19   14.58   15.09  15.09     2.78135e7
+2019-12-16  15.21   15.235  14.85   15.11  15.11     2.72853e7
+2019-12-17  15.1    15.42   15.05   15.1   15.1      2.32865e7
 
 julia&gt; exxon_dividends = yahoo(&quot;XOM&quot;, event=&quot;div&quot;, from=&quot;2000-01-01&quot;, thru=&quot;2009-12-31&quot;)  # all dividend payments Exxon disbursed during the 2000&#39;s
 42x1 TS{Float64,Dates.Date}: 2000-02-09 to 2009-11-09
 
 Index       Dividends
-2000-02-09  0.22
-2000-05-11  0.22
-2000-08-10  0.22
-2000-11-09  0.22
-2001-02-07  0.22
+2000-02-09  0.44
+2000-05-11  0.44
+2000-08-10  0.44
+2000-11-09  0.44
+2001-02-07  0.44
 2001-02-08  0.44
-2001-05-10  0.22
+2001-05-10  0.44
 ⋮
 2008-02-07  0.35
 2008-05-09  0.4
@@ -262,14 +262,14 @@ Index       Dividends
 2009-02-06  0.4
 2009-05-11  0.42
 2009-08-11  0.42
-2009-11-09  0.42</code></pre><h3><a class="nav-anchor" id="Flat-File-I/O-1" href="#Flat-File-I/O-1">Flat File I/O</a></h3><pre><code class="language-julia-repl">julia&gt; filepath = &quot;tmp.csv&quot;
+2009-11-09  0.42</code></pre><h3 id="Flat-File-I/O-1"><a class="docs-heading-anchor" href="#Flat-File-I/O-1">Flat File I/O</a><a class="docs-heading-anchor-permalink" href="#Flat-File-I/O-1" title="Permalink"></a></h3><pre><code class="language-julia-repl">julia&gt; filepath = &quot;tmp.csv&quot;
 &quot;tmp.csv&quot;
 
 julia&gt; tswrite(corn, filepath)
 
 julia&gt; tsread(filepath) == corn
-true</code></pre><h2><a class="nav-anchor" id="Subsetting/Indexing-1" href="#Subsetting/Indexing-1">Subsetting/Indexing</a></h2><p>Easily one of the more important parts of handling time series data is the ability to retrieve from that time series specific portions of the data that you want. To this end, <code>TS</code> objects provide a fairly flexible indexing interface to make it easier to slice &amp; dice data in the ways commonly desired, while maintaining an emphasis on speed and performance wherever possible.</p><p>As an example use case, let us analyze the price history of front-month crude oil futures.</p><pre><code class="language-julia-repl">julia&gt; crude = quandl(&quot;CHRIS/CME_CL1&quot;)  # download crude oil prices from Quandl
-9195x8 TS{Float64,Dates.Date}: 1983-03-30 to 2019-10-30
+true</code></pre><h2 id="Subsetting/Indexing-1"><a class="docs-heading-anchor" href="#Subsetting/Indexing-1">Subsetting/Indexing</a><a class="docs-heading-anchor-permalink" href="#Subsetting/Indexing-1" title="Permalink"></a></h2><p>Easily one of the more important parts of handling time series data is the ability to retrieve from that time series specific portions of the data that you want. To this end, <code>TS</code> objects provide a fairly flexible indexing interface to make it easier to slice &amp; dice data in the ways commonly desired, while maintaining an emphasis on speed and performance wherever possible.</p><p>As an example use case, let us analyze the price history of front-month crude oil futures.</p><pre><code class="language-julia-repl">julia&gt; crude = quandl(&quot;CHRIS/CME_CL1&quot;)  # download crude oil prices from Quandl
+9228x8 TS{Float64,Dates.Date}: 1983-03-30 to 2019-12-17
 
 Index       Open    High    Low     Last    Change  Settle  Volume      Previous Day Open Interest
 1983-03-30  29.01   29.56   29.01   29.4    NaN     29.4    949.0       470.0
@@ -280,17 +280,17 @@ Index       Open    High    Low     Last    Change  Settle  Volume      Previous
 1983-04-07  29.9    30.2    29.86   30.17   NaN     30.17   817.0       795.0
 1983-04-08  30.65   30.65   30.25   30.38   NaN     30.38   365.0       651.0
 ⋮
-2019-10-21  53.71   54.03   52.71   53.46   0.47    53.31   89865.0     54642.0
-2019-10-22  53.39   54.62   53.1    54.21   0.85    54.16   23001.0     25416.0
-2019-10-23  54.3    56.07   53.62   55.88   1.49    55.97   614571.0    455346.0
-2019-10-24  55.9    56.51   55.41   56.07   0.26    56.23   473845.0    448853.0
-2019-10-25  56.07   56.74   55.6    56.63   0.43    56.66   434069.0    443522.0
-2019-10-28  56.65   56.92   55.58   55.74   0.85    55.81   432867.0    441829.0
-2019-10-29  55.8    55.91   54.61   55.5    0.27    55.54   517081.0    435462.0
-2019-10-30  55.53   55.73   54.42   54.9    0.48    55.06   648745.0    426782.0
+2019-12-06  58.32   59.85   57.7    59.07   0.77    59.2    668483.0    406930.0
+2019-12-09  59.11   59.25   58.23   58.91   0.18    59.02   497980.0    377010.0
+2019-12-10  58.92   59.52   58.52   59.09   0.22    59.24   544222.0    338500.0
+2019-12-11  59.06   59.22   58.11   58.8    0.48    58.76   582135.0    292850.0
+2019-12-12  58.88   59.72   58.75   59.22   0.42    59.18   516596.0    235868.0
+2019-12-13  59.36   60.48   59.27   59.78   0.89    60.07   504361.0    192116.0
+2019-12-16  59.87   60.34   59.71   60.22   0.14    60.21   327159.0    153718.0
+2019-12-17  60.23   61.06   60.03   60.54   0.73    60.94   159796.0    97590.0
 
 julia&gt; crude = dropnan(crude)  # remove the missing values from the downloaded data
-1434x8 TS{Float64,Dates.Date}: 2014-02-18 to 2019-10-30
+1466x8 TS{Float64,Dates.Date}: 2014-02-18 to 2019-12-17
 
 Index       Open    High    Low     Last    Change  Settle  Volume      Previous Day Open Interest
 2014-02-18  100.32  103.25  100.23  102.43  2.13    102.43  168003.0    66485.0
@@ -301,15 +301,15 @@ Index       Open    High    Low     Last    Change  Settle  Volume      Previous
 2014-02-25  102.8   102.84  101.02  101.83  0.99    101.83  179081.0    320864.0
 2014-02-26  102.04  102.9   101.58  102.55  0.76    102.59  187756.0    318599.0
 ⋮
-2019-10-21  53.71   54.03   52.71   53.46   0.47    53.31   89865.0     54642.0
-2019-10-22  53.39   54.62   53.1    54.21   0.85    54.16   23001.0     25416.0
-2019-10-23  54.3    56.07   53.62   55.88   1.49    55.97   614571.0    455346.0
-2019-10-24  55.9    56.51   55.41   56.07   0.26    56.23   473845.0    448853.0
-2019-10-25  56.07   56.74   55.6    56.63   0.43    56.66   434069.0    443522.0
-2019-10-28  56.65   56.92   55.58   55.74   0.85    55.81   432867.0    441829.0
-2019-10-29  55.8    55.91   54.61   55.5    0.27    55.54   517081.0    435462.0
-2019-10-30  55.53   55.73   54.42   54.9    0.48    55.06   648745.0    426782.0</code></pre><h3><a class="nav-anchor" id="Column-Indexing-1" href="#Column-Indexing-1">Column Indexing</a></h3><p>The <code>fields</code> member of the <code>Temporal.TS</code> object (wherein the column names are stored) are represented using Julia&#39;s builtin <code>Symbol</code> datatype.</p><pre><code class="language-julia-repl">julia&gt; crude[:Settle]
-1434x1 TS{Float64,Dates.Date}: 2014-02-18 to 2019-10-30
+2019-12-06  58.32   59.85   57.7    59.07   0.77    59.2    668483.0    406930.0
+2019-12-09  59.11   59.25   58.23   58.91   0.18    59.02   497980.0    377010.0
+2019-12-10  58.92   59.52   58.52   59.09   0.22    59.24   544222.0    338500.0
+2019-12-11  59.06   59.22   58.11   58.8    0.48    58.76   582135.0    292850.0
+2019-12-12  58.88   59.72   58.75   59.22   0.42    59.18   516596.0    235868.0
+2019-12-13  59.36   60.48   59.27   59.78   0.89    60.07   504361.0    192116.0
+2019-12-16  59.87   60.34   59.71   60.22   0.14    60.21   327159.0    153718.0
+2019-12-17  60.23   61.06   60.03   60.54   0.73    60.94   159796.0    97590.0</code></pre><h3 id="Column-Indexing-1"><a class="docs-heading-anchor" href="#Column-Indexing-1">Column Indexing</a><a class="docs-heading-anchor-permalink" href="#Column-Indexing-1" title="Permalink"></a></h3><p>The <code>fields</code> member of the <code>Temporal.TS</code> object (wherein the column names are stored) are represented using Julia&#39;s builtin <code>Symbol</code> datatype.</p><pre><code class="language-julia-repl">julia&gt; crude[:Settle]
+1466x1 TS{Float64,Dates.Date}: 2014-02-18 to 2019-12-17
 
 Index       Settle
 2014-02-18  102.43
@@ -320,17 +320,17 @@ Index       Settle
 2014-02-25  101.83
 2014-02-26  102.59
 ⋮
-2019-10-21  53.31
-2019-10-22  54.16
-2019-10-23  55.97
-2019-10-24  56.23
-2019-10-25  56.66
-2019-10-28  55.81
-2019-10-29  55.54
-2019-10-30  55.06
+2019-12-06  59.2
+2019-12-09  59.02
+2019-12-10  59.24
+2019-12-11  58.76
+2019-12-12  59.18
+2019-12-13  60.07
+2019-12-16  60.21
+2019-12-17  60.94
 
 julia&gt; crude[[:Settle,:Volume]]
-1434x2 TS{Float64,Dates.Date}: 2014-02-18 to 2019-10-30
+1466x2 TS{Float64,Dates.Date}: 2014-02-18 to 2019-12-17
 
 Index       Settle  Volume
 2014-02-18  102.43  168003.0
@@ -341,14 +341,14 @@ Index       Settle  Volume
 2014-02-25  101.83  179081.0
 2014-02-26  102.59  187756.0
 ⋮
-2019-10-21  53.31   89865.0
-2019-10-22  54.16   23001.0
-2019-10-23  55.97   614571.0
-2019-10-24  56.23   473845.0
-2019-10-25  56.66   434069.0
-2019-10-28  55.81   432867.0
-2019-10-29  55.54   517081.0
-2019-10-30  55.06   648745.0
+2019-12-06  59.2    668483.0
+2019-12-09  59.02   497980.0
+2019-12-10  59.24   544222.0
+2019-12-11  58.76   582135.0
+2019-12-12  59.18   516596.0
+2019-12-13  60.07   504361.0
+2019-12-16  60.21   327159.0
+2019-12-17  60.94   159796.0
 
 julia&gt; crude[1:100, :Volume]
 100x1 TS{Float64,Dates.Date}: 2014-02-18 to 2014-07-10
@@ -370,7 +370,7 @@ Index       Volume
 2014-07-08  249378.0
 2014-07-09  265417.0
 2014-07-10  253268.0</code></pre><p>A series of financial extractor convenience functions are also made available for commonly used tasks involving the selection of specific fields from historical financial market data.</p><pre><code class="language-julia-repl">julia&gt; vo(crude)  # volume
-1434x1 TS{Float64,Dates.Date}: 2014-02-18 to 2019-10-30
+1466x1 TS{Float64,Dates.Date}: 2014-02-18 to 2019-12-17
 
 Index       Volume
 2014-02-18  168003.0
@@ -381,17 +381,17 @@ Index       Volume
 2014-02-25  179081.0
 2014-02-26  187756.0
 ⋮
-2019-10-21  89865.0
-2019-10-22  23001.0
-2019-10-23  614571.0
-2019-10-24  473845.0
-2019-10-25  434069.0
-2019-10-28  432867.0
-2019-10-29  517081.0
-2019-10-30  648745.0
+2019-12-06  668483.0
+2019-12-09  497980.0
+2019-12-10  544222.0
+2019-12-11  582135.0
+2019-12-12  516596.0
+2019-12-13  504361.0
+2019-12-16  327159.0
+2019-12-17  159796.0
 
 julia&gt; op(crude)  # open
-1434x1 TS{Float64,Dates.Date}: 2014-02-18 to 2019-10-30
+1466x1 TS{Float64,Dates.Date}: 2014-02-18 to 2019-12-17
 
 Index       Open
 2014-02-18  100.32
@@ -402,17 +402,17 @@ Index       Open
 2014-02-25  102.8
 2014-02-26  102.04
 ⋮
-2019-10-21  53.71
-2019-10-22  53.39
-2019-10-23  54.3
-2019-10-24  55.9
-2019-10-25  56.07
-2019-10-28  56.65
-2019-10-29  55.8
-2019-10-30  55.53
+2019-12-06  58.32
+2019-12-09  59.11
+2019-12-10  58.92
+2019-12-11  59.06
+2019-12-12  58.88
+2019-12-13  59.36
+2019-12-16  59.87
+2019-12-17  60.23
 
 julia&gt; hi(crude)  # high
-1434x1 TS{Float64,Dates.Date}: 2014-02-18 to 2019-10-30
+1466x1 TS{Float64,Dates.Date}: 2014-02-18 to 2019-12-17
 
 Index       High
 2014-02-18  103.25
@@ -423,17 +423,17 @@ Index       High
 2014-02-25  102.84
 2014-02-26  102.9
 ⋮
-2019-10-21  54.03
-2019-10-22  54.62
-2019-10-23  56.07
-2019-10-24  56.51
-2019-10-25  56.74
-2019-10-28  56.92
-2019-10-29  55.91
-2019-10-30  55.73
+2019-12-06  59.85
+2019-12-09  59.25
+2019-12-10  59.52
+2019-12-11  59.22
+2019-12-12  59.72
+2019-12-13  60.48
+2019-12-16  60.34
+2019-12-17  61.06
 
 julia&gt; lo(crude)  # low
-1434x1 TS{Float64,Dates.Date}: 2014-02-18 to 2019-10-30
+1466x1 TS{Float64,Dates.Date}: 2014-02-18 to 2019-12-17
 
 Index       Low
 2014-02-18  100.23
@@ -444,17 +444,17 @@ Index       Low
 2014-02-25  101.02
 2014-02-26  101.58
 ⋮
-2019-10-21  52.71
-2019-10-22  53.1
-2019-10-23  53.62
-2019-10-24  55.41
-2019-10-25  55.6
-2019-10-28  55.58
-2019-10-29  54.61
-2019-10-30  54.42
+2019-12-06  57.7
+2019-12-09  58.23
+2019-12-10  58.52
+2019-12-11  58.11
+2019-12-12  58.75
+2019-12-13  59.27
+2019-12-16  59.71
+2019-12-17  60.03
 
 julia&gt; cl(crude)  # close (note: will take fields named :Close, :AdjClose, :Settle, and :Last)
-1434x1 TS{Float64,Dates.Date}: 2014-02-18 to 2019-10-30
+1466x1 TS{Float64,Dates.Date}: 2014-02-18 to 2019-12-17
 
 Index       Settle
 2014-02-18  102.43
@@ -465,20 +465,20 @@ Index       Settle
 2014-02-25  101.83
 2014-02-26  102.59
 ⋮
-2019-10-21  53.31
-2019-10-22  54.16
-2019-10-23  55.97
-2019-10-24  56.23
-2019-10-25  56.66
-2019-10-28  55.81
-2019-10-29  55.54
-2019-10-30  55.06</code></pre><pre><code class="language-julia">ohlc(crude)
+2019-12-06  59.2
+2019-12-09  59.02
+2019-12-10  59.24
+2019-12-11  58.76
+2019-12-12  59.18
+2019-12-13  60.07
+2019-12-16  60.21
+2019-12-17  60.94</code></pre><pre><code class="language-julia">ohlc(crude)
 ohlcv(crude)
 hl(crude)
 hlc(crude)
 hl2(crude)   # average of high and low
 hlc3(crude)  # average of high, low, and close
-ohlc4(crude) # average of open, high, low, and close</code></pre><pre><code class="language-none">1434x1 TS{Float64,Dates.Date}: 2014-02-18 to 2019-10-30
+ohlc4(crude) # average of open, high, low, and close</code></pre><pre><code class="language-none">1466x1 TS{Float64,Dates.Date}: 2014-02-18 to 2019-12-17
 
 Index       A         
 2014-02-18  101.5575  
@@ -489,74 +489,74 @@ Index       A
 2014-02-25  102.1225  
 2014-02-26  102.2775  
 ⋮
-2019-10-21  53.44     
-2019-10-22  53.8175   
-2019-10-23  54.99     
-2019-10-24  56.0125   
-2019-10-25  56.2675   
-2019-10-28  56.24     
-2019-10-29  55.465    
-2019-10-30  55.185    
-</code></pre><h3><a class="nav-anchor" id="Row-Indexing-1" href="#Row-Indexing-1">Row Indexing</a></h3><p>Rows of <code>TS</code> objects can be indexed in much the same way as Julia&#39;s standard <code>Array</code> objects. Since time is the key differentiating characteristic of a time series dataset, however, indexing only one dimension with an integer (or array of integers) defaults to indexing along the time (row) dimension.</p><pre><code class="language-julia-repl">julia&gt; crude[1]  # get the first row
+2019-12-06  58.7675   
+2019-12-09  58.9025   
+2019-12-10  59.05     
+2019-12-11  58.7875   
+2019-12-12  59.1325   
+2019-12-13  59.795    
+2019-12-16  60.0325   
+2019-12-17  60.565    
+</code></pre><h3 id="Row-Indexing-1"><a class="docs-heading-anchor" href="#Row-Indexing-1">Row Indexing</a><a class="docs-heading-anchor-permalink" href="#Row-Indexing-1" title="Permalink"></a></h3><p>Rows of <code>TS</code> objects can be indexed in much the same way as Julia&#39;s standard <code>Array</code> objects. Since time is the key differentiating characteristic of a time series dataset, however, indexing only one dimension with an integer (or array of integers) defaults to indexing along the time (row) dimension.</p><pre><code class="language-julia-repl">julia&gt; crude[1]  # get the first row
 1x8 TS{Float64,Dates.Date}: 2014-02-18 to 2014-02-18
 
 Index       Open    High    Low     Last    Change  Settle  Volume    Previous Day Open Interest
 2014-02-18  100.32  103.25  100.23  102.43  2.13    102.43  168003.0  66485.0
 
 julia&gt; crude[end,:]  # get the last row
-1x8 TS{Float64,Dates.Date}: 2019-10-30 to 2019-10-30
+1x8 TS{Float64,Dates.Date}: 2019-12-17 to 2019-12-17
 
-Index       Open   High   Low    Last  Change  Settle  Volume    Previous Day Open Interest
-2019-10-30  55.53  55.73  54.42  54.9  0.48    55.06   648745.0  426782.0
+Index       Open   High   Low    Last   Change  Settle  Volume    Previous Day Open Interest
+2019-12-17  60.23  61.06  60.03  60.54  0.73    60.94   159796.0  97590.0
 
 julia&gt; crude[end-100:end, 1:4]
-101x4 TS{Float64,Dates.Date}: 2019-06-10 to 2019-10-30
+101x4 TS{Float64,Dates.Date}: 2019-07-25 to 2019-12-17
 
 Index       Open   High   Low    Last
-2019-06-10  54.24  54.84  53.05  53.42
-2019-06-11  53.43  54.04  52.91  53.05
-2019-06-12  53.04  53.05  50.72  51.08
-2019-06-13  51.07  53.45  50.92  52.2
-2019-06-14  52.18  52.98  51.7   52.52
-2019-06-17  52.5   52.74  51.58  51.92
-2019-06-18  51.95  54.31  51.5   54.08
+2019-07-25  55.9   56.99  55.81  55.91
+2019-07-26  55.93  56.57  55.68  56.16
+2019-07-29  56.2   57.1   55.81  57.05
+2019-07-30  57.07  58.47  56.96  58.34
+2019-07-31  58.34  58.82  57.81  57.89
+2019-08-01  57.85  57.99  53.59  54.49
+2019-08-02  54.54  56.05  54.15  55.19
 ⋮
-2019-10-21  53.71  54.03  52.71  53.46
-2019-10-22  53.39  54.62  53.1   54.21
-2019-10-23  54.3   56.07  53.62  55.88
-2019-10-24  55.9   56.51  55.41  56.07
-2019-10-25  56.07  56.74  55.6   56.63
-2019-10-28  56.65  56.92  55.58  55.74
-2019-10-29  55.8   55.91  54.61  55.5
-2019-10-30  55.53  55.73  54.42  54.9</code></pre><p>Additionally, rows can be selected/indexed using <code>Date</code> or <code>DateTime</code> objects (whichever type corresponds to the element type of the object&#39;s <code>index</code> member).</p><pre><code class="language-julia-repl">julia&gt; final_date = crude.index[end]
-2019-10-30
+2019-12-06  58.32  59.85  57.7   59.07
+2019-12-09  59.11  59.25  58.23  58.91
+2019-12-10  58.92  59.52  58.52  59.09
+2019-12-11  59.06  59.22  58.11  58.8
+2019-12-12  58.88  59.72  58.75  59.22
+2019-12-13  59.36  60.48  59.27  59.78
+2019-12-16  59.87  60.34  59.71  60.22
+2019-12-17  60.23  61.06  60.03  60.54</code></pre><p>Additionally, rows can be selected/indexed using <code>Date</code> or <code>DateTime</code> objects (whichever type corresponds to the element type of the object&#39;s <code>index</code> member).</p><pre><code class="language-julia-repl">julia&gt; final_date = crude.index[end]
+2019-12-17
 
 julia&gt; crude[final_date]
-1x8 TS{Float64,Dates.Date}: 2019-10-30 to 2019-10-30
+1x8 TS{Float64,Dates.Date}: 2019-12-17 to 2019-12-17
 
-Index       Open   High   Low    Last  Change  Settle  Volume    Previous Day Open Interest
-2019-10-30  55.53  55.73  54.42  54.9  0.48    55.06   648745.0  426782.0
+Index       Open   High   Low    Last   Change  Settle  Volume    Previous Day Open Interest
+2019-12-17  60.23  61.06  60.03  60.54  0.73    60.94   159796.0  97590.0
 
 julia&gt; crude[collect(today()-Year(1):Day(1):today())]
-251x8 TS{Float64,Dates.Date}: 2018-10-31 to 2019-10-30
+251x8 TS{Float64,Dates.Date}: 2018-12-18 to 2019-12-17
 
 Index       Open   High   Low    Last   Change  Settle  Volume      Previous Day Open Interest
-2018-10-31  66.32  67.0   64.81  64.86  0.87    65.31   661561.0    443231.0
-2018-11-01  64.88  65.39  63.11  63.54  1.62    63.69   783969.0    432487.0
-2018-11-02  63.5   63.95  62.63  62.86  0.55    63.14   702960.0    435959.0
-2018-11-05  62.99  64.14  62.52  62.69  0.04    63.1    594052.0    424118.0
-2018-11-06  62.7   63.32  61.31  61.77  0.89    62.21   745702.0    399347.0
-2018-11-07  61.74  63.18  61.2   61.59  0.54    61.67   853269.0    377866.0
-2018-11-08  61.64  62.42  60.4   60.77  1.0     60.67   739094.0    349107.0
+2018-12-18  49.16  49.59  45.79  45.91  3.64    46.24   114245.0    66901.0
+2018-12-19  45.93  48.0   45.93  47.96  0.96    47.2    24967.0     29550.0
+2018-12-20  47.39  47.51  45.67  46.22  2.29    45.88   787191.0    401813.0
+2018-12-21  46.25  46.77  45.13  45.42  0.29    45.59   688110.0    401712.0
+2018-12-24  45.45  46.24  42.36  42.68  3.06    42.53   414288.0    391671.0
+2018-12-26  42.85  47.0   42.52  46.61  3.69    46.22   694180.0    392668.0
+2018-12-27  46.58  46.7   44.37  45.41  1.61    44.61   660494.0    390595.0
 ⋮
-2019-10-21  53.71  54.03  52.71  53.46  0.47    53.31   89865.0     54642.0
-2019-10-22  53.39  54.62  53.1   54.21  0.85    54.16   23001.0     25416.0
-2019-10-23  54.3   56.07  53.62  55.88  1.49    55.97   614571.0    455346.0
-2019-10-24  55.9   56.51  55.41  56.07  0.26    56.23   473845.0    448853.0
-2019-10-25  56.07  56.74  55.6   56.63  0.43    56.66   434069.0    443522.0
-2019-10-28  56.65  56.92  55.58  55.74  0.85    55.81   432867.0    441829.0
-2019-10-29  55.8   55.91  54.61  55.5   0.27    55.54   517081.0    435462.0
-2019-10-30  55.53  55.73  54.42  54.9   0.48    55.06   648745.0    426782.0</code></pre><p>Finally, Temporal provides a querying interface that allows one to use a standardized string format structure to specify ranges of dates. Inspired by R&#39;s xts package, one of the most useful utilities for prototyping in the REPL is the ease with which one can subset out dates simply by passing easily readable character strings. <code>Temporal</code> implements this same logic for <code>TS</code> objects.</p><p>On a tangential note, it&#39;s interesting to observe that while this indexing logic is implemented in low-level <code>C</code> code in other packages, this logic has been implemented in pure julia, making it far easier to read, interpret, understand, debug, and/or adapt to one&#39;s own purposes.</p><pre><code class="language-julia-repl">julia&gt; crude[&quot;2016&quot;]  # retrieve all rows from the year 2016
+2019-12-06  58.32  59.85  57.7   59.07  0.77    59.2    668483.0    406930.0
+2019-12-09  59.11  59.25  58.23  58.91  0.18    59.02   497980.0    377010.0
+2019-12-10  58.92  59.52  58.52  59.09  0.22    59.24   544222.0    338500.0
+2019-12-11  59.06  59.22  58.11  58.8   0.48    58.76   582135.0    292850.0
+2019-12-12  58.88  59.72  58.75  59.22  0.42    59.18   516596.0    235868.0
+2019-12-13  59.36  60.48  59.27  59.78  0.89    60.07   504361.0    192116.0
+2019-12-16  59.87  60.34  59.71  60.22  0.14    60.21   327159.0    153718.0
+2019-12-17  60.23  61.06  60.03  60.54  0.73    60.94   159796.0    97590.0</code></pre><p>Finally, Temporal provides a querying interface that allows one to use a standardized string format structure to specify ranges of dates. Inspired by R&#39;s xts package, one of the most useful utilities for prototyping in the REPL is the ease with which one can subset out dates simply by passing easily readable character strings. <code>Temporal</code> implements this same logic for <code>TS</code> objects.</p><p>On a tangential note, it&#39;s interesting to observe that while this indexing logic is implemented in low-level <code>C</code> code in other packages, this logic has been implemented in pure julia, making it far easier to read, interpret, understand, debug, and/or adapt to one&#39;s own purposes.</p><pre><code class="language-julia-repl">julia&gt; crude[&quot;2016&quot;]  # retrieve all rows from the year 2016
 252x8 TS{Float64,Dates.Date}: 2016-01-04 to 2016-12-30
 
 Index       Open   High   Low    Last   Change  Settle  Volume      Previous Day Open Interest
@@ -620,7 +620,7 @@ Index       Open    High    Low     Last
 2017-12-29  59.91   60.51   59.82   60.1
 
 julia&gt; crude[&quot;2015/&quot;, end-2:end]  # retrieve last three columns for the year 2015 and on
-1213x3 TS{Float64,Dates.Date}: 2015-01-02 to 2019-10-30
+1245x3 TS{Float64,Dates.Date}: 2015-01-02 to 2019-12-17
 
 Index       Settle  Volume      Previous Day Open Interest
 2015-01-02  52.69   284836.0    306406.0
@@ -631,14 +631,14 @@ Index       Settle  Volume      Previous Day Open Interest
 2015-01-09  48.36   460540.0    232826.0
 2015-01-12  46.07   424561.0    201262.0
 ⋮
-2019-10-21  53.31   89865.0     54642.0
-2019-10-22  54.16   23001.0     25416.0
-2019-10-23  55.97   614571.0    455346.0
-2019-10-24  56.23   473845.0    448853.0
-2019-10-25  56.66   434069.0    443522.0
-2019-10-28  55.81   432867.0    441829.0
-2019-10-29  55.54   517081.0    435462.0
-2019-10-30  55.06   648745.0    426782.0
+2019-12-06  59.2    668483.0    406930.0
+2019-12-09  59.02   497980.0    377010.0
+2019-12-10  59.24   544222.0    338500.0
+2019-12-11  58.76   582135.0    292850.0
+2019-12-12  59.18   516596.0    235868.0
+2019-12-13  60.07   504361.0    192116.0
+2019-12-16  60.21   327159.0    153718.0
+2019-12-17  60.94   159796.0    97590.0
 
 julia&gt; crude[&quot;2014/2015&quot;, :Settle]  # retrieve settle prices for the years 2014 and 2015
 473x1 TS{Float64,Dates.Date}: 2014-02-18 to 2015-12-31
@@ -659,8 +659,8 @@ Index       Settle
 2015-12-28  36.81
 2015-12-29  37.87
 2015-12-30  36.6
-2015-12-31  37.04</code></pre><h2><a class="nav-anchor" id="Combining/Joining-1" href="#Combining/Joining-1">Combining/Joining</a></h2><pre><code class="language-julia-repl">julia&gt; gasoline = quandl(&quot;CHRIS/CME_RB1&quot;)
-3536x8 TS{Float64,Dates.Date}: 2005-10-03 to 2019-10-30
+2015-12-31  37.04</code></pre><h2 id="Combining/Joining-1"><a class="docs-heading-anchor" href="#Combining/Joining-1">Combining/Joining</a><a class="docs-heading-anchor-permalink" href="#Combining/Joining-1" title="Permalink"></a></h2><pre><code class="language-julia-repl">julia&gt; gasoline = quandl(&quot;CHRIS/CME_RB1&quot;)
+3569x8 TS{Float64,Dates.Date}: 2005-10-03 to 2019-12-17
 
 Index       Open    High    Low     Last    Change  Settle  Volume    Previous Day Open Interest
 2005-10-03  1.995   2.0     1.94    1.9488  NaN     1.9488  2774.0    14940.0
@@ -671,17 +671,17 @@ Index       Open    High    Low     Last    Change  Settle  Volume    Previous D
 2005-10-10  1.78    1.7975  1.77    1.7971  NaN     1.7971  4434.0    15960.0
 2005-10-11  1.8225  1.838   1.805   1.838   NaN     1.838   5185.0    17434.0
 ⋮
-2019-10-21  1.6159  1.6216  1.5833  1.6088  0.0158  1.6072  24379.0   68722.0
-2019-10-22  1.6072  1.6386  1.5994  1.6092  0.0017  1.6089  27792.0   65521.0
-2019-10-23  1.6102  1.655   1.5928  1.6495  0.043   1.6519  25532.0   60190.0
-2019-10-24  1.6519  1.6708  1.6355  1.6594  0.0113  1.6632  22676.0   55804.0
-2019-10-25  1.6595  1.6754  1.6501  1.6717  0.0098  1.673   28649.0   46832.0
-2019-10-28  1.6694  1.6882  1.6601  1.6741  0.0002  1.6728  27698.0   39554.0
-2019-10-29  1.6726  1.7008  1.6512  1.6895  0.0129  1.6857  22292.0   27510.0
-2019-10-30  1.6911  1.7058  1.6521  1.656   0.0212  1.6645  25752.0   17414.0
+2019-12-06  1.6213  1.6683  1.6089  1.6474  0.0263  1.6474  74541.0   137483.0
+2019-12-09  1.6475  1.6622  1.6228  1.6507  0.0074  1.6548  79428.0   130034.0
+2019-12-10  1.6529  1.6668  1.6408  1.6458  0.0023  1.6525  61644.0   123726.0
+2019-12-11  1.6478  1.6509  1.61    1.6303  0.0264  1.6261  65777.0   115768.0
+2019-12-12  1.63    1.6532  1.6239  1.6306  0.0022  1.6283  55413.0   104872.0
+2019-12-13  1.6325  1.6761  1.6307  1.6549  0.0349  1.6632  59542.0   96571.0
+2019-12-16  1.6586  1.6747  1.6532  1.6633  0.0005  1.6627  51748.0   91158.0
+2019-12-17  1.6654  1.6867  1.6575  1.669   0.023   1.6857  41677.0   82057.0
 
 julia&gt; gasoline_settles = cl(gasoline)
-3536x1 TS{Float64,Dates.Date}: 2005-10-03 to 2019-10-30
+3569x1 TS{Float64,Dates.Date}: 2005-10-03 to 2019-12-17
 
 Index       Settle
 2005-10-03  1.9488
@@ -692,21 +692,21 @@ Index       Settle
 2005-10-10  1.7971
 2005-10-11  1.838
 ⋮
-2019-10-21  1.6072
-2019-10-22  1.6089
-2019-10-23  1.6519
-2019-10-24  1.6632
-2019-10-25  1.673
-2019-10-28  1.6728
-2019-10-29  1.6857
-2019-10-30  1.6645
+2019-12-06  1.6474
+2019-12-09  1.6548
+2019-12-10  1.6525
+2019-12-11  1.6261
+2019-12-12  1.6283
+2019-12-13  1.6632
+2019-12-16  1.6627
+2019-12-17  1.6857
 
 julia&gt; gasoline_settles.fields = [:Gasoline]
 1-element Array{Symbol,1}:
  :Gasoline
 
 julia&gt; crude_settles = cl(crude)
-1434x1 TS{Float64,Dates.Date}: 2014-02-18 to 2019-10-30
+1466x1 TS{Float64,Dates.Date}: 2014-02-18 to 2019-12-17
 
 Index       Settle
 2014-02-18  102.43
@@ -717,20 +717,20 @@ Index       Settle
 2014-02-25  101.83
 2014-02-26  102.59
 ⋮
-2019-10-21  53.31
-2019-10-22  54.16
-2019-10-23  55.97
-2019-10-24  56.23
-2019-10-25  56.66
-2019-10-28  55.81
-2019-10-29  55.54
-2019-10-30  55.06
+2019-12-06  59.2
+2019-12-09  59.02
+2019-12-10  59.24
+2019-12-11  58.76
+2019-12-12  59.18
+2019-12-13  60.07
+2019-12-16  60.21
+2019-12-17  60.94
 
 julia&gt; crude_settles.fields[1] = :Crude;
 
 julia&gt; # full outer join
        A = ojoin(crude_settles, gasoline_settles)
-3536x2 TS{Float64,Dates.Date}: 2005-10-03 to 2019-10-30
+3569x2 TS{Float64,Dates.Date}: 2005-10-03 to 2019-12-17
 
 Index       Crude   Gasoline
 2005-10-03  NaN     1.9488
@@ -741,18 +741,18 @@ Index       Crude   Gasoline
 2005-10-10  NaN     1.7971
 2005-10-11  NaN     1.838
 ⋮
-2019-10-21  53.31   1.6072
-2019-10-22  54.16   1.6089
-2019-10-23  55.97   1.6519
-2019-10-24  56.23   1.6632
-2019-10-25  56.66   1.673
-2019-10-28  55.81   1.6728
-2019-10-29  55.54   1.6857
-2019-10-30  55.06   1.6645
+2019-12-06  59.2    1.6474
+2019-12-09  59.02   1.6548
+2019-12-10  59.24   1.6525
+2019-12-11  58.76   1.6261
+2019-12-12  59.18   1.6283
+2019-12-13  60.07   1.6632
+2019-12-16  60.21   1.6627
+2019-12-17  60.94   1.6857
 
 julia&gt; # hcat -- same as full outer join
        A = [crude_settles gasoline_settles]
-3536x2 TS{Float64,Dates.Date}: 2005-10-03 to 2019-10-30
+3569x2 TS{Float64,Dates.Date}: 2005-10-03 to 2019-12-17
 
 Index       Crude   Gasoline
 2005-10-03  NaN     1.9488
@@ -763,55 +763,55 @@ Index       Crude   Gasoline
 2005-10-10  NaN     1.7971
 2005-10-11  NaN     1.838
 ⋮
-2019-10-21  53.31   1.6072
-2019-10-22  54.16   1.6089
-2019-10-23  55.97   1.6519
-2019-10-24  56.23   1.6632
-2019-10-25  56.66   1.673
-2019-10-28  55.81   1.6728
-2019-10-29  55.54   1.6857
-2019-10-30  55.06   1.6645</code></pre><pre><code class="language-julia"># can join to arrays of same size
-A = [A randn(size(A,1))]</code></pre><pre><code class="language-none">3536x3 TS{Float64,Dates.Date}: 2005-10-03 to 2019-10-30
+2019-12-06  59.2    1.6474
+2019-12-09  59.02   1.6548
+2019-12-10  59.24   1.6525
+2019-12-11  58.76   1.6261
+2019-12-12  59.18   1.6283
+2019-12-13  60.07   1.6632
+2019-12-16  60.21   1.6627
+2019-12-17  60.94   1.6857</code></pre><pre><code class="language-julia"># can join to arrays of same size
+A = [A randn(size(A,1))]</code></pre><pre><code class="language-none">3569x3 TS{Float64,Dates.Date}: 2005-10-03 to 2019-12-17
 
 Index       Crude   Gasoline  A        
-2005-10-03  NaN     1.9488    -1.2402  
-2005-10-04  NaN     1.9203    -0.5013  
-2005-10-05  NaN     1.8361    -0.1311  
-2005-10-06  NaN     1.7867    -0.251   
-2005-10-07  NaN     1.8076    0.5895   
-2005-10-10  NaN     1.7971    0.1825   
-2005-10-11  NaN     1.838     -0.8174  
+2005-10-03  NaN     1.9488    1.2992   
+2005-10-04  NaN     1.9203    -0.388   
+2005-10-05  NaN     1.8361    -0.8093  
+2005-10-06  NaN     1.7867    -1.9791  
+2005-10-07  NaN     1.8076    0.3253   
+2005-10-10  NaN     1.7971    1.1256   
+2005-10-11  NaN     1.838     1.0925   
 ⋮
-2019-10-21  53.31   1.6072    0.5125   
-2019-10-22  54.16   1.6089    -0.0735  
-2019-10-23  55.97   1.6519    0.0183   
-2019-10-24  56.23   1.6632    0.7001   
-2019-10-25  56.66   1.673     1.8916   
-2019-10-28  55.81   1.6728    -1.092   
-2019-10-29  55.54   1.6857    -1.688   
-2019-10-30  55.06   1.6645    0.6382   
+2019-12-06  59.2    1.6474    -0.156   
+2019-12-09  59.02   1.6548    -0.952   
+2019-12-10  59.24   1.6525    0.4117   
+2019-12-11  58.76   1.6261    0.6787   
+2019-12-12  59.18   1.6283    0.8614   
+2019-12-13  60.07   1.6632    1.0873   
+2019-12-16  60.21   1.6627    -1.4346  
+2019-12-17  60.94   1.6857    -0.6441  
 </code></pre><pre><code class="language-julia"># can join to single numbers as well
-A = [A 0]</code></pre><pre><code class="language-none">3536x4 TS{Float64,Dates.Date}: 2005-10-03 to 2019-10-30
+A = [A 0]</code></pre><pre><code class="language-none">3569x4 TS{Float64,Dates.Date}: 2005-10-03 to 2019-12-17
 
 Index       Crude   Gasoline  A        A    
-2005-10-03  NaN     1.9488    -1.2402  0.0  
-2005-10-04  NaN     1.9203    -0.5013  0.0  
-2005-10-05  NaN     1.8361    -0.1311  0.0  
-2005-10-06  NaN     1.7867    -0.251   0.0  
-2005-10-07  NaN     1.8076    0.5895   0.0  
-2005-10-10  NaN     1.7971    0.1825   0.0  
-2005-10-11  NaN     1.838     -0.8174  0.0  
+2005-10-03  NaN     1.9488    1.2992   0.0  
+2005-10-04  NaN     1.9203    -0.388   0.0  
+2005-10-05  NaN     1.8361    -0.8093  0.0  
+2005-10-06  NaN     1.7867    -1.9791  0.0  
+2005-10-07  NaN     1.8076    0.3253   0.0  
+2005-10-10  NaN     1.7971    1.1256   0.0  
+2005-10-11  NaN     1.838     1.0925   0.0  
 ⋮
-2019-10-21  53.31   1.6072    0.5125   0.0  
-2019-10-22  54.16   1.6089    -0.0735  0.0  
-2019-10-23  55.97   1.6519    0.0183   0.0  
-2019-10-24  56.23   1.6632    0.7001   0.0  
-2019-10-25  56.66   1.673     1.8916   0.0  
-2019-10-28  55.81   1.6728    -1.092   0.0  
-2019-10-29  55.54   1.6857    -1.688   0.0  
-2019-10-30  55.06   1.6645    0.6382   0.0  
+2019-12-06  59.2    1.6474    -0.156   0.0  
+2019-12-09  59.02   1.6548    -0.952   0.0  
+2019-12-10  59.24   1.6525    0.4117   0.0  
+2019-12-11  58.76   1.6261    0.6787   0.0  
+2019-12-12  59.18   1.6283    0.8614   0.0  
+2019-12-13  60.07   1.6632    1.0873   0.0  
+2019-12-16  60.21   1.6627    -1.4346  0.0  
+2019-12-17  60.94   1.6857    -0.6441  0.0  
 </code></pre><pre><code class="language-julia"># inner join -- keep points in time where both objects have observations
-ijoin(crude_settles, gasoline_settles)</code></pre><pre><code class="language-none">1434x2 TS{Float64,Dates.Date}: 2014-02-18 to 2019-10-30
+ijoin(crude_settles, gasoline_settles)</code></pre><pre><code class="language-none">1466x2 TS{Float64,Dates.Date}: 2014-02-18 to 2019-12-17
 
 Index       Crude   Gasoline  
 2014-02-18  102.43  2.8323    
@@ -822,16 +822,16 @@ Index       Crude   Gasoline
 2014-02-25  101.83  2.7981    
 2014-02-26  102.59  2.7992    
 ⋮
-2019-10-21  53.31   1.6072    
-2019-10-22  54.16   1.6089    
-2019-10-23  55.97   1.6519    
-2019-10-24  56.23   1.6632    
-2019-10-25  56.66   1.673     
-2019-10-28  55.81   1.6728    
-2019-10-29  55.54   1.6857    
-2019-10-30  55.06   1.6645    
+2019-12-06  59.2    1.6474    
+2019-12-09  59.02   1.6548    
+2019-12-10  59.24   1.6525    
+2019-12-11  58.76   1.6261    
+2019-12-12  59.18   1.6283    
+2019-12-13  60.07   1.6632    
+2019-12-16  60.21   1.6627    
+2019-12-17  60.94   1.6857    
 </code></pre><pre><code class="language-julia"># left join
-ljoin(crude_settles, gasoline_settles)</code></pre><pre><code class="language-none">1434x2 TS{Float64,Dates.Date}: 2014-02-18 to 2019-10-30
+ljoin(crude_settles, gasoline_settles)</code></pre><pre><code class="language-none">1466x2 TS{Float64,Dates.Date}: 2014-02-18 to 2019-12-17
 
 Index       Crude   Gasoline  
 2014-02-18  102.43  2.8323    
@@ -842,16 +842,16 @@ Index       Crude   Gasoline
 2014-02-25  101.83  2.7981    
 2014-02-26  102.59  2.7992    
 ⋮
-2019-10-21  53.31   1.6072    
-2019-10-22  54.16   1.6089    
-2019-10-23  55.97   1.6519    
-2019-10-24  56.23   1.6632    
-2019-10-25  56.66   1.673     
-2019-10-28  55.81   1.6728    
-2019-10-29  55.54   1.6857    
-2019-10-30  55.06   1.6645    
+2019-12-06  59.2    1.6474    
+2019-12-09  59.02   1.6548    
+2019-12-10  59.24   1.6525    
+2019-12-11  58.76   1.6261    
+2019-12-12  59.18   1.6283    
+2019-12-13  60.07   1.6632    
+2019-12-16  60.21   1.6627    
+2019-12-17  60.94   1.6857    
 </code></pre><pre><code class="language-julia"># right join
-rjoin(crude_settles, gasoline_settles)</code></pre><pre><code class="language-none">3536x2 TS{Float64,Dates.Date}: 2005-10-03 to 2019-10-30
+rjoin(crude_settles, gasoline_settles)</code></pre><pre><code class="language-none">3569x2 TS{Float64,Dates.Date}: 2005-10-03 to 2019-12-17
 
 Index       Crude   Gasoline  
 2005-10-03  NaN     1.9488    
@@ -862,16 +862,16 @@ Index       Crude   Gasoline
 2005-10-10  NaN     1.7971    
 2005-10-11  NaN     1.838     
 ⋮
-2019-10-21  53.31   1.6072    
-2019-10-22  54.16   1.6089    
-2019-10-23  55.97   1.6519    
-2019-10-24  56.23   1.6632    
-2019-10-25  56.66   1.673     
-2019-10-28  55.81   1.6728    
-2019-10-29  55.54   1.6857    
-2019-10-30  55.06   1.6645    
+2019-12-06  59.2    1.6474    
+2019-12-09  59.02   1.6548    
+2019-12-10  59.24   1.6525    
+2019-12-11  58.76   1.6261    
+2019-12-12  59.18   1.6283    
+2019-12-13  60.07   1.6632    
+2019-12-16  60.21   1.6627    
+2019-12-17  60.94   1.6857    
 </code></pre><pre><code class="language-julia"># vertical concatenation also implemented!
-fracker_era = [crude[&quot;/2013&quot;]; crude[&quot;2016/&quot;]]</code></pre><pre><code class="language-none">961x8 TS{Float64,Dates.Date}: 2016-01-04 to 2019-10-30
+fracker_era = [crude[&quot;/2013&quot;]; crude[&quot;2016/&quot;]]</code></pre><pre><code class="language-none">993x8 TS{Float64,Dates.Date}: 2016-01-04 to 2019-12-17
 
 Index       Open   High   Low    Last   Change  Settle  Volume      Previous Day Open Interest  
 2016-01-04  37.6   38.39  36.33  36.88  0.28    36.76   426831.0    437108.0                    
@@ -882,16 +882,16 @@ Index       Open   High   Low    Last   Change  Settle  Volume      Previous Day
 2016-01-11  32.94  33.2   30.88  31.13  1.75    31.41   619080.0    337703.0                    
 2016-01-12  30.44  32.21  29.93  30.58  0.97    30.44   620051.0    283331.0                    
 ⋮
-2019-10-21  53.71  54.03  52.71  53.46  0.47    53.31   89865.0     54642.0                     
-2019-10-22  53.39  54.62  53.1   54.21  0.85    54.16   23001.0     25416.0                     
-2019-10-23  54.3   56.07  53.62  55.88  1.49    55.97   614571.0    455346.0                    
-2019-10-24  55.9   56.51  55.41  56.07  0.26    56.23   473845.0    448853.0                    
-2019-10-25  56.07  56.74  55.6   56.63  0.43    56.66   434069.0    443522.0                    
-2019-10-28  56.65  56.92  55.58  55.74  0.85    55.81   432867.0    441829.0                    
-2019-10-29  55.8   55.91  54.61  55.5   0.27    55.54   517081.0    435462.0                    
-2019-10-30  55.53  55.73  54.42  54.9   0.48    55.06   648745.0    426782.0                    
-</code></pre><h2><a class="nav-anchor" id="Collapsing/Aggregating-1" href="#Collapsing/Aggregating-1">Collapsing/Aggregating</a></h2><pre><code class="language-julia"># Get the last values observed at the end of each month
-eom(crude)</code></pre><pre><code class="language-none">68x8 TS{Float64,Dates.Date}: 2014-02-28 to 2019-09-30
+2019-12-06  58.32  59.85  57.7   59.07  0.77    59.2    668483.0    406930.0                    
+2019-12-09  59.11  59.25  58.23  58.91  0.18    59.02   497980.0    377010.0                    
+2019-12-10  58.92  59.52  58.52  59.09  0.22    59.24   544222.0    338500.0                    
+2019-12-11  59.06  59.22  58.11  58.8   0.48    58.76   582135.0    292850.0                    
+2019-12-12  58.88  59.72  58.75  59.22  0.42    59.18   516596.0    235868.0                    
+2019-12-13  59.36  60.48  59.27  59.78  0.89    60.07   504361.0    192116.0                    
+2019-12-16  59.87  60.34  59.71  60.22  0.14    60.21   327159.0    153718.0                    
+2019-12-17  60.23  61.06  60.03  60.54  0.73    60.94   159796.0    97590.0                     
+</code></pre><h2 id="Collapsing/Aggregating-1"><a class="docs-heading-anchor" href="#Collapsing/Aggregating-1">Collapsing/Aggregating</a><a class="docs-heading-anchor-permalink" href="#Collapsing/Aggregating-1" title="Permalink"></a></h2><pre><code class="language-julia"># Get the last values observed at the end of each month
+eom(crude)</code></pre><pre><code class="language-none">70x8 TS{Float64,Dates.Date}: 2014-02-28 to 2019-11-29
 
 Index       Open    High    Low     Last    Change  Settle  Volume      Previous Day Open Interest  
 2014-02-28  102.15  102.96  101.8   102.55  0.19    102.59  163899.0    307986.0                    
@@ -902,16 +902,16 @@ Index       Open    High    Low     Last    Change  Settle  Volume      Previous
 2014-07-31  99.47   99.85   97.6    98.15   2.1     98.17   335785.0    308055.0                    
 2014-08-29  94.56   96.0    94.48   95.96   1.41    95.96   234972.0    280113.0                    
 ⋮
-2019-02-28  57.0    57.43   56.43   57.25   0.28    57.22   494385.0    383252.0                    
-2019-03-29  59.53   60.73   59.41   60.18   0.84    60.14   694000.0    401827.0                    
 2019-04-30  63.58   64.75   63.3    63.47   0.41    63.91   739813.0    446583.0                    
 2019-05-31  56.46   56.61   53.05   53.36   3.09    53.5    1.019958e6  376374.0                    
 2019-06-28  59.22   59.8    57.75   58.2    0.96    58.47   546625.0    334543.0                    
 2019-07-31  58.34   58.82   57.81   57.89   0.53    58.58   604858.0    406009.0                    
 2019-08-30  56.63   56.72   54.55   55.16   1.61    55.1    698554.0    373402.0                    
 2019-09-30  56.54   56.57   53.98   54.24   1.84    54.07   520489.0    380790.0                    
+2019-10-31  54.9    55.59   53.71   54.14   0.88    54.18   664901.0    411933.0                    
+2019-11-29  58.13   58.3    55.02   55.42   2.94    55.17   716575.0    456055.0                    
 </code></pre><pre><code class="language-julia"># (NOTE: the `eom` function returns a Boolean Vector when passed a Vector of TimeTypes)
-[crude.index eom(crude.index)]</code></pre><pre><code class="language-none">1434×2 Array{Any,2}:
+[crude.index eom(crude.index)]</code></pre><pre><code class="language-none">1466×2 Array{Any,2}:
  2014-02-18  false
  2014-02-19  false
  2014-02-20  false
@@ -923,16 +923,16 @@ Index       Open    High    Low     Last    Change  Settle  Volume      Previous
  2014-02-28   true
  2014-03-03  false
  ⋮                
- 2019-10-18  false
- 2019-10-21  false
- 2019-10-22  false
- 2019-10-23  false
- 2019-10-24  false
- 2019-10-25  false
- 2019-10-28  false
- 2019-10-29  false
- 2019-10-30  false</code></pre><pre><code class="language-julia"># monthly averages for all columns
-collapse(crude, eom(crude.index), fun=mean)</code></pre><pre><code class="language-none">68x8 TS{Float64,Dates.Date}: 2014-02-28 to 2019-09-30
+ 2019-12-04  false
+ 2019-12-06  false
+ 2019-12-09  false
+ 2019-12-10  false
+ 2019-12-11  false
+ 2019-12-12  false
+ 2019-12-13  false
+ 2019-12-16  false
+ 2019-12-17  false</code></pre><pre><code class="language-julia"># monthly averages for all columns
+collapse(crude, eom(crude.index), fun=mean)</code></pre><pre><code class="language-none">70x8 TS{Float64,Dates.Date}: 2014-02-28 to 2019-11-29
 
 Index       Open      High      Low       Last      Change  Settle    Volume       Previous Day Open Interest  
 2014-02-28  102.3989  103.1889  101.6878  102.5711  0.7444  102.5656  148776.5556  225805.7778                 
@@ -943,14 +943,14 @@ Index       Open      High      Low       Last      Change  Settle    Volume    
 2014-07-31  102.5386  103.1968  101.5936  102.3782  0.795   102.3918  240224.6818  227645.2273                 
 2014-08-29  95.9971   96.7362   95.3      96.1643   0.7681  96.0762   228620.4286  218962.7143                 
 ⋮
-2019-02-28  54.8816   55.6753   54.0711   55.0379   0.7216  54.9805   547467.3158  322365.2105                 
-2019-03-29  58.0281   58.6819   57.4081   58.1643   0.5562  58.1681   562354.7143  293945.0952                 
 2019-04-30  63.7286   64.409    63.1733   63.8643   0.7305  63.871    627951.8571  318931.6667                 
 2019-05-31  61.2995   61.9764   60.0618   60.8673   0.8941  60.8655   729461.9091  317816.3636                 
 2019-06-28  54.53     55.5395   53.716    54.7415   0.8935  54.7065   615311.3     265630.05                   
 2019-07-31  57.6964   58.5318   56.8555   57.5859   0.8114  57.5464   531061.1364  272989.6364                 
 2019-08-30  55.0186   55.9482   53.8891   54.93     1.2995  54.8441   629838.3182  299615.3182                 
 2019-09-30  57.4045   58.144    55.977    56.957    1.3045  56.967    644389.25    280172.25                   
+2019-10-31  54.0148   54.7313   53.147    54.0109   0.5848  54.0057   493907.6522  300861.9565                 
+2019-11-29  57.034    57.813    56.217    57.0905   0.8775  57.07     463655.9     324869.85                   
 </code></pre><pre><code class="language-julia"># Get the total yearly trading volume of crude oil
 collapse(crude[:Volume], eoy(crude.index), fun=sum)</code></pre><pre><code class="language-none">5x1 TS{Float64,Dates.Date}: 2014-12-31 to 2018-12-31
 
@@ -960,7 +960,7 @@ Index       Volume
 2016-12-30  1.3244229e8   
 2017-12-29  1.4530684e8   
 2018-12-31  1.46933685e8  
-</code></pre><h1><a class="nav-anchor" id="Visualization-1" href="#Visualization-1">Visualization</a></h1><p>Visualization capabilities are made available by the plotting API&#39;s made available by the impressively thorough and all-encompassing <a href="https://github.com/JuliaPlots/Plots.jl">Plots.jl</a> package. Temporal uses the <a href="https://github.com/JuliaPlots/RecipesBase.jl">RecipesBase</a> package to enable use of the whole suite of <code>Plots.jl</code> functionality while still permitting Temporal to precompile. The package <a href="https://github.com/dysonance/Indicators.jl">Indicators</a> package is used to compute the moving averages seen below.</p><pre><code class="language-"># download historical prices for crude oil futures and subset
+</code></pre><h1 id="Visualization-1"><a class="docs-heading-anchor" href="#Visualization-1">Visualization</a><a class="docs-heading-anchor-permalink" href="#Visualization-1" title="Permalink"></a></h1><p>Visualization capabilities are made available by the plotting API&#39;s made available by the impressively thorough and all-encompassing <a href="https://github.com/JuliaPlots/Plots.jl">Plots.jl</a> package. Temporal uses the <a href="https://github.com/JuliaPlots/RecipesBase.jl">RecipesBase</a> package to enable use of the whole suite of <code>Plots.jl</code> functionality while still permitting Temporal to precompile. The package <a href="https://github.com/dysonance/Indicators.jl">Indicators</a> package is used to compute the moving averages seen below.</p><pre><code class="language-"># download historical prices for crude oil futures and subset
 X = quandl(&quot;CHRIS/CME_CL1&quot;)
 subset = &quot;2012/&quot;
 x = cl(X)[subset]
@@ -974,4 +974,4 @@ plotlyjs()
 ℓ = @layout [ a{0.7h}; b{0.3h} ]
 plot(D, c=[:black :orange :cyan], w=[4 2 2], layout=ℓ, subplot=1)
 plot!(wma(x,n=25), c=:red, w=2, subplot=1)
-bar!(X[&quot;2012/&quot;,:Volume], c=:grey, alpha=0.5, layout=ℓ, subplot=2)</code></pre><p><img src="https://raw.githubusercontent.com/dysonance/Temporal.jl/master/examples/visualization_example1.png" alt="alt text"/></p><h1><a class="nav-anchor" id="Miscellany-1" href="#Miscellany-1">Miscellany</a></h1><h2><a class="nav-anchor" id="Acknowledgements-1" href="#Acknowledgements-1">Acknowledgements</a></h2><p>This package is inspired mostly by R&#39;s <a href="https://github.com/joshuaulrich/xts">xts</a> package and Python&#39;s <a href="http://pandas.pydata.org/">pandas</a> package. Both packages expedite the often tedious process of acquiring &amp; munging data and provide impressively well-developed and feature-rick toolkits for analysis.</p><p>Many thanks also to the developers/contributors to the current Julia <a href="https://github.com/JuliaStats/TimeSeries.jl">TimeSeries</a>, whose code I have referred to countless times as a resource while developing this package.</p><h2><a class="nav-anchor" id="Temporal-vs.-TimeSeries-1" href="#Temporal-vs.-TimeSeries-1">Temporal vs. TimeSeries</a></h2><p>The existing Julia type for representing time series objects is a reasonably reliable and robust solution. However, the motivation for developing <code>Temporal</code> and its flagship <code>TS</code> type was driven by a small number of design decisions and semantics used in <code>TimeSeries</code> that could arguably/subjectively prove inconvenient. A few that stood out as sufficient motivation for a new package are given below.</p><ul><li>A key difference is that Temporal&#39;s <code>TS</code> type is defined to be <code>mutable</code>, whereas the TimeSeries <code>TimeArray</code> type is defined to be <code>immutable</code><ul><li>Since in Julia, an object of <code>immutable</code> type &quot;is passed around (both in assignment statements and in function calls) by copying, whereas a mutable type is passed around by reference&quot; (see <a href="https://docs.julialang.org/en/release-0.4/manual/types/#immutable-composite-types">here</a>), the <code>TS</code> type can be a more memory-efficient option<ul><li>This assumes that proper care is taken to modify the object only when desired, a consideration inseparable from pass-by-reference semantics</li></ul></li><li>Additionally, making the <code>TS</code> object <code>mutable</code> should provide greater ease &amp; adaptability when modifying the object&#39;s fields</li></ul></li><li>Its indexing functionality operates differently than expected for the <code>Array</code> type, such that the <code>TimeArray</code> cannot be indexed in the same manner<ul><li>For example, indexing columns must be done with <code>String</code>s, requiring <code>Array</code>-like indexing syntax to be done on the underlying <code>values</code> member of the object</li><li>Additionally, this difference in indexing syntax could cause confusion for newcomers and create unnecessary headaches in basic data munging and indexing tasks</li><li>The syntax is similar to that of the <code>DataFrame</code> class in Python. While this a familiar framework, R&#39;s <code>xts</code> class is functionally equivalent to the matrix clas</li><li>In like fashion, a goal of this package is for the <code>TS</code> type to behave like an <code>Array</code> as much as possible, but offer more flexibility when joining/merging through the use of *temporal- indexing, to simplify challenges uniquely associated with managing time series data structures</li></ul></li><li>Another difference between <code>TS</code> and <code>TimeSeries</code> lies in the existence of a &quot;metadata&quot; holder for the object<ul><li>While this feature may be useful in some cases, the <code>TS</code> object will likely occupy less memory than an equivalent <code>TimeSeries</code> object, simply because it does not hold any metadata about the object</li><li>In cases where such underlying metadata is of use, there are likely ways to access it without attaching it to the object</li></ul></li><li>A deliberate stylistic decision was made in giving Temporal&#39;s time series type a compact name<ul><li>While the <code>TimeSeries</code> package names its type <code>TimeArray</code>, typing out nine characters can slow one down when prototyping in the REPL</li><li>Creating a type alias is certainly a perfectly acceptable workaround, but only having to type <code>TS</code> (or <code>ts</code>) when constructing the type can save a considerable amount of time if you&#39;re experimenting in the REPL for any length of time</li><li>Additionally, if you don&#39;t want to type out field names every time you instantiate a new time series, the <code>TS</code> class will auto-populate field names for you</li></ul></li></ul><p>So in all, the differences between the two classes are relatively stylistic, but over time will hopefully increase efficiency both when writing and running code.</p><footer><hr/><a class="previous" href="../"><span class="direction">Previous</span><span class="title">Home</span></a><a class="next" href="../calculation/"><span class="direction">Next</span><span class="title">Methods</span></a></footer></article></body></html>
+bar!(X[&quot;2012/&quot;,:Volume], c=:grey, alpha=0.5, layout=ℓ, subplot=2)</code></pre><p><img src="https://raw.githubusercontent.com/dysonance/Temporal.jl/master/examples/visualization_example1.png" alt="alt text"/></p><h1 id="Miscellany-1"><a class="docs-heading-anchor" href="#Miscellany-1">Miscellany</a><a class="docs-heading-anchor-permalink" href="#Miscellany-1" title="Permalink"></a></h1><h2 id="Acknowledgements-1"><a class="docs-heading-anchor" href="#Acknowledgements-1">Acknowledgements</a><a class="docs-heading-anchor-permalink" href="#Acknowledgements-1" title="Permalink"></a></h2><p>This package is inspired mostly by R&#39;s <a href="https://github.com/joshuaulrich/xts">xts</a> package and Python&#39;s <a href="http://pandas.pydata.org/">pandas</a> package. Both packages expedite the often tedious process of acquiring &amp; munging data and provide impressively well-developed and feature-rick toolkits for analysis.</p><p>Many thanks also to the developers/contributors to the current Julia <a href="https://github.com/JuliaStats/TimeSeries.jl">TimeSeries</a>, whose code I have referred to countless times as a resource while developing this package.</p><h2 id="Temporal-vs.-TimeSeries-1"><a class="docs-heading-anchor" href="#Temporal-vs.-TimeSeries-1">Temporal vs. TimeSeries</a><a class="docs-heading-anchor-permalink" href="#Temporal-vs.-TimeSeries-1" title="Permalink"></a></h2><p>The existing Julia type for representing time series objects is a reasonably reliable and robust solution. However, the motivation for developing <code>Temporal</code> and its flagship <code>TS</code> type was driven by a small number of design decisions and semantics used in <code>TimeSeries</code> that could arguably/subjectively prove inconvenient. A few that stood out as sufficient motivation for a new package are given below.</p><ul><li>A key difference is that Temporal&#39;s <code>TS</code> type is defined to be <code>mutable</code>, whereas the TimeSeries <code>TimeArray</code> type is defined to be <code>immutable</code><ul><li>Since in Julia, an object of <code>immutable</code> type &quot;is passed around (both in assignment statements and in function calls) by copying, whereas a mutable type is passed around by reference&quot; (see <a href="https://docs.julialang.org/en/release-0.4/manual/types/#immutable-composite-types">here</a>), the <code>TS</code> type can be a more memory-efficient option<ul><li>This assumes that proper care is taken to modify the object only when desired, a consideration inseparable from pass-by-reference semantics</li></ul></li><li>Additionally, making the <code>TS</code> object <code>mutable</code> should provide greater ease &amp; adaptability when modifying the object&#39;s fields</li></ul></li><li>Its indexing functionality operates differently than expected for the <code>Array</code> type, such that the <code>TimeArray</code> cannot be indexed in the same manner<ul><li>For example, indexing columns must be done with <code>String</code>s, requiring <code>Array</code>-like indexing syntax to be done on the underlying <code>values</code> member of the object</li><li>Additionally, this difference in indexing syntax could cause confusion for newcomers and create unnecessary headaches in basic data munging and indexing tasks</li><li>The syntax is similar to that of the <code>DataFrame</code> class in Python. While this a familiar framework, R&#39;s <code>xts</code> class is functionally equivalent to the matrix clas</li><li>In like fashion, a goal of this package is for the <code>TS</code> type to behave like an <code>Array</code> as much as possible, but offer more flexibility when joining/merging through the use of *temporal- indexing, to simplify challenges uniquely associated with managing time series data structures</li></ul></li><li>Another difference between <code>TS</code> and <code>TimeSeries</code> lies in the existence of a &quot;metadata&quot; holder for the object<ul><li>While this feature may be useful in some cases, the <code>TS</code> object will likely occupy less memory than an equivalent <code>TimeSeries</code> object, simply because it does not hold any metadata about the object</li><li>In cases where such underlying metadata is of use, there are likely ways to access it without attaching it to the object</li></ul></li><li>A deliberate stylistic decision was made in giving Temporal&#39;s time series type a compact name<ul><li>While the <code>TimeSeries</code> package names its type <code>TimeArray</code>, typing out nine characters can slow one down when prototyping in the REPL</li><li>Creating a type alias is certainly a perfectly acceptable workaround, but only having to type <code>TS</code> (or <code>ts</code>) when constructing the type can save a considerable amount of time if you&#39;re experimenting in the REPL for any length of time</li><li>Additionally, if you don&#39;t want to type out field names every time you instantiate a new time series, the <code>TS</code> class will auto-populate field names for you</li></ul></li></ul><p>So in all, the differences between the two classes are relatively stylistic, but over time will hopefully increase efficiency both when writing and running code.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../calculation/">Methods »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Wednesday 18 December 2019 02:39">Wednesday 18 December 2019</span>. Using Julia version 1.2.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
