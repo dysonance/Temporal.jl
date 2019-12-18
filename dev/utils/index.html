@@ -9,72 +9,55 @@ julia&gt; X = TS(vals, t)
 365x4 TS{Float64,Dates.Date}: 2017-01-01 to 2017-12-31
 
 Index       A       B       C       D
-2017-01-01  0.7657  0.4879  0.3641  0.8978
-2017-01-02  0.8693  0.4008  0.5712  0.8746
-2017-01-03  0.659   0.6454  0.9033  0.0247
-2017-01-04  0.5761  0.9839  0.6881  0.6007
-2017-01-05  0.7175  0.7615  0.45    0.9456
-2017-01-06  0.1909  0.1997  0.7843  0.8067
-2017-01-07  0.4111  0.063   0.9314  0.3899
+2017-01-01  0.2372  0.3758  0.0091  0.301
+2017-01-02  0.4375  0.735   0.4505  0.2677
+2017-01-03  0.5966  0.6413  0.9636  0.2109
+2017-01-04  0.2408  0.3859  0.3961  0.0605
+2017-01-05  0.7074  0.1539  0.9493  0.9646
+2017-01-06  0.6444  0.5926  0.2988  0.4444
+2017-01-07  0.5187  0.2926  0.5282  0.9167
 ⋮
-2017-12-24  0.1177  0.4804  0.5321  0.5233
-2017-12-25  0.1131  0.2434  0.6266  0.9316
-2017-12-26  0.7782  0.8204  0.7132  0.6708
-2017-12-27  0.4249  0.6074  0.5024  0.3996
-2017-12-28  0.1799  0.9182  0.9959  0.0355
-2017-12-29  0.2129  0.3008  0.0762  0.0625
-2017-12-30  0.6011  0.7988  0.7147  0.2218
-2017-12-31  0.9123  0.6718  0.0479  0.6768
+2017-12-24  0.4784  0.4065  0.8295  0.24
+2017-12-25  0.3197  0.6841  0.7403  0.1065
+2017-12-26  0.0578  0.2706  0.2333  0.9386
+2017-12-27  0.5529  0.6508  0.4193  0.4354
+2017-12-28  0.4374  0.0722  0.0905  0.7917
+2017-12-29  0.9511  0.3925  0.4502  0.8421
+2017-12-30  0.5523  0.5156  0.6789  0.554
+2017-12-31  0.1504  0.6374  0.9396  0.9832
 
 julia&gt; X[&quot;2017-03-15/2017-06-15&quot;]
 93x4 TS{Float64,Dates.Date}: 2017-03-15 to 2017-06-15
 
 Index       A       B       C       D
-2017-03-15  0.448   0.4491  0.1293  0.9909
-2017-03-16  0.0509  0.7754  0.0897  0.9142
-2017-03-17  0.9046  0.4472  0.6132  0.906
-2017-03-18  0.164   0.3775  0.0313  0.1838
-2017-03-19  0.9092  0.5093  0.2176  0.3297
-2017-03-20  0.8814  0.4067  0.2099  0.4795
-2017-03-21  0.5767  0.1779  0.9323  0.3686
+2017-03-15  0.8036  0.1195  0.7735  0.6314
+2017-03-16  0.644   0.5833  0.1011  0.2176
+2017-03-17  0.2889  0.1715  0.4334  0.1775
+2017-03-18  0.2211  0.1411  0.2904  0.2509
+2017-03-19  0.1135  0.9219  0.5022  0.4988
+2017-03-20  0.7937  0.4303  0.1143  0.1692
+2017-03-21  0.99    0.6027  0.9875  0.6307
 ⋮
-2017-06-08  0.1282  0.4     0.234   0.0527
-2017-06-09  0.7079  0.0938  0.2777  0.3442
-2017-06-10  0.132   0.9874  0.7898  0.6927
-2017-06-11  0.7124  0.5854  0.2814  0.1739
-2017-06-12  0.6394  0.0183  0.7502  0.7007
-2017-06-13  0.4187  0.1073  0.9157  0.3474
-2017-06-14  0.7552  0.0831  0.5008  0.8195
-2017-06-15  0.0556  0.899   0.4945  0.9695
+2017-06-08  0.5812  0.3195  0.4256  0.852
+2017-06-09  0.6811  0.7353  0.2917  0.495
+2017-06-10  0.3006  0.7131  0.353   0.3952
+2017-06-11  0.5544  0.2104  0.6996  0.3488
+2017-06-12  0.7603  0.6021  0.4529  0.0576
+2017-06-13  0.6164  0.6703  0.1327  0.6754
+2017-06-14  0.9374  0.2898  0.9766  0.8615
+2017-06-15  0.0291  0.4214  0.8318  0.5272
 
 julia&gt; set_range_delimiter_option(&quot;::&quot;)
-&quot;::&quot;
+ERROR: UndefVarError: set_range_delimiter_option not defined
 
 julia&gt; X[&quot;2017-03-15::2017-06-15&quot;]
-93x4 TS{Float64,Dates.Date}: 2017-03-15 to 2017-06-15
-
-Index       A       B       C       D
-2017-03-15  0.448   0.4491  0.1293  0.9909
-2017-03-16  0.0509  0.7754  0.0897  0.9142
-2017-03-17  0.9046  0.4472  0.6132  0.906
-2017-03-18  0.164   0.3775  0.0313  0.1838
-2017-03-19  0.9092  0.5093  0.2176  0.3297
-2017-03-20  0.8814  0.4067  0.2099  0.4795
-2017-03-21  0.5767  0.1779  0.9323  0.3686
-⋮
-2017-06-08  0.1282  0.4     0.234   0.0527
-2017-06-09  0.7079  0.0938  0.2777  0.3442
-2017-06-10  0.132   0.9874  0.7898  0.6927
-2017-06-11  0.7124  0.5854  0.2814  0.1739
-2017-06-12  0.6394  0.0183  0.7502  0.7007
-2017-06-13  0.4187  0.1073  0.9157  0.3474
-2017-06-14  0.7552  0.0831  0.5008  0.8195
-2017-06-15  0.0556  0.899   0.4945  0.9695</code></pre><h2 id="Name-Sanitization-1"><a class="docs-heading-anchor" href="#Name-Sanitization-1">Name Sanitization</a><a class="docs-heading-anchor-permalink" href="#Name-Sanitization-1" title="Permalink"></a></h2><p>The <code>SANITIZE_NAMES</code> option is a boolean value indicating whether the column names (that is, the object&#39;s <code>fields</code> member), should be cleaned of whitespace and non-alphanumeric characters before constructing <code>TS</code> objects. This can make it easier to deal with names of columns more quickly and easily in some cases.</p><p>By default, <code>SANITIZE_NAMES</code> is set to <code>false</code>, so that generally speaking the raw user input data is used. This option can be changed with the <code>set_sanitize_names_option</code> function.</p><p>Notice in the sample below how the <code>Adj Close</code> column name becomes <code>AdjClose</code> after changing the setting to <code>true</code>.</p><pre><code class="language-julia-repl">julia&gt; using Temporal, Dates;
+ERROR: AssertionError: Invalid indexing string: Unable to parse 2017-03-15::2017-06-15</code></pre><h2 id="Name-Sanitization-1"><a class="docs-heading-anchor" href="#Name-Sanitization-1">Name Sanitization</a><a class="docs-heading-anchor-permalink" href="#Name-Sanitization-1" title="Permalink"></a></h2><p>The <code>SANITIZE_NAMES</code> option is a boolean value indicating whether the column names (that is, the object&#39;s <code>fields</code> member), should be cleaned of whitespace and non-alphanumeric characters before constructing <code>TS</code> objects. This can make it easier to deal with names of columns more quickly and easily in some cases.</p><p>By default, <code>SANITIZE_NAMES</code> is set to <code>false</code>, so that generally speaking the raw user input data is used. This option can be changed with the <code>set_sanitize_names_option</code> function.</p><p>Notice in the sample below how the <code>Adj Close</code> column name becomes <code>AdjClose</code> after changing the setting to <code>true</code>.</p><pre><code class="language-julia-repl">julia&gt; using Temporal, Dates;
 
 julia&gt; A = tsread(Pkg.dir(&quot;Temporal&quot;, &quot;data&quot;, &quot;XOM.csv&quot;))
 ERROR: UndefVarError: Pkg not defined
 
 julia&gt; set_sanitize_names_option(true)
+ERROR: UndefVarError: set_sanitize_names_option not defined
 
 julia&gt; B = tsread(Pkg.dir(&quot;Temporal&quot;, &quot;data&quot;, &quot;XOM.csv&quot;))
 ERROR: UndefVarError: Pkg not defined</code></pre><h2 id="Rename-columns-1"><a class="docs-heading-anchor" href="#Rename-columns-1">Rename columns</a><a class="docs-heading-anchor-permalink" href="#Rename-columns-1" title="Permalink"></a></h2><h3 id="Not-in-place-1"><a class="docs-heading-anchor" href="#Not-in-place-1">Not in place</a><a class="docs-heading-anchor-permalink" href="#Not-in-place-1" title="Permalink"></a></h3><p><code>rename</code> function return a <code>TS</code>.</p><pre><code class="language-julia-repl">julia&gt; using Temporal
@@ -87,26 +70,26 @@ julia&gt; K = 4
 
 julia&gt; data = cumsum(randn(N,K), dims=1)
 756×4 Array{Float64,2}:
- -0.239392   -0.300083  -0.147332  -0.0742566
- -1.33903     0.416173  -0.536045   1.01792
- -0.0767929   1.89428    1.58432    1.43665
- -0.529864    2.56072    2.08463    1.96131
- -1.29374     3.08297    1.66972    2.76224
- -1.14238     3.762      2.56613    2.8225
- -2.36769     2.84837    2.39099    3.51942
- -4.20642     4.24592    3.62223    1.65897
- -3.70766     5.71356    1.14512    1.58729
- -2.0336      5.42984    2.37191    0.971349
-  ⋮
-  6.43008    33.2152    30.5544     7.88089
-  5.73198    33.3017    31.986      7.75055
-  4.87897    33.84      32.1448     9.1755
-  4.4043     32.3367    32.4375     9.2946
-  2.70045    33.2704    33.5775     8.13904
-  1.9764     32.4524    32.3228     9.89257
-  4.1644     32.0978    32.8405     8.17318
-  3.42784    33.6175    33.4543     8.3259
-  4.23445    35.1482    34.7155     7.753
+  -0.704539   0.133849  -0.355968    3.10689
+  -1.86753   -1.10792   -0.48354     2.72033
+  -1.30714   -1.48868   -0.324993    2.23519
+  -0.854632  -2.36579    0.446621    0.715643
+  -1.23689   -2.73687    0.37478    -0.65084
+  -0.901463  -2.76724   -0.241175   -0.88099
+  -2.56778   -3.45028   -0.735539   -0.810469
+  -2.38767   -2.31887   -0.937936   -0.290772
+  -2.0498    -1.65062   -1.85064    -2.16915
+  -2.58041   -2.19133   -1.8017     -1.31534
+   ⋮
+ -15.5397     7.4616    -2.3562    -30.4349
+ -16.3867     7.39716   -1.18722   -31.02
+ -16.0271     7.54273    0.295188  -30.2454
+ -14.5032     7.86095   -1.44386   -29.3495
+ -16.003      6.70353   -0.654996  -29.1325
+ -16.8105     9.50127   -0.828891  -27.1794
+ -18.3584     7.66434   -2.519     -26.3227
+ -19.0139     7.51742   -1.80944   -25.8726
+ -18.5113     7.30917   -2.61736   -26.6808
 
 julia&gt; dates = today()-Day(N-1):Day(1):today()
 ERROR: UndefVarError: today not defined
@@ -117,32 +100,32 @@ ERROR: UndefVarError: dates not defined
 julia&gt; rename(ts, :a =&gt; :A, :d =&gt; :D)
 ERROR: MethodError: no method matching rename(::Type{TS}, ::Pair{Symbol,Symbol}, ::Pair{Symbol,Symbol})
 Closest candidates are:
-  rename(!Matched::TS, ::Pair{Symbol,Symbol}...) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:98
-  rename(::Union{Function, Type}, !Matched::TS) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:104
-  rename(::Union{Function, Type}, !Matched::TS, !Matched::Type{Symbol}) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:104
+  rename(!Matched::TS, ::Pair{Symbol,Symbol}...) at /home/travis/build/dysonance/Temporal.jl/src/util/alter.jl:28
+  rename(::Union{Function, Type}, !Matched::TS) at /home/travis/build/dysonance/Temporal.jl/src/util/alter.jl:34
+  rename(::Union{Function, Type}, !Matched::TS, !Matched::Type{Symbol}) at /home/travis/build/dysonance/Temporal.jl/src/util/alter.jl:34
   ...
 
 julia&gt; rename(ts, Dict(:a =&gt; :A, :d =&gt; :D)...)
 ERROR: MethodError: no method matching rename(::Type{TS}, ::Pair{Symbol,Symbol}, ::Pair{Symbol,Symbol})
 Closest candidates are:
-  rename(!Matched::TS, ::Pair{Symbol,Symbol}...) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:98
-  rename(::Union{Function, Type}, !Matched::TS) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:104
-  rename(::Union{Function, Type}, !Matched::TS, !Matched::Type{Symbol}) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:104
+  rename(!Matched::TS, ::Pair{Symbol,Symbol}...) at /home/travis/build/dysonance/Temporal.jl/src/util/alter.jl:28
+  rename(::Union{Function, Type}, !Matched::TS) at /home/travis/build/dysonance/Temporal.jl/src/util/alter.jl:34
+  rename(::Union{Function, Type}, !Matched::TS, !Matched::Type{Symbol}) at /home/travis/build/dysonance/Temporal.jl/src/util/alter.jl:34
   ...
 
 julia&gt; rename(Symbol ∘ uppercase ∘ string, ts)
 ERROR: MethodError: no method matching rename(::getfield(Base, Symbol(&quot;##58#59&quot;)){getfield(Base, Symbol(&quot;##58#59&quot;)){DataType,typeof(uppercase)},typeof(string)}, ::Type{TS})
 Closest candidates are:
-  rename(::Union{Function, Type}, !Matched::TS) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:104
-  rename(::Union{Function, Type}, !Matched::TS, !Matched::Type{Symbol}) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:104
-  rename(::Union{Function, Type}, !Matched::TS, !Matched::Type{String}) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:110
+  rename(::Union{Function, Type}, !Matched::TS) at /home/travis/build/dysonance/Temporal.jl/src/util/alter.jl:34
+  rename(::Union{Function, Type}, !Matched::TS, !Matched::Type{Symbol}) at /home/travis/build/dysonance/Temporal.jl/src/util/alter.jl:34
+  rename(::Union{Function, Type}, !Matched::TS, !Matched::Type{String}) at /home/travis/build/dysonance/Temporal.jl/src/util/alter.jl:40
 
 julia&gt; rename(uppercase, ts, String)
 ERROR: MethodError: no method matching rename(::typeof(uppercase), ::Type{TS}, ::Type{String})
 Closest candidates are:
-  rename(::Union{Function, Type}, !Matched::TS, ::Type{String}) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:110
-  rename(::Union{Function, Type}, !Matched::TS) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:104
-  rename(::Union{Function, Type}, !Matched::TS, !Matched::Type{Symbol}) at /home/travis/build/dysonance/Temporal.jl/src/ts.jl:104</code></pre><h3 id="In-place-1"><a class="docs-heading-anchor" href="#In-place-1">In place</a><a class="docs-heading-anchor-permalink" href="#In-place-1" title="Permalink"></a></h3><p><code>rename!</code> function modify name of columns in place and return <code>true</code> when a <code>TS</code> is renamed.</p><pre><code class="language-julia">rename!(ts, :a =&gt; :A, :d =&gt; :D)
+  rename(::Union{Function, Type}, !Matched::TS, ::Type{String}) at /home/travis/build/dysonance/Temporal.jl/src/util/alter.jl:40
+  rename(::Union{Function, Type}, !Matched::TS) at /home/travis/build/dysonance/Temporal.jl/src/util/alter.jl:34
+  rename(::Union{Function, Type}, !Matched::TS, !Matched::Type{Symbol}) at /home/travis/build/dysonance/Temporal.jl/src/util/alter.jl:34</code></pre><h3 id="In-place-1"><a class="docs-heading-anchor" href="#In-place-1">In place</a><a class="docs-heading-anchor-permalink" href="#In-place-1" title="Permalink"></a></h3><p><code>rename!</code> function modify name of columns in place and return <code>true</code> when a <code>TS</code> is renamed.</p><pre><code class="language-julia">rename!(ts, :a =&gt; :A, :d =&gt; :D)
 rename!(ts, Dict(:a =&gt; :A, :d =&gt; :D)...)
 rename!(Symbol ∘ uppercase ∘ string, ts)
-rename!(uppercase, ts, String)</code></pre></article></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Wednesday 18 December 2019 02:39">Wednesday 18 December 2019</span>. Using Julia version 1.2.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+rename!(uppercase, ts, String)</code></pre></article></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Wednesday 18 December 2019 05:14">Wednesday 18 December 2019</span>. Using Julia version 1.2.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

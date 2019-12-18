@@ -5,22 +5,22 @@ julia&gt; X = TS(randn(252, 4))
 252x4 TS{Float64,Dates.Date}: 2019-04-11 to 2019-12-18
 
 Index       A        B        C        D
-2019-04-11  -0.358   -0.8792  -0.3648  -0.6427
-2019-04-12  0.4787   0.9787   0.8408   -0.3999
-2019-04-13  3.0609   0.5258   0.2674   0.4869
-2019-04-14  -1.7356  -0.0908  -0.9449  -0.2191
-2019-04-15  2.9954   1.2927   -1.2154  -0.655
-2019-04-16  -0.8846  0.9303   -1.5109  0.448
-2019-04-17  0.8775   -0.4985  0.2524   1.165
+2019-04-11  -0.2338  0.9299   -1.1087  -0.7349
+2019-04-12  0.5953   -2.0541  1.8842   1.951
+2019-04-13  1.0232   -0.6466  -0.8596  -0.1133
+2019-04-14  0.3139   0.4711   0.3306   -1.9639
+2019-04-15  -0.1858  1.3807   0.7017   1.0051
+2019-04-16  -1.5301  0.0174   1.534    -0.296
+2019-04-17  0.8804   1.0725   0.2147   0.1223
 ⋮
-2019-12-11  -1.0911  -1.3486  -0.5564  0.1822
-2019-12-12  1.9566   -0.5345  -0.2911  -0.0352
-2019-12-13  0.0516   0.8435   -2.1444  -0.4403
-2019-12-14  -1.3516  -1.7451  0.4806   -0.1709
-2019-12-15  -0.0611  1.2524   -0.3934  0.4656
-2019-12-16  1.6518   0.1568   -0.6846  -1.5267
-2019-12-17  0.5987   0.5      0.622    -0.2399
-2019-12-18  -0.7141  1.4938   -0.969   0.7894
+2019-12-11  0.1715   0.5851   -1.5916  0.6712
+2019-12-12  -0.1544  -0.8405  -0.4225  -1.4564
+2019-12-13  -0.951   1.0407   0.6898   0.9261
+2019-12-14  0.7265   -1.0147  -0.4058  -0.7349
+2019-12-15  -0.9608  -0.0156  -0.6247  0.8412
+2019-12-16  -0.8679  0.3309   -0.3586  0.9931
+2019-12-17  2.2828   -0.0713  1.6378   0.8001
+2019-12-18  -0.1638  -1.6896  0.104    -0.0441
 
 julia&gt; filepath = &quot;tmp.csv&quot;
 &quot;tmp.csv&quot;
@@ -31,22 +31,22 @@ julia&gt; Y = tsread(filepath)
 252x4 TS{Float64,Dates.Date}: 2019-04-11 to 2019-12-18
 
 Index       A        B        C        D
-2019-04-11  -0.358   -0.8792  -0.3648  -0.6427
-2019-04-12  0.4787   0.9787   0.8408   -0.3999
-2019-04-13  3.0609   0.5258   0.2674   0.4869
-2019-04-14  -1.7356  -0.0908  -0.9449  -0.2191
-2019-04-15  2.9954   1.2927   -1.2154  -0.655
-2019-04-16  -0.8846  0.9303   -1.5109  0.448
-2019-04-17  0.8775   -0.4985  0.2524   1.165
+2019-04-11  -0.2338  0.9299   -1.1087  -0.7349
+2019-04-12  0.5953   -2.0541  1.8842   1.951
+2019-04-13  1.0232   -0.6466  -0.8596  -0.1133
+2019-04-14  0.3139   0.4711   0.3306   -1.9639
+2019-04-15  -0.1858  1.3807   0.7017   1.0051
+2019-04-16  -1.5301  0.0174   1.534    -0.296
+2019-04-17  0.8804   1.0725   0.2147   0.1223
 ⋮
-2019-12-11  -1.0911  -1.3486  -0.5564  0.1822
-2019-12-12  1.9566   -0.5345  -0.2911  -0.0352
-2019-12-13  0.0516   0.8435   -2.1444  -0.4403
-2019-12-14  -1.3516  -1.7451  0.4806   -0.1709
-2019-12-15  -0.0611  1.2524   -0.3934  0.4656
-2019-12-16  1.6518   0.1568   -0.6846  -1.5267
-2019-12-17  0.5987   0.5      0.622    -0.2399
-2019-12-18  -0.7141  1.4938   -0.969   0.7894
+2019-12-11  0.1715   0.5851   -1.5916  0.6712
+2019-12-12  -0.1544  -0.8405  -0.4225  -1.4564
+2019-12-13  -0.951   1.0407   0.6898   0.9261
+2019-12-14  0.7265   -1.0147  -0.4058  -0.7349
+2019-12-15  -0.9608  -0.0156  -0.6247  0.8412
+2019-12-16  -0.8679  0.3309   -0.3586  0.9931
+2019-12-17  2.2828   -0.0713  1.6378   0.8001
+2019-12-18  -0.1638  -1.6896  0.104    -0.0441
 
 julia&gt; X == Y
 true</code></pre><h2 id="Yahoo-1"><a class="docs-heading-anchor" href="#Yahoo-1">Yahoo</a><a class="docs-heading-anchor-permalink" href="#Yahoo-1" title="Permalink"></a></h2><pre><code class="language-julia-repl">julia&gt; using Temporal
@@ -91,4 +91,4 @@ Index       Open    High    Low     Last    Change  Settle  Volume      Previous
 2019-12-12  58.88   59.72   58.75   59.22   0.42    59.18   516596.0    235868.0
 2019-12-13  59.36   60.48   59.27   59.78   0.89    60.07   504361.0    192116.0
 2019-12-16  59.87   60.34   59.71   60.22   0.14    60.21   327159.0    153718.0
-2019-12-17  60.23   61.06   60.03   60.54   0.73    60.94   159796.0    97590.0</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../aggregation/">« Aggregation</a><a class="docs-footer-nextpage" href="../indexing/">Subsetting »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Wednesday 18 December 2019 02:39">Wednesday 18 December 2019</span>. Using Julia version 1.2.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+2019-12-17  60.23   61.06   60.03   60.54   0.73    60.94   159796.0    97590.0</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../aggregation/">« Aggregation</a><a class="docs-footer-nextpage" href="../indexing/">Subsetting »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Wednesday 18 December 2019 05:14">Wednesday 18 December 2019</span>. Using Julia version 1.2.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
