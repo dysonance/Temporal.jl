@@ -20,10 +20,10 @@ import Base:
 # outermost allowed element type
 const VALTYPE = Union{Float64,Int64,Bool}
 const IDXTYPE = Union{Date,DateTime}
-const FLDTYPE = Symbol
+const FLDTYPE = Union{Symbol,String,Char}
 const VALARR = AbstractArray{<:VALTYPE}
 const IDXARR = AbstractVector{<:IDXTYPE}
-const FLDARR = AbstractVector{<:Union{Symbol,String,Char}}
+const FLDARR = AbstractVector{<:FLDTYPE}
 
 
 # type definition/constructor
@@ -53,7 +53,7 @@ const ts = TS
 
 # basic utilities
 collect(x::TS) = x
-copy(x::TS) = TS(x.values, x.index, x.fields)
+copy(x::TS) = TS(copy(x.values), copy(x.index), copy(x.fields))
 eltype(x::TS) = eltype(x.values)
 first(x::TS) = x[1]
 isempty(x::TS) = (isempty(x.index) && isempty(x.values))

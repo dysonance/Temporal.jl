@@ -10,6 +10,10 @@ import Base:
     <,
     >=,
     <=,
+    ==,
+    !=,
+    ===,
+    !==,
     all,
     any,
     cumprod,
@@ -112,14 +116,22 @@ end
 
 # negatiion
 -(x::TS) = TS(-x.values, x.index, x.fields)
+!(x::TS) = TS(.!x.values, x.index, x.fields)
 
-# ts + ts
+# ts + ts arithmetic
 +(x::TS, y::TS) = opjoined(x, y, +)
 -(x::TS, y::TS) = opjoined(x, y, -)
 *(x::TS, y::TS) = opjoined(x, y, *)
 /(x::TS, y::TS) = opjoined(x, y, /)
 ^(x::TS, y::TS) = opjoined(x, y, ^)
 %(x::TS, y::TS) = opjoined(x, y, %)
+# ts + ts logical
+==(x::TS, y::TS) = x.values == y.values && x.index == y.index && x.fields == y.fields
+!=(x::TS, y::TS) = x.values != y.values || x.index != y.index || x.fields != y.fields
+>(x::TS, y::TS) = opjoined(x, y, >)
+<(x::TS, y::TS) = opjoined(x, y, <)
+>=(x::TS, y::TS) = opjoined(x, y, >=)
+<=(x::TS, y::TS) = opjoined(x, y, <=)
 
 # ts + array
 +(x::TS, y::Y) where {Y<:VALARR} = x + TS(y, x.index, x.fields)
@@ -149,15 +161,3 @@ end
 /(y::Y, x::TS) where {Y<:VALTYPE} = TS(y ./ x.values, x.index, x.fields)
 %(y::Y, x::TS) where {Y<:VALTYPE} = TS(y .% x.values, x.index, x.fields)
 ^(y::Y, x::TS) where {Y<:VALTYPE} = TS(y .^ x.values, x.index, x.fields)
-
-# logical operators
-!(x::TS) = TS(.!x.values, x.index, x.fields)
-
-# compared to another TS object
-===(x::TS, y::TS) = x.values == y.values && x.index == y.index && x.fields == y.fields
-!=(x::TS, y::TS) = !(x == y)
-==(x::TS, y::TS) = opjoined(x, y, ==)
->(x::TS, y::TS) = opjoined(x, y, >)
-<(x::TS, y::TS) = opjoined(x, y, <)
->=(x::TS, y::TS) = opjoined(x, y, >=)
-<=(x::TS, y::TS) = opjoined(x, y, <=)
