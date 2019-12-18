@@ -86,7 +86,7 @@ const shift = lag
 
 function pct_change(x::TS{V}, n::Int=1; continuous::Bool=true, pad::Bool=false, padval::V=zero(eltype(x))) where {V}
     if continuous
-        return diff(log(x), n; pad=pad, padval=padval)
+        return diff(log.(x), n; pad=pad, padval=padval)
     else
         if pad
             return diff(x, n, pad=pad, padval=padval) / x

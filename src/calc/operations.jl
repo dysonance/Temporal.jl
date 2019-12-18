@@ -45,6 +45,9 @@ import Base.Broadcast:
     broadcast,
     result_style
 
+import Statistics:
+    mean
+
 # enable use of functions using dot operator
 struct TemporalBroadcastStyle <: BroadcastStyle end
 Base.BroadcastStyle(::Type{TS{V,T}}) where {V<:VALTYPE,T<:IDXTYPE} = TemporalBroadcastStyle
@@ -64,10 +67,6 @@ any(x::TS) = any(x.values)
 findall(x::TS) = findall(x.values)
 findfirst(x::TS) = findfirst(x.values)
 findlast(x::TS) = findlast(x.values)
-isnan(x::TS) = TS(isnan.(x.values), x.index, x.fields)
-sign(x::TS) = TS(sign.(x.values), x.index, x.fields)
-log(x::TS) = TS(log.(x.values), x.index, x.fields)
-log(b::Number, x::TS) = TS(log.(b, x.values), x.index, x.fields)
 
 # equivalently-shaped convenience functions
 ones(x::TS) = TS(ones(size(x)), x.index, x.fields)
@@ -103,6 +102,7 @@ minimum(x::TS) = minimum(x.values)
 minimum(x::TS, dim::Int) = minimum(x.values, dim)
 cumsum(x::TS; dims::Int=1) = TS(cumsum(x.values, dims=dims), x.index, x.fields)
 cumprod(x::TS; dims::Int=1) = TS(cumprod(x.values, dims=dims), x.index, x.fields)
+mean(x::TS) = mean(x.values)
 
 # artithmetic operators
 function opjoined(x::TS, y::TS, f::Function)
@@ -111,7 +111,7 @@ function opjoined(x::TS, y::TS, f::Function)
     ycols = size(x,2)+1:size(x,2)+size(y,2)
     a = z[:,xcols].values
     b = z[:,ycols].values
-    return TS(f(a, b), z.index)
+    return TS(f.(a, b), z.index)
 end
 
 # negatiion

@@ -1,17 +1,19 @@
 using Test, Dates, Temporal, Random
 
+import Statistics.mean
+
 @testset "Operations" begin
     @testset "Utilities" begin
         Random.seed!(1)
         x = ts(cumsum(randn(N))) + N
-        dx = diff(log(x), pad=true, padval=NaN)
+        dx = diff(log.(x), pad=true, padval=NaN)
         @test findall(trues(x)) == [CartesianIndex(i,1) for i in 1:size(x,1)]
         @test findfirst(trues(x)) == CartesianIndex(1,1)
-        idx_nans = isnan(dx)
+        idx_nans = isnan.(dx)
         @test findall(idx_nans) == [CartesianIndex(1,1)]
         @test findfirst(idx_nans) == CartesianIndex(1,1)
-        @test sign(dx[findall(!idx_nans)]).values[:] == sign.(dx.values[.!isnan.(dx.values)])
-        x = ts(rand(N))
+        @test sign.(dx[findall(!idx_nans)]).values[:] == sign.(dx.values[.!isnan.(dx.values)])
+        x = TS(rand(N))
         @test round(Int,x).values == round.(Int,round(x).values)
         @test ones(x).values == ones(eltype(x), size(x))
         @test zeros(x).values == zeros(eltype(x), size(x))
@@ -21,9 +23,8 @@ using Test, Dates, Temporal, Random
         @test length(randn(TS,N)) == N
         @test length(randn(TS,N,K)) == N*K
         @test length(randn(TS,(N,K))) == N*K
-        x = ts(-1.0 .* rand(N))
-        y = +x
-        @test all(y.values .<= 0.0)
+        x = TS(-1.0 .* rand(N))
+        @test all(x.values .<= 0.0)
         y = -x
         @test all(y.values .>= 0.0)
     end
@@ -34,10 +35,10 @@ using Test, Dates, Temporal, Random
         @test all(!falses(x2))
         x1 += 1.0
         @test x1 != x2
-        @test all(x1 > x2)
-        @test all(x2 < x1)
-        @test all(x1 >= x2)
-        @test all(x2 <= x1)
+        @test all(x1 .> x2)
+        @test all(x2 .< x1)
+        @test all(x1 .>= x2)
+        @test all(x2 .<= x1)
     end
     @testset "Arithmetic" begin
         x1 = TS(rand(100)) + 100
