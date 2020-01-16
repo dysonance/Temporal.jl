@@ -48,6 +48,20 @@ using Test, Dates, Temporal
         idx[1] = true
         X[:,idx] = -3.0
         @test all(X.values[:,1] .== -3.0)
+        # column addition/modification
+        energy = TS(randn(252,2), Temporal.autoidx(252), [:Crude,:Gasoline])
+        energy[:Crude] += 50
+        energy[:Gasoline] += minimum(energy[:Gasoline]) + 2.0
+        spread = (energy[:,2] - energy[:,1]/42.0).values
+        energy[:Spread] = spread
+        @test energy.fields[end] == :Spread
+        @test energy.values[:,end] == spread[:]
+        energy[:ExpSpread] = exp.(energy[:Spread])
+        @test energy.fields[end] == :ExpSpread
+        @test energy.values[:,end] == exp.(spread)[:]
+        energy[:Zero] = 0.0
+        @test energy.fields[end] == :Zero
+        @test all(energy.values[:,end] .== 0.0)
     end
     @testset "Row Mutations" begin
         A = TS(rand(N,K))

@@ -42,5 +42,24 @@ setindex!(x::TS, v, r::R) where {R<:AbstractString} = x.values[findrows(r,x), :]
 setindex!(x::TS, v, r::R) where {R<:Int} = x.values[findrows(r,x), :] .= v
 setindex!(x::TS, v, r::R) where {R<:AbstractVector{<:Integer}} = x.values[findrows(r,x), :] .= v
 
-setindex!(x::TS, v, c::C) where {C<:Symbol} = x.values[:, findcols(c,x)] .= v
-setindex!(x::TS, v, c::C) where {C<:AbstractVector{Symbol}} = x.values[:, findcols(c,x)] .= v
+#setindex!(x::TS, v, c::C) where {C<:AbstractVector{Symbol}} = x.values[:, findcols(c,x)] .= v
+
+# single column
+makecolumns(x::TS, v::V, c::C) where {V<:VALARR, C<:FLDTYPE} = TS(v, x.index, [c])
+makecolumns(x::TS, v::V, c::C) where {V<:TS, C<:FLDTYPE} = TS(v.values, x.index, [c])
+makecolumns(x::TS, v::V, c::C) where {V<:VALTYPE, C<:FLDTYPE} = TS(zeros(typeof(v), size(x,1)).+v, x.index, [c])
+# multiple columns
+makecolumns(x::TS, v::V, c::C) where {V<:VALARR, C<:FLDARR} = TS(v, x.index, c)
+makecolumns(x::TS, v::V, c::C) where {V<:TS, C<:FLDARR} = TS(v.values, x.index, c)
+
+# column modification/addition via e.g. X[:Column] = randn(N)
+function setindex!(x::TS, v::V, c::C) where {V<:Union{VALARR,VALTYPE,TS},C<:Union{FLDARR,FLDTYPE}}
+    found = sum(findcols(c,x)) > 0
+    if found
+        x.values[:, findcols(c,x)] .= v
+    else
+        y = [x makecolumns(x, v, c)]
+        x.values = y.values
+        x.fields = y.fields
+    end
+end
