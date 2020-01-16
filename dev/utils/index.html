@@ -9,43 +9,43 @@ julia&gt; X = TS(vals, t)
 365x4 TS{Float64,Dates.Date}: 2017-01-01 to 2017-12-31
 
 Index       A       B       C       D
-2017-01-01  0.2372  0.3758  0.0091  0.301
-2017-01-02  0.4375  0.735   0.4505  0.2677
-2017-01-03  0.5966  0.6413  0.9636  0.2109
-2017-01-04  0.2408  0.3859  0.3961  0.0605
-2017-01-05  0.7074  0.1539  0.9493  0.9646
-2017-01-06  0.6444  0.5926  0.2988  0.4444
-2017-01-07  0.5187  0.2926  0.5282  0.9167
+2017-01-01  0.1316  0.2698  0.1662  0.5091
+2017-01-02  0.6977  0.3885  0.4046  0.0519
+2017-01-03  0.3533  0.2977  0.673   0.7536
+2017-01-04  0.0938  0.8     0.0598  0.9097
+2017-01-05  0.5445  0.7418  0.2509  0.7627
+2017-01-06  0.917   0.7779  0.4113  0.8507
+2017-01-07  0.9555  0.0272  0.9081  0.3402
 ⋮
-2017-12-24  0.4784  0.4065  0.8295  0.24
-2017-12-25  0.3197  0.6841  0.7403  0.1065
-2017-12-26  0.0578  0.2706  0.2333  0.9386
-2017-12-27  0.5529  0.6508  0.4193  0.4354
-2017-12-28  0.4374  0.0722  0.0905  0.7917
-2017-12-29  0.9511  0.3925  0.4502  0.8421
-2017-12-30  0.5523  0.5156  0.6789  0.554
-2017-12-31  0.1504  0.6374  0.9396  0.9832
+2017-12-24  0.9487  0.3781  0.791   0.6691
+2017-12-25  0.8386  0.0021  0.3847  0.7969
+2017-12-26  0.5793  0.1621  0.678   0.2663
+2017-12-27  0.3923  0.9304  0.4491  0.1102
+2017-12-28  0.0748  0.6711  0.898   0.5938
+2017-12-29  0.4544  0.3503  0.829   0.1311
+2017-12-30  0.6901  0.7418  0.5549  0.2846
+2017-12-31  0.3821  0.9765  0.6089  0.759
 
 julia&gt; X[&quot;2017-03-15/2017-06-15&quot;]
 93x4 TS{Float64,Dates.Date}: 2017-03-15 to 2017-06-15
 
 Index       A       B       C       D
-2017-03-15  0.8036  0.1195  0.7735  0.6314
-2017-03-16  0.644   0.5833  0.1011  0.2176
-2017-03-17  0.2889  0.1715  0.4334  0.1775
-2017-03-18  0.2211  0.1411  0.2904  0.2509
-2017-03-19  0.1135  0.9219  0.5022  0.4988
-2017-03-20  0.7937  0.4303  0.1143  0.1692
-2017-03-21  0.99    0.6027  0.9875  0.6307
+2017-03-15  0.2246  0.0782  0.8304  0.4269
+2017-03-16  0.7646  0.3831  0.7211  0.3372
+2017-03-17  0.4928  0.8224  0.5088  0.3491
+2017-03-18  0.4503  0.0045  0.8302  0.9067
+2017-03-19  0.1584  0.923   0.8117  0.317
+2017-03-20  0.2453  0.9691  0.3185  0.5974
+2017-03-21  0.4267  0.7684  0.5655  0.6516
 ⋮
-2017-06-08  0.5812  0.3195  0.4256  0.852
-2017-06-09  0.6811  0.7353  0.2917  0.495
-2017-06-10  0.3006  0.7131  0.353   0.3952
-2017-06-11  0.5544  0.2104  0.6996  0.3488
-2017-06-12  0.7603  0.6021  0.4529  0.0576
-2017-06-13  0.6164  0.6703  0.1327  0.6754
-2017-06-14  0.9374  0.2898  0.9766  0.8615
-2017-06-15  0.0291  0.4214  0.8318  0.5272
+2017-06-08  0.3274  0.2713  0.8936  0.3449
+2017-06-09  0.2796  0.3812  0.7839  0.5252
+2017-06-10  0.5047  0.2459  0.1851  0.0145
+2017-06-11  0.8666  0.6061  0.4962  0.7649
+2017-06-12  0.445   0.7586  0.9337  0.0251
+2017-06-13  0.0375  0.6086  0.4642  0.7464
+2017-06-14  0.6219  0.2694  0.4122  0.3848
+2017-06-15  0.9716  0.4574  0.2947  0.882
 
 julia&gt; set_range_delimiter_option(&quot;::&quot;)
 ERROR: UndefVarError: set_range_delimiter_option not defined
@@ -70,26 +70,26 @@ julia&gt; K = 4
 
 julia&gt; data = cumsum(randn(N,K), dims=1)
 756×4 Array{Float64,2}:
-  -0.704539   0.133849  -0.355968    3.10689
-  -1.86753   -1.10792   -0.48354     2.72033
-  -1.30714   -1.48868   -0.324993    2.23519
-  -0.854632  -2.36579    0.446621    0.715643
-  -1.23689   -2.73687    0.37478    -0.65084
-  -0.901463  -2.76724   -0.241175   -0.88099
-  -2.56778   -3.45028   -0.735539   -0.810469
-  -2.38767   -2.31887   -0.937936   -0.290772
-  -2.0498    -1.65062   -1.85064    -2.16915
-  -2.58041   -2.19133   -1.8017     -1.31534
-   ⋮
- -15.5397     7.4616    -2.3562    -30.4349
- -16.3867     7.39716   -1.18722   -31.02
- -16.0271     7.54273    0.295188  -30.2454
- -14.5032     7.86095   -1.44386   -29.3495
- -16.003      6.70353   -0.654996  -29.1325
- -16.8105     9.50127   -0.828891  -27.1794
- -18.3584     7.66434   -2.519     -26.3227
- -19.0139     7.51742   -1.80944   -25.8726
- -18.5113     7.30917   -2.61736   -26.6808
+  0.388876   -0.0295821   0.142159   0.924219
+  0.617759   -0.458523    1.50126    0.594609
+ -1.12085     0.229149    2.08232    0.432404
+  0.626472   -0.548898    2.3712     0.217499
+ -0.31537     1.09503     0.124205   1.64354
+ -0.61566     0.326356   -0.08109    3.09419
+ -2.04579     1.05892    -0.989177   4.18824
+ -1.8971      0.291457   -1.10162    3.44841
+ -0.932069    0.294158   -0.772906   5.2911
+  0.352229    1.28992    -0.275071   5.4625
+  ⋮
+ -0.413687  -38.3913     11.6608     0.135274
+ -1.07222   -39.6801     10.6487    -0.249545
+ -0.394859  -40.0976     12.2681    -0.981566
+ -1.74974   -40.2335     12.4835    -0.453958
+ -2.63848   -41.9787     11.9408    -0.899225
+ -3.4939    -42.1259     12.9722    -2.3327
+ -3.26122   -41.0747     13.9545    -0.861908
+ -2.42173   -40.6199     15.3807     0.0544637
+ -3.92982   -40.1539     14.9529    -2.8121
 
 julia&gt; dates = today()-Day(N-1):Day(1):today()
 ERROR: UndefVarError: today not defined
@@ -128,4 +128,4 @@ Closest candidates are:
   rename(::Union{Function, Type}, !Matched::TS, !Matched::Type{Symbol}) at /home/travis/build/dysonance/Temporal.jl/src/util/alter.jl:34</code></pre><h3 id="In-place-1"><a class="docs-heading-anchor" href="#In-place-1">In place</a><a class="docs-heading-anchor-permalink" href="#In-place-1" title="Permalink"></a></h3><p><code>rename!</code> function modify name of columns in place and return <code>true</code> when a <code>TS</code> is renamed.</p><pre><code class="language-julia">rename!(ts, :a =&gt; :A, :d =&gt; :D)
 rename!(ts, Dict(:a =&gt; :A, :d =&gt; :D)...)
 rename!(Symbol ∘ uppercase ∘ string, ts)
-rename!(uppercase, ts, String)</code></pre></article></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Wednesday 18 December 2019 05:14">Wednesday 18 December 2019</span>. Using Julia version 1.2.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+rename!(uppercase, ts, String)</code></pre></article></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Thursday 16 January 2020 11:21">Thursday 16 January 2020</span>. Using Julia version 1.2.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
