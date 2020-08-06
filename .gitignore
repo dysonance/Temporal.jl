@@ -2,6 +2,7 @@
 *.jl.*.cov
 *.jl.mem
 *.swp
+Manifest.toml
 
 docs/build/
 docs/site/
