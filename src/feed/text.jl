@@ -31,7 +31,7 @@ function tsread(file::String; dlm::Char=',', header::Bool=true, eol::Char='\n', 
         # k = matchcount(csv[1], dlm)
         k = sum([csv[1][i] == dlm for i in 1:length(csv[1])])
         n = length(csv)
-        fields = autocolname(1:k)
+        fields = autocol(1:k)
     end
     # Fill data
     arr = zeros(Float64, (n,k))
@@ -44,7 +44,7 @@ function tsread(file::String; dlm::Char=',', header::Bool=true, eol::Char='\n', 
             arr[i,j] = parse(Float64, s[j])
         end
     end
-    return TS(arr, indextype.(idx), fields)
+    return TS(arr, indextype.(idx, format), fields)
 end
 
 """
