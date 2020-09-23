@@ -9,6 +9,10 @@ using Test, Dates, Temporal
         @test filepath in readdir()
         b = tsread(filepath)
         @test a == b
+
+        filepath = "../data/XOM.csv"
+        c = tsread(filepath, format="yyyy-mm-dd")
+        @test c[:Open].values[1] == 1.929688
     end
     @testset "Web Downloads" begin
         @testset "Quandl" begin
