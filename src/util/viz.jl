@@ -2,7 +2,7 @@
 Methods to simplify the plotting functionality for TS objects.
 =#
 
-import RecipesBase: @recipe
+using RecipesBase
 
 const DEFAULT_COLORS = [:black, :red, :green, :blue, :cyan, :magenta, :orange, :pink]
 
@@ -44,6 +44,6 @@ end
 @recipe function f(X::TS)
     #x = 1:size(X,1)
     xticks --> get_xticks(X.index)
-    lab --> tslab(X.fields)
+    label --> tslab(X.fields)
     X.values
 end

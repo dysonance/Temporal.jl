@@ -10,6 +10,7 @@ Inspired by the pandas DataFrame in python and the xts package in R.
 """
 module Temporal
     using Dates
+
     export
         # foundational
         TS, ts,
