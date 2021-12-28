@@ -29,7 +29,7 @@ using Temporal
 The `TS` object type can be created in a number of ways. One thing to note is that when constructing the `TS` object, passing only the `Array` of `values` will automatically create the `index` and the `fields` members. When not passed explicitly, the `index` defaults to a series of dates that ends with today's date, and begins `N-1` days before (where `N` is the number of rows of the `values`). The `fields` (or column names) are automatically set in a similar fashion as Excel when not given explicitly (A, B, C, ..., X, Y, Z, AA, AB, ...).
 
 ```@repl overview
-using Temporal, Dates
+using Temporal, Dates, Random
 N, K = 100, 4;
 Random.seed!(1);
 values = rand(N, K);
